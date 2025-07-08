@@ -1,0 +1,122 @@
+flashcards:
+  - question: "What is a Python list comprehension?"
+    answer: "A concise way to create lists using a single line of code with optional filtering"
+    code_example: |
+      # Traditional approach
+      squares = []
+      for x in range(10):
+          if x % 2 == 0:
+              squares.append(x**2)
+      
+      # List comprehension
+      squares = [x**2 for x in range(10) if x % 2 == 0]
+
+  - question: "What is the difference between == and is in Python?"
+    answer: "== compares values for equality, while is compares object identity (memory location)"
+    code_example: |
+      a = [1, 2, 3]
+      b = [1, 2, 3]
+      c = a
+      
+      print(a == b)  # True (same values)
+      print(a is b)  # False (different objects)
+      print(a is c)  # True (same object)
+
+  - question: "What is a Python decorator?"
+    answer: "A function that wraps another function to extend or modify its behavior without permanently modifying it"
+    code_example: |
+      def my_decorator(func):
+          def wrapper(*args, **kwargs):
+              print("Before function execution")
+              result = func(*args, **kwargs)
+              print("After function execution")
+              return result
+          return wrapper
+
+      @my_decorator
+      def say_hello(name):
+          print(f"Hello, {name}!")
+
+      say_hello("Alice")
+
+  - question: "What is the Global Interpreter Lock (GIL)?"
+    answer: "A mutex that prevents multiple native threads from executing Python bytecode simultaneously"
+    code_example: |
+      import threading
+      import time
+
+      def cpu_bound_task():
+          # This won't run in parallel due to GIL
+          count = 0
+          for i in range(1000000):
+              count += 1
+          return count
+
+      # Multiple threads won't speed this up
+      threads = []
+      for i in range(4):
+          t = threading.Thread(target=cpu_bound_task)
+          threads.append(t)
+          t.start()
+
+  - question: "What is a Python context manager?"
+    answer: "An object that defines what happens when entering and exiting a 'with' statement"
+    code_example: |
+      # Built-in context manager
+      with open('file.txt', 'r') as f:
+          content = f.read()
+      # File is automatically closed
+
+      # Custom context manager
+      class Timer:
+          def __enter__(self):
+              self.start = time.time()
+              return self
+          
+          def __exit__(self, exc_type, exc_val, exc_tb):
+              self.end = time.time()
+              print(f"Elapsed: {self.end - self.start:.2f}s")
+
+      with Timer():
+          time.sleep(1)
+
+  - question: "What are Python generators?"
+    answer: "Functions that return an iterator object which produces values on-demand using yield"
+    code_example: |
+      # Generator function
+      def fibonacci():
+          a, b = 0, 1
+          while True:
+              yield a
+              a, b = b, a + b
+
+      # Generator expression
+      squares = (x**2 for x in range(10))
+
+      # Usage
+      fib = fibonacci()
+      print(next(fib))  # 0
+      print(next(fib))  # 1
+      print(next(fib))  # 1
+
+  - question: "What is the difference between *args and **kwargs?"
+    answer: "*args collects positional arguments into a tuple, **kwargs collects keyword arguments into a dictionary"
+    code_example: |
+      def flexible_function(*args, **kwargs):
+          print("Positional args:", args)
+          print("Keyword args:", kwargs)
+
+      flexible_function(1, 2, 3, name="Alice", age=30)
+      # Output:
+      # Positional args: (1, 2, 3)
+      # Keyword args: {'name': 'Alice', 'age': 30}
+
+      # Unpacking arguments
+      def greet(name, age):
+          return f"Hello {name}, you are {age} years old"
+
+      person = ("Bob", 25)
+      info = {"name": "Charlie", "age": 35}
+      
+      print(greet(*person))      # Unpack tuple
+      print(greet(**info))       # Unpack dictionary
