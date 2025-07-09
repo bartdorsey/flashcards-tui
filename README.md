@@ -9,7 +9,7 @@ An interactive command-line flashcard application built with Python and Rich for
 - 📊 Comprehensive statistics tracking per set and globally
 - 💻 Syntax-highlighted code examples
 - 🎨 Beautiful Rich-based terminal UI with 80-character width panels
-- 📝 Support for both YAML and JSON flashcard formats
+- 📝 Support for YAML flashcard format
 - 🔄 Automatic flashcard set discovery
 
 ## Installation
@@ -81,7 +81,7 @@ The application comes with several pre-made flashcard sets:
 
 ### File Format
 
-Create YAML or JSON files in the `flashcard_sets/` directory:
+Create YAML files in the `flashcard_sets/` directory:
 
 ```yaml
 title: "🎯 My Custom Set"
@@ -100,7 +100,7 @@ flashcards:
 ### File Naming
 
 - Place files in `flashcard_sets/` directory
-- Use `.yaml`, `.yml`, or `.json` extensions
+- Use `.yaml` or `.yml` extensions
 - Files are automatically discovered and displayed in the menu
 
 ### Custom Titles
@@ -110,7 +110,7 @@ flashcards:
 
 ### Schema Validation
 
-A YAML schema is provided in `flashcard_schema.yaml` that defines the structure and validation rules for flashcard files. You can use tools like `yamllint` or JSON Schema validators to check your flashcard files against this schema.
+A YAML schema is provided in `flashcard_schema.yaml` that defines the structure and validation rules for flashcard files. You can use tools like `yamllint` to check your flashcard files against this schema.
 
 ## Statistics
 

@@ -114,7 +114,7 @@ def main():
 Examples:
   python main.py                               # Selection menu
   python main.py flashcard_sets/math.yaml      # Use specific set
-  python main.py flashcard_sets/science.json   # Use JSON format
+  python main.py flashcard_sets/science.yaml   # Use YAML format
   python main.py --help                        # Show help
         """,
     )
@@ -123,7 +123,7 @@ Examples:
         nargs="?",
         default=None,
         help=(
-            "Path to the flashcard file (YAML or JSON format). "
+            "Path to the flashcard file (YAML format). "
             "If not specified, shows set selection menu."
         ),
     )

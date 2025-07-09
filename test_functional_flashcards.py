@@ -115,15 +115,6 @@ class TestIOOperations:
         yield temp_file
         os.unlink(temp_file)
 
-    @pytest.fixture
-    def temp_json_file(self, sample_flashcard_data):
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".json", delete=False
-        ) as f:
-            json.dump(sample_flashcard_data, f)
-            temp_file = f.name
-        yield temp_file
-        os.unlink(temp_file)
 
     def test_load_flashcard_file_yaml(self, temp_yaml_file):
         flashcard_set = load_flashcard_file(temp_yaml_file)
@@ -136,12 +127,6 @@ class TestIOOperations:
             flashcard_set.cards[1].question == "What is a Python dictionary?"
         )
 
-    def test_load_flashcard_file_json(self, temp_json_file):
-        flashcard_set = load_flashcard_file(temp_json_file)
-
-        assert flashcard_set is not None
-        assert len(flashcard_set.cards) == 2
-        assert flashcard_set.title == "🧪 Test Flashcards"
 
     def test_load_flashcard_file_not_found(self):
         with patch("rich.console.Console.print") as mock_print:
@@ -236,9 +221,9 @@ class TestIOOperations:
             with open(yaml_file, "w") as f:
                 yaml.dump({"title": "Test YAML", "flashcards": []}, f)
 
-            json_file = os.path.join(temp_dir, "test.json")
-            with open(json_file, "w") as f:
-                json.dump({"title": "Test JSON", "flashcards": []}, f)
+            yml_file = os.path.join(temp_dir, "test2.yml")
+            with open(yml_file, "w") as f:
+                yaml.dump({"title": "Test YML", "flashcards": []}, f)
 
             # Create a file to ignore
             with open(os.path.join(temp_dir, ".hidden.yaml"), "w") as f:
@@ -249,8 +234,8 @@ class TestIOOperations:
             # Should find 2 files, sorted by name
             assert len(result) == 2
             display_names = [name for name, _ in result]
-            assert "Test JSON" in display_names
             assert "Test YAML" in display_names
+            assert "Test YML" in display_names
 
 
 class TestStatistics:

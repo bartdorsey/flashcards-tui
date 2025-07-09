@@ -18,20 +18,16 @@ from flashcard_types import (
 
 
 def load_flashcard_file(file_path: str) -> Optional[FlashcardSet]:
-    """Load flashcards from a YAML or JSON file."""
+    """Load flashcards from a YAML file."""
     try:
         with open(file_path, "r") as f:
-            if file_path.endswith((".yaml", ".yml")):
-                data = yaml.safe_load(f)
-            else:
-                data = json.load(f)
+            data = yaml.safe_load(f)
 
         # Extract set name from file path
         set_name = (
             os.path.basename(file_path)
             .replace(".yaml", "")
             .replace(".yml", "")
-            .replace(".json", "")
         )
 
         # Get custom title or use filename as fallback
@@ -54,9 +50,9 @@ def load_flashcard_file(file_path: str) -> Optional[FlashcardSet]:
         console = Console()
         console.print(f"[red]Error: Could not find {file_path}[/red]")
         return None
-    except (json.JSONDecodeError, yaml.YAMLError) as e:
+    except yaml.YAMLError as e:
         console = Console()
-        console.print(f"[red]Error: Invalid format in {file_path}: {e}[/red]")
+        console.print(f"[red]Error: Invalid YAML format in {file_path}: {e}[/red]")
         return None
 
 
@@ -157,7 +153,7 @@ def discover_flashcard_sets(
         return flashcard_sets
 
     for filename in os.listdir(directory):
-        valid_extensions = (".yaml", ".yml", ".json")
+        valid_extensions = (".yaml", ".yml")
         if filename.endswith(valid_extensions) and not filename.startswith(
             "."
         ):
@@ -166,10 +162,7 @@ def discover_flashcard_sets(
             # Try to read the custom title from the file
             try:
                 with open(file_path, "r") as f:
-                    if file_path.endswith((".yaml", ".yml")):
-                        data = yaml.safe_load(f)
-                    else:
-                        data = json.load(f)
+                    data = yaml.safe_load(f)
 
                 # Use custom title if available, otherwise fallback to filename
                 if data and "title" in data:
@@ -178,7 +171,6 @@ def discover_flashcard_sets(
                     display_name = (
                         filename.replace(".yaml", "")
                         .replace(".yml", "")
-                        .replace(".json", "")
                     )
                     display_name = display_name.replace("_", " ").title()
             except Exception:
@@ -186,7 +178,6 @@ def discover_flashcard_sets(
                 display_name = (
                     filename.replace(".yaml", "")
                     .replace(".yml", "")
-                    .replace(".json", "")
                 )
                 display_name = display_name.replace("_", " ").title()
 
@@ -202,20 +193,16 @@ def get_set_display_name(set_name: str) -> str:
     directory = "flashcard_sets"
     if os.path.exists(directory):
         for filename in os.listdir(directory):
-            if filename.endswith((".yaml", ".yml", ".json")):
+            if filename.endswith((".yaml", ".yml")):
                 file_set_name = (
                     filename.replace(".yaml", "")
                     .replace(".yml", "")
-                    .replace(".json", "")
                 )
                 if file_set_name == set_name:
                     try:
                         file_path = os.path.join(directory, filename)
                         with open(file_path, "r") as f:
-                            if filename.endswith((".yaml", ".yml")):
-                                data = yaml.safe_load(f)
-                            else:
-                                data = json.load(f)
+                            data = yaml.safe_load(f)
 
                         if data and "title" in data:
                             return data["title"]
@@ -231,20 +218,16 @@ def get_set_card_count(set_name: str) -> int:
     directory = "flashcard_sets"
     if os.path.exists(directory):
         for filename in os.listdir(directory):
-            if filename.endswith((".yaml", ".yml", ".json")):
+            if filename.endswith((".yaml", ".yml")):
                 file_set_name = (
                     filename.replace(".yaml", "")
                     .replace(".yml", "")
-                    .replace(".json", "")
                 )
                 if file_set_name == set_name:
                     try:
                         file_path = os.path.join(directory, filename)
                         with open(file_path, "r") as f:
-                            if filename.endswith((".yaml", ".yml")):
-                                data = yaml.safe_load(f)
-                            else:
-                                data = json.load(f)
+                            data = yaml.safe_load(f)
 
                         if data and "flashcards" in data:
                             return len(data["flashcards"])
