@@ -141,3 +141,1522 @@ flashcards:
       x = 5
       y = 5
       print(x is y)  # True (Python caches small integers)
+
+  - question: "What is the difference between an expression and a statement in Python?"
+    answer: "An expression produces a value and can be used wherever a value is expected, while a statement performs an action and doesn't return a value"
+    code_example: |
+      # EXPRESSIONS (produce values):
+      5 + 3                    # Returns 8
+      len("hello")             # Returns 5
+      x > 10                   # Returns True or False
+      "Hello " + "World"       # Returns "Hello World"
+      
+      # STATEMENTS (perform actions):
+      print("Hello")           # Prints text, returns None
+      x = 5                    # Assigns value, returns None
+      if x > 0:                # Controls flow, returns None
+          print("positive")
+      
+      # Expressions can be part of statements:
+      result = 5 + 3           # 5 + 3 is expression, whole line is statement
+      print(len("hello"))      # len("hello") is expression inside print statement
+
+  - question: "What does it mean to 'assign' a value to a variable?"
+    answer: "Assignment means storing a value in a variable using the = operator, giving the variable a name you can use to access that value later"
+    code_example: |
+      # Basic assignment
+      name = "Alice"           # Assigns string "Alice" to variable name
+      age = 25                 # Assigns integer 25 to variable age
+      
+      # The variable name is on the left, value on the right
+      score = 95
+      is_passing = True
+      
+      # You can reassign variables
+      score = 87               # Changes score from 95 to 87
+      
+      # You can assign one variable to another
+      old_score = score        # old_score now has the value 87
+      
+      # Multiple assignment
+      x, y = 10, 20           # x gets 10, y gets 20
+
+  - question: "What are the basic arithmetic operators in Python?"
+    answer: "The basic arithmetic operators are: + (addition), - (subtraction), * (multiplication), / (division), // (floor division), % (modulo), ** (exponentiation)"
+    code_example: |
+      # Basic arithmetic
+      a = 10
+      b = 3
+      
+      addition = a + b         # 13
+      subtraction = a - b      # 7
+      multiplication = a * b   # 30
+      division = a / b         # 3.333...
+      floor_division = a // b  # 3 (rounds down)
+      modulo = a % b          # 1 (remainder)
+      exponentiation = a ** b  # 1000 (10 to the power of 3)
+      
+      # Order of operations (PEMDAS)
+      result = 2 + 3 * 4       # 14, not 20 (multiplication first)
+      result = (2 + 3) * 4     # 20 (parentheses first)
+
+  - question: "What are comparison operators and what do they return?"
+    answer: "Comparison operators compare two values and return True or False. They include: == (equal), != (not equal), < (less than), > (greater than), <= (less or equal), >= (greater or equal)"
+    code_example: |
+      # Comparison operators
+      x = 5
+      y = 10
+      
+      # Equality
+      x == y          # False (5 is not equal to 10)
+      x != y          # True (5 is not equal to 10)
+      
+      # Magnitude comparisons
+      x < y           # True (5 is less than 10)
+      x > y           # False (5 is not greater than 10)
+      x <= y          # True (5 is less than or equal to 10)
+      x >= y          # False (5 is not greater than or equal to 10)
+      
+      # Can compare different types
+      age = 18
+      is_adult = age >= 18     # True
+      
+      # String comparison
+      name1 = "Alice"
+      name2 = "Bob"
+      name1 == name2          # False
+
+  - question: "What are logical operators and how do they work?"
+    answer: "Logical operators combine boolean values: 'and' returns True only if both conditions are True, 'or' returns True if at least one condition is True, 'not' reverses the boolean value"
+    code_example: |
+      # Logical operators
+      age = 25
+      has_license = True
+      has_car = False
+      
+      # AND operator (both must be True)
+      can_drive = age >= 18 and has_license    # True
+      can_drive_own_car = has_license and has_car  # False
+      
+      # OR operator (at least one must be True)
+      can_travel = has_car or age >= 18        # True
+      
+      # NOT operator (reverses the boolean)
+      is_minor = not (age >= 18)              # False
+      needs_license = not has_license         # False
+      
+      # Combining operators
+      can_rent_car = age >= 21 and has_license and not has_car
+
+  - question: "What is the difference between = and == in Python?"
+    answer: "= is the assignment operator that stores a value in a variable, while == is the equality operator that compares two values and returns True or False"
+    code_example: |
+      # Assignment operator (=)
+      x = 5                    # Assigns the value 5 to variable x
+      name = "Alice"           # Assigns the string "Alice" to variable name
+      
+      # Equality operator (==)
+      result = x == 5          # Compares x with 5, returns True
+      result = name == "Bob"   # Compares name with "Bob", returns False
+      
+      # Common mistake - using = instead of ==
+      # if x = 5:              # ERROR! This is assignment, not comparison
+      if x == 5:               # CORRECT! This compares x with 5
+          print("x equals 5")
+      
+      # Assignment vs comparison in context
+      y = 10                   # Assignment: store 10 in y
+      if y == 10:              # Comparison: check if y equals 10
+          print("y is 10")
+
+  - question: "What is variable naming and what are the rules?"
+    answer: "Variable naming is choosing names for variables. Rules: start with letter or underscore, contain only letters/numbers/underscores, case-sensitive, no Python keywords"
+    code_example: |
+      # Valid variable names
+      name = "Alice"
+      age_in_years = 25
+      _private_var = "secret"
+      user1 = "first user"
+      firstName = "Alice"      # camelCase
+      first_name = "Alice"     # snake_case (preferred in Python)
+      
+      # Invalid variable names
+      # 1name = "invalid"      # Can't start with number
+      # first-name = "invalid" # Can't contain hyphens
+      # class = "invalid"      # Can't use Python keywords
+      
+      # Case sensitivity
+      Name = "Alice"           # Different from 'name'
+      NAME = "ALICE"           # Different from 'Name' and 'name'
+      
+      # Good naming practices
+      user_count = 10          # Descriptive name
+      total_price = 99.99      # Clear purpose
+      is_logged_in = True      # Boolean with is/has prefix
+
+  - question: "How do you define a function in Python?"
+    answer: "Use the 'def' keyword followed by the function name, parentheses for parameters, a colon, and an indented code block"
+    code_example: |
+      # Basic function definition
+      def greet():
+          print("Hello, World!")
+      
+      # Function with parameters
+      def greet_person(name):
+          print(f"Hello, {name}!")
+      
+      # Function with multiple parameters
+      def add_numbers(a, b):
+          result = a + b
+          return result
+      
+      # Function with default parameter
+      def greet_with_title(name, title="Mr."):
+          print(f"Hello, {title} {name}!")
+      
+      # Function structure:
+      # def function_name(parameters):
+      #     function body
+      #     return value (optional)
+
+  - question: "How do you call (invoke) a function in Python?"
+    answer: "Type the function name followed by parentheses, including any required arguments inside the parentheses"
+    code_example: |
+      # Define functions first
+      def say_hello():
+          print("Hello!")
+      
+      def greet_person(name):
+          print(f"Hello, {name}!")
+      
+      def add_numbers(a, b):
+          return a + b
+      
+      # Call functions
+      say_hello()                    # Calls function with no parameters
+      greet_person("Alice")          # Calls function with one argument
+      result = add_numbers(5, 3)     # Calls function and stores return value
+      
+      # You can call functions multiple times
+      say_hello()
+      say_hello()
+      
+      # Function calls can be part of expressions
+      total = add_numbers(10, 20) + add_numbers(5, 15)
+
+  - question: "What are function parameters and arguments?"
+    answer: "Parameters are variables in the function definition that accept values. Arguments are the actual values passed to the function when it's called"
+    code_example: |
+      # Parameters are in the function definition
+      def calculate_area(length, width):    # length and width are parameters
+          area = length * width
+          return area
+      
+      # Arguments are passed when calling the function
+      room_area = calculate_area(10, 12)    # 10 and 12 are arguments
+      
+      # Different ways to pass arguments:
+      
+      # Positional arguments (order matters)
+      result = calculate_area(5, 8)         # length=5, width=8
+      
+      # Keyword arguments (order doesn't matter)
+      result = calculate_area(width=8, length=5)  # Same as above
+      
+      # Mixed (positional first, then keyword)
+      result = calculate_area(5, width=8)   # length=5, width=8
+
+  - question: "What does 'return' do in a function?"
+    answer: "The 'return' statement ends function execution and sends a value back to the caller. If no return statement is used, the function returns None"
+    code_example: |
+      # Function that returns a value
+      def multiply(a, b):
+          result = a * b
+          return result          # Returns the calculated value
+      
+      # Function that returns early
+      def check_positive(number):
+          if number > 0:
+              return True        # Exits function here if positive
+          return False          # Only reached if number is not positive
+      
+      # Function with no return statement
+      def print_message(msg):
+          print(msg)            # Prints but doesn't return anything
+          # Implicitly returns None
+      
+      # Using returned values
+      product = multiply(4, 5)   # product gets the value 20
+      is_pos = check_positive(7) # is_pos gets the value True
+      nothing = print_message("Hi") # nothing gets None
+      
+      # You can return multiple values
+      def get_name_age():
+          return "Alice", 25     # Returns a tuple
+      
+      name, age = get_name_age() # Unpacks the returned tuple
+
+  - question: "What are default parameters in functions?"
+    answer: "Default parameters have preset values that are used if no argument is provided for that parameter when calling the function"
+    code_example: |
+      # Function with default parameters
+      def greet(name, greeting="Hello", punctuation="!"):
+          message = f"{greeting}, {name}{punctuation}"
+          print(message)
+      
+      # Different ways to call with defaults
+      greet("Alice")                          # "Hello, Alice!"
+      greet("Bob", "Hi")                      # "Hi, Bob!"
+      greet("Charlie", "Hey", ".")            # "Hey, Charlie."
+      greet("Diana", punctuation="?")         # "Hello, Diana?"
+      
+      # Default parameters must come after regular parameters
+      def create_user(name, email, role="user", active=True):
+          return {
+              "name": name,
+              "email": email,
+              "role": role,
+              "active": active
+          }
+      
+      # Call with minimum required arguments
+      user1 = create_user("Alice", "alice@email.com")
+      
+      # Call with some optional arguments
+      user2 = create_user("Bob", "bob@email.com", "admin")
+
+  - question: "What is variable scope in functions?"
+    answer: "Variable scope determines where variables can be accessed. Variables defined inside a function are local (only accessible within that function), while variables defined outside are global"
+    code_example: |
+      # Global variable
+      global_var = "I'm global"
+      
+      def my_function():
+          # Local variable
+          local_var = "I'm local"
+          
+          # Can access global variable
+          print(global_var)      # Works: prints "I'm global"
+          print(local_var)       # Works: prints "I'm local"
+      
+      # Outside the function
+      print(global_var)          # Works: prints "I'm global"
+      # print(local_var)         # ERROR! local_var doesn't exist here
+      
+      # Function parameters are local variables
+      def greet(name):           # 'name' is local to this function
+          message = f"Hello, {name}"  # 'message' is also local
+          return message
+      
+      # Variables with same name in different scopes
+      x = 10                     # Global x
+      
+      def change_x():
+          x = 20                 # Local x (doesn't change global x)
+          print(f"Inside function: {x}")  # Prints 20
+      
+      change_x()
+      print(f"Outside function: {x}")     # Prints 10
+
+  - question: "What is the difference between print() and return in functions?"
+    answer: "print() displays output to the screen but doesn't send data back to the caller. return sends data back to the caller but doesn't display anything"
+    code_example: |
+      # Function that prints
+      def print_sum(a, b):
+          result = a + b
+          print(result)          # Displays the result
+          # No return statement, so returns None
+      
+      # Function that returns
+      def calculate_sum(a, b):
+          result = a + b
+          return result          # Sends result back to caller
+      
+      # Function that does both
+      def print_and_return_sum(a, b):
+          result = a + b
+          print(f"The sum is: {result}")  # Displays message
+          return result                   # Also returns the value
+      
+      # Using the functions
+      print_sum(3, 4)                    # Prints "7", returns None
+      x = print_sum(3, 4)                # Prints "7", x becomes None
+      
+      y = calculate_sum(3, 4)            # Nothing printed, y becomes 7
+      print(y)                           # Now prints "7"
+      
+      z = print_and_return_sum(3, 4)     # Prints "The sum is: 7", z becomes 7
+
+  - question: "What is a for loop and when do you use it?"
+    answer: "A for loop repeats code for each item in a sequence (like a list or string) or for a specific number of times. Use it when you know how many times to repeat or want to process each item in a collection"
+    code_example: |
+      # Loop through a list
+      fruits = ["apple", "banana", "orange"]
+      for fruit in fruits:
+          print(f"I like {fruit}")
+      
+      # Loop through a string
+      for letter in "hello":
+          print(letter)           # Prints h, e, l, l, o
+      
+      # Loop a specific number of times
+      for i in range(5):
+          print(f"Count: {i}")    # Prints 0, 1, 2, 3, 4
+      
+      # Loop with start and end
+      for i in range(2, 6):
+          print(i)                # Prints 2, 3, 4, 5
+      
+      # Loop with step
+      for i in range(0, 10, 2):
+          print(i)                # Prints 0, 2, 4, 6, 8
+
+  - question: "What is a while loop and when do you use it?"
+    answer: "A while loop repeats code as long as a condition is True. Use it when you don't know exactly how many times to repeat, but you know when to stop"
+    code_example: |
+      # Basic while loop
+      count = 0
+      while count < 5:
+          print(f"Count is: {count}")
+          count += 1              # Don't forget to update the condition!
+      
+      # User input loop
+      user_input = ""
+      while user_input != "quit":
+          user_input = input("Enter 'quit' to exit: ")
+          print(f"You entered: {user_input}")
+      
+      # Loop until condition met
+      number = 1
+      while number < 100:
+          number = number * 2
+          print(number)           # Prints 2, 4, 8, 16, 32, 64, 128
+      
+      # Infinite loop (be careful!)
+      # while True:
+      #     print("This runs forever!")
+
+  - question: "What is the difference between for and while loops?"
+    answer: "For loops are best for iterating over collections or counting, while loops are best for repeating until a condition changes. For loops have built-in iteration, while loops need manual condition updates"
+    code_example: |
+      # FOR LOOP - Best for known repetitions or collections
+      
+      # Counting (you know how many times)
+      for i in range(10):
+          print(i)
+      
+      # Processing items in a collection
+      names = ["Alice", "Bob", "Charlie"]
+      for name in names:
+          print(name)
+      
+      # WHILE LOOP - Best for unknown repetitions
+      
+      # Loop until user does something
+      password = ""
+      while password != "secret":
+          password = input("Enter password: ")
+      
+      # Loop until condition changes
+      balance = 100
+      while balance > 0:
+          purchase = 15
+          balance -= purchase
+          print(f"Balance: ${balance}")
+      
+      # Both can often do the same thing, but for is usually cleaner:
+      # Less preferred:
+      i = 0
+      while i < 5:
+          print(i)
+          i += 1
+      
+      # More preferred:
+      for i in range(5):
+          print(i)
+
+  - question: "What is the range() function and how does it work with loops?"
+    answer: "range() creates a sequence of numbers, commonly used with for loops. It can take 1, 2, or 3 arguments: range(stop), range(start, stop), or range(start, stop, step)"
+    code_example: |
+      # range(stop) - starts at 0, goes up to (but not including) stop
+      for i in range(5):
+          print(i)                # Prints: 0, 1, 2, 3, 4
+      
+      # range(start, stop) - starts at start, goes up to (but not including) stop
+      for i in range(2, 7):
+          print(i)                # Prints: 2, 3, 4, 5, 6
+      
+      # range(start, stop, step) - starts at start, increments by step
+      for i in range(0, 10, 2):
+          print(i)                # Prints: 0, 2, 4, 6, 8
+      
+      # Counting backwards
+      for i in range(10, 0, -1):
+          print(i)                # Prints: 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+      
+      # Converting range to list (to see all values)
+      numbers = list(range(5))    # [0, 1, 2, 3, 4]
+      print(numbers)
+      
+      # Using range with len() to access indices
+      fruits = ["apple", "banana", "orange"]
+      for i in range(len(fruits)):
+          print(f"Index {i}: {fruits[i]}")
+
+  - question: "What are break and continue statements in loops?"
+    answer: "break immediately exits the loop completely, while continue skips the rest of the current iteration and jumps to the next iteration"
+    code_example: |
+      # BREAK - exits the loop completely
+      for i in range(10):
+          if i == 5:
+              break               # Stops the loop when i equals 5
+          print(i)                # Prints: 0, 1, 2, 3, 4
+      
+      # CONTINUE - skips to next iteration
+      for i in range(10):
+          if i % 2 == 0:          # If i is even
+              continue            # Skip the rest and go to next iteration
+          print(i)                # Prints only odd numbers: 1, 3, 5, 7, 9
+      
+      # break in while loop
+      count = 0
+      while True:                 # Infinite loop
+          count += 1
+          if count > 5:
+              break               # Exit when count exceeds 5
+          print(count)
+      
+      # continue in while loop
+      count = 0
+      while count < 10:
+          count += 1
+          if count % 2 == 0:
+              continue            # Skip even numbers
+          print(count)            # Prints: 1, 3, 5, 7, 9
+      
+      # Practical example: input validation
+      while True:
+          age = input("Enter your age: ")
+          if age.isdigit():
+              age = int(age)
+              if age >= 0:
+                  break           # Valid age, exit loop
+          print("Please enter a valid age")
+
+  - question: "How do you loop through different data types in Python?"
+    answer: "You can loop through strings (character by character), lists (item by item), dictionaries (keys, values, or both), and other iterable objects"
+    code_example: |
+      # Loop through STRING (character by character)
+      word = "hello"
+      for letter in word:
+          print(letter)           # Prints: h, e, l, l, o
+      
+      # Loop through LIST (item by item)
+      colors = ["red", "green", "blue"]
+      for color in colors:
+          print(color)
+      
+      # Loop through list with index
+      for i, color in enumerate(colors):
+          print(f"Index {i}: {color}")
+      
+      # Loop through DICTIONARY (keys only)
+      person = {"name": "Alice", "age": 30, "city": "New York"}
+      for key in person:
+          print(key)              # Prints: name, age, city
+      
+      # Loop through dictionary values
+      for value in person.values():
+          print(value)            # Prints: Alice, 30, New York
+      
+      # Loop through dictionary key-value pairs
+      for key, value in person.items():
+          print(f"{key}: {value}")
+      
+      # Loop through TUPLE
+      coordinates = (10, 20, 30)
+      for coord in coordinates:
+          print(coord)
+      
+      # Loop through RANGE
+      for number in range(1, 6):
+          print(number)           # Prints: 1, 2, 3, 4, 5
+
+  - question: "What are nested loops and how do they work?"
+    answer: "Nested loops are loops inside other loops. The inner loop completes all its iterations for each iteration of the outer loop"
+    code_example: |
+      # Basic nested loops
+      for i in range(3):
+          for j in range(2):
+              print(f"Outer: {i}, Inner: {j}")
+      
+      # Output:
+      # Outer: 0, Inner: 0
+      # Outer: 0, Inner: 1
+      # Outer: 1, Inner: 0
+      # Outer: 1, Inner: 1
+      # Outer: 2, Inner: 0
+      # Outer: 2, Inner: 1
+      
+      # Practical example: multiplication table
+      for i in range(1, 4):       # Outer loop: 1, 2, 3
+          for j in range(1, 4):   # Inner loop: 1, 2, 3
+              result = i * j
+              print(f"{i} × {j} = {result}")
+      
+      # Nested loops with different data types
+      subjects = ["Math", "Science"]
+      grades = ["A", "B", "C"]
+      
+      for subject in subjects:
+          for grade in grades:
+              print(f"{subject}: {grade}")
+      
+      # Creating a 2D pattern
+      for row in range(3):
+          for col in range(4):
+              print("*", end=" ")
+          print()                 # New line after each row
+      
+      # Output:
+      # * * * * 
+      # * * * * 
+      # * * * *
+
+  - question: "What is an if statement and how does it work?"
+    answer: "An if statement executes code only if a condition is True. It's the basic building block for making decisions in your program based on different conditions"
+    code_example: |
+      # Basic if statement
+      age = 18
+      if age >= 18:
+          print("You are an adult")
+      
+      # If statement with variables
+      temperature = 75
+      if temperature > 70:
+          print("It's warm outside")
+      
+      # If statement with user input
+      name = input("Enter your name: ")
+      if name == "Alice":
+          print("Hello, Alice!")
+      
+      # Multiple conditions in one if
+      score = 85
+      if score >= 80 and score <= 100:
+          print("Great job!")
+      
+      # If statement with function calls
+      password = "secret123"
+      if len(password) >= 8:
+          print("Password is long enough")
+      
+      # Boolean variable in if statement
+      is_logged_in = True
+      if is_logged_in:
+          print("Welcome back!")
+
+  - question: "What is if/else and how does it work?"
+    answer: "if/else allows you to execute one block of code if a condition is True, and a different block if it's False. This handles both possible outcomes of a condition"
+    code_example: |
+      # Basic if/else
+      age = 16
+      if age >= 18:
+          print("You can vote")
+      else:
+          print("You cannot vote yet")
+      
+      # if/else with numbers
+      number = 7
+      if number % 2 == 0:
+          print("Number is even")
+      else:
+          print("Number is odd")
+      
+      # if/else with strings
+      weather = "sunny"
+      if weather == "rainy":
+          print("Take an umbrella")
+      else:
+          print("No umbrella needed")
+      
+      # if/else with return values
+      def check_password(password):
+          if len(password) >= 8:
+              return "Strong password"
+          else:
+              return "Password too short"
+      
+      result = check_password("abc123")
+      print(result)  # "Password too short"
+      
+      # if/else with variables
+      balance = 50
+      purchase = 75
+      if balance >= purchase:
+          balance -= purchase
+          print(f"Purchase successful. New balance: ${balance}")
+      else:
+          print("Insufficient funds")
+
+  - question: "What is if/elif/else and when do you use it?"
+    answer: "elif (else if) allows you to check multiple conditions in sequence. Use it when you have more than two possible outcomes to handle"
+    code_example: |
+      # Basic if/elif/else
+      score = 85
+      if score >= 90:
+          print("Grade: A")
+      elif score >= 80:
+          print("Grade: B")
+      elif score >= 70:
+          print("Grade: C")
+      elif score >= 60:
+          print("Grade: D")
+      else:
+          print("Grade: F")
+      
+      # Multiple elif statements
+      day = "monday"
+      if day == "saturday" or day == "sunday":
+          print("It's weekend!")
+      elif day == "monday":
+          print("Start of work week")
+      elif day == "friday":
+          print("TGIF!")
+      else:
+          print("Regular work day")
+      
+      # elif with ranges
+      temperature = 45
+      if temperature < 32:
+          print("Freezing")
+      elif temperature < 50:
+          print("Cold")
+      elif temperature < 70:
+          print("Cool")
+      elif temperature < 85:
+          print("Warm")
+      else:
+          print("Hot")
+      
+      # elif with user input
+      choice = input("Enter 1, 2, or 3: ")
+      if choice == "1":
+          print("You chose option 1")
+      elif choice == "2":
+          print("You chose option 2")
+      elif choice == "3":
+          print("You chose option 3")
+      else:
+          print("Invalid choice")
+
+  - question: "What are nested if statements?"
+    answer: "Nested if statements are if statements inside other if statements. They allow you to check additional conditions only after the first condition is met"
+    code_example: |
+      # Basic nested if
+      age = 20
+      has_license = True
+      
+      if age >= 18:
+          if has_license:
+              print("You can drive")
+          else:
+              print("You need a license first")
+      else:
+          print("You're too young to drive")
+      
+      # Multiple levels of nesting
+      weather = "sunny"
+      temperature = 75
+      
+      if weather == "sunny":
+          if temperature > 80:
+              print("Perfect beach day!")
+          elif temperature > 65:
+              print("Nice day for a walk")
+          else:
+              print("Sunny but cold")
+      else:
+          if temperature > 70:
+              print("Warm but not sunny")
+          else:
+              print("Cold and not sunny")
+      
+      # Nested with different data types
+      user_type = "admin"
+      logged_in = True
+      
+      if logged_in:
+          if user_type == "admin":
+              print("Access granted to admin panel")
+          elif user_type == "user":
+              print("Access granted to user panel")
+          else:
+              print("Unknown user type")
+      else:
+          print("Please log in first")
+      
+      # Alternative to nesting: using 'and'
+      # Instead of nested if:
+      if age >= 18:
+          if has_license:
+              print("Can drive")
+      
+      # You can often use 'and':
+      if age >= 18 and has_license:
+          print("Can drive")
+
+  - question: "How do you use multiple conditions with and, or, and not?"
+    answer: "'and' requires all conditions to be True, 'or' requires at least one condition to be True, and 'not' reverses the boolean value of a condition"
+    code_example: |
+      # AND operator - all conditions must be True
+      age = 25
+      has_license = True
+      has_car = True
+      
+      if age >= 18 and has_license and has_car:
+          print("Can drive own car")
+      
+      # OR operator - at least one condition must be True
+      day = "saturday"
+      if day == "saturday" or day == "sunday":
+          print("It's weekend!")
+      
+      # NOT operator - reverses the boolean value
+      is_raining = False
+      if not is_raining:
+          print("Good weather for outdoor activities")
+      
+      # Combining operators
+      temperature = 75
+      is_sunny = True
+      is_weekend = True
+      
+      if (temperature > 70 and is_sunny) or is_weekend:
+          print("Great day!")
+      
+      # More complex combinations
+      score = 85
+      extra_credit = 5
+      is_honor_student = True
+      
+      if (score >= 90 or (score >= 80 and extra_credit > 0)) and is_honor_student:
+          print("Qualifies for advanced program")
+      
+      # Using parentheses for clarity
+      user_age = 16
+      has_permit = True
+      has_adult_supervisor = True
+      
+      if user_age >= 18 or (has_permit and has_adult_supervisor):
+          print("Can drive legally")
+      
+      # NOT with other operators
+      password = "abc123"
+      if len(password) >= 8 and not password.isdigit():
+          print("Good password")
+      else:
+          print("Password needs improvement")
+
+  - question: "What are some common mistakes with if statements?"
+    answer: "Common mistakes include using = instead of ==, forgetting colons, incorrect indentation, and not handling all possible cases in if/elif chains"
+    code_example: |
+      # MISTAKE 1: Using = instead of ==
+      x = 5
+      # if x = 5:           # ERROR! This is assignment, not comparison
+      if x == 5:            # CORRECT! This compares x with 5
+          print("x equals 5")
+      
+      # MISTAKE 2: Forgetting the colon
+      # if x == 5           # ERROR! Missing colon
+      if x == 5:            # CORRECT! Has colon
+          print("x equals 5")
+      
+      # MISTAKE 3: Incorrect indentation
+      # if x == 5:
+      # print("x equals 5")  # ERROR! Not indented
+      if x == 5:
+          print("x equals 5")  # CORRECT! Properly indented
+      
+      # MISTAKE 4: Not handling all cases
+      grade = 85
+      if grade >= 90:
+          print("A")
+      elif grade >= 80:
+          print("B")
+      # What if grade is 75? Nothing happens!
+      
+      # BETTER: Always include else for unexpected cases
+      if grade >= 90:
+          print("A")
+      elif grade >= 80:
+          print("B")
+      elif grade >= 70:
+          print("C")
+      else:
+          print("Below C")
+      
+      # MISTAKE 5: Confusing and/or logic
+      age = 25
+      income = 30000
+      
+      # Wrong logic: This means age >= 18 AND income >= 25000
+      # if age >= 18 and income >= 25000:
+      
+      # If you want either condition to qualify:
+      if age >= 18 or income >= 25000:
+          print("Qualifies")
+      
+      # MISTAKE 6: Not using parentheses for complex conditions
+      # Hard to read:
+      if age >= 18 and income >= 25000 or age >= 21 and income >= 20000:
+          print("Qualifies")
+      
+      # Better with parentheses:
+      if (age >= 18 and income >= 25000) or (age >= 21 and income >= 20000):
+          print("Qualifies")
+
+  - question: "What is a list in Python and how do you create one?"
+    answer: "A list is an ordered collection of items that can hold different data types. Create lists using square brackets [] with items separated by commas"
+    code_example: |
+      # Empty list
+      empty_list = []
+      
+      # List with numbers
+      numbers = [1, 2, 3, 4, 5]
+      
+      # List with strings
+      fruits = ["apple", "banana", "orange"]
+      
+      # List with mixed data types
+      mixed = [1, "hello", 3.14, True]
+      
+      # List with duplicate values (allowed)
+      scores = [85, 92, 78, 85, 90]
+      
+      # Creating list from range
+      range_list = list(range(5))        # [0, 1, 2, 3, 4]
+      
+      # Creating list with repeated values
+      zeros = [0] * 5                    # [0, 0, 0, 0, 0]
+      
+      # List inside another list (nested)
+      nested = [[1, 2], [3, 4], [5, 6]]
+      
+      # Converting string to list
+      letters = list("hello")            # ['h', 'e', 'l', 'l', 'o']
+      
+      # List from user input
+      user_input = input("Enter names: ").split()  # Splits by spaces
+      print(user_input)
+
+  - question: "How do you access items in a list using indexing?"
+    answer: "Use square brackets with the index number. Python uses 0-based indexing, so the first item is at index 0. Negative indices count from the end"
+    code_example: |
+      fruits = ["apple", "banana", "orange", "grape", "kiwi"]
+      
+      # Positive indexing (from the beginning)
+      first_fruit = fruits[0]            # "apple"
+      second_fruit = fruits[1]           # "banana"
+      third_fruit = fruits[2]            # "orange"
+      
+      # Negative indexing (from the end)
+      last_fruit = fruits[-1]            # "kiwi"
+      second_last = fruits[-2]           # "grape"
+      
+      # Index positions explained:
+      # Index:    0        1         2        3       4
+      # Values: "apple", "banana", "orange", "grape", "kiwi"
+      # Negative: -5       -4        -3       -2      -1
+      
+      # Using variables as indices
+      index = 2
+      selected_fruit = fruits[index]     # "orange"
+      
+      # Common error: index out of range
+      # print(fruits[10])                # ERROR! Index 10 doesn't exist
+      
+      # Safe way to check if index exists
+      if 0 <= index < len(fruits):
+          print(fruits[index])
+      else:
+          print("Index out of range")
+
+  - question: "How do you add items to a list?"
+    answer: "Use append() to add one item to the end, insert() to add at a specific position, extend() to add multiple items, or + operator to combine lists"
+    code_example: |
+      fruits = ["apple", "banana"]
+      
+      # append() - adds one item to the end
+      fruits.append("orange")
+      print(fruits)                      # ["apple", "banana", "orange"]
+      
+      # insert() - adds item at specific position
+      fruits.insert(1, "grape")
+      print(fruits)                      # ["apple", "grape", "banana", "orange"]
+      
+      # extend() - adds multiple items to the end
+      fruits.extend(["kiwi", "mango"])
+      print(fruits)                      # ["apple", "grape", "banana", "orange", "kiwi", "mango"]
+      
+      # + operator - combines lists (creates new list)
+      more_fruits = ["pear", "peach"]
+      all_fruits = fruits + more_fruits
+      print(all_fruits)
+      
+      # += operator - adds to existing list
+      fruits += ["strawberry"]
+      print(fruits)
+      
+      # Adding different data types
+      mixed_list = [1, 2, 3]
+      mixed_list.append("hello")
+      mixed_list.append(True)
+      print(mixed_list)                  # [1, 2, 3, "hello", True]
+      
+      # append() vs extend() difference
+      list1 = [1, 2, 3]
+      list1.append([4, 5])               # Adds entire list as one item
+      print(list1)                       # [1, 2, 3, [4, 5]]
+      
+      list2 = [1, 2, 3]
+      list2.extend([4, 5])               # Adds each item separately
+      print(list2)                       # [1, 2, 3, 4, 5]
+
+  - question: "How do you remove items from a list?"
+    answer: "Use remove() to remove by value, pop() to remove by index, del to delete by index, or clear() to remove all items"
+    code_example: |
+      fruits = ["apple", "banana", "orange", "banana", "grape"]
+      
+      # remove() - removes first occurrence of value
+      fruits.remove("banana")
+      print(fruits)                      # ["apple", "orange", "banana", "grape"]
+      
+      # pop() - removes and returns item at index (default: last item)
+      last_fruit = fruits.pop()
+      print(last_fruit)                  # "grape"
+      print(fruits)                      # ["apple", "orange", "banana"]
+      
+      # pop() with specific index
+      first_fruit = fruits.pop(0)
+      print(first_fruit)                 # "apple"
+      print(fruits)                      # ["orange", "banana"]
+      
+      # del statement - removes item at index
+      del fruits[0]
+      print(fruits)                      # ["banana"]
+      
+      # clear() - removes all items
+      fruits.clear()
+      print(fruits)                      # []
+      
+      # Removing multiple items using slicing
+      numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      del numbers[2:5]                   # Removes items at indices 2, 3, 4
+      print(numbers)                     # [1, 2, 6, 7, 8, 9, 10]
+      
+      # Safe removal with error handling
+      my_list = [1, 2, 3]
+      try:
+          my_list.remove(4)              # Will raise ValueError
+      except ValueError:
+          print("Item not found in list")
+      
+      # Remove all occurrences of a value
+      items = [1, 2, 3, 2, 4, 2, 5]
+      while 2 in items:
+          items.remove(2)
+      print(items)                       # [1, 3, 4, 5]
+
+  - question: "What are common list methods and operations?"
+    answer: "Common methods include len() for length, count() for occurrences, index() for position, sort() for ordering, and reverse() for reversing"
+    code_example: |
+      fruits = ["apple", "banana", "orange", "banana", "grape"]
+      numbers = [3, 1, 4, 1, 5, 9, 2, 6]
+      
+      # len() - get number of items
+      print(len(fruits))                 # 5
+      
+      # count() - count occurrences of value
+      banana_count = fruits.count("banana")
+      print(banana_count)                # 2
+      
+      # index() - find first occurrence of value
+      orange_index = fruits.index("orange")
+      print(orange_index)                # 2
+      
+      # in operator - check if item exists
+      if "apple" in fruits:
+          print("Apple is in the list")
+      
+      # sort() - sort list in place
+      numbers.sort()
+      print(numbers)                     # [1, 1, 2, 3, 4, 5, 6, 9]
+      
+      # sort() with reverse
+      numbers.sort(reverse=True)
+      print(numbers)                     # [9, 6, 5, 4, 3, 2, 1, 1]
+      
+      # sorted() - create new sorted list
+      original = [3, 1, 4, 1, 5]
+      sorted_list = sorted(original)
+      print(original)                    # [3, 1, 4, 1, 5] (unchanged)
+      print(sorted_list)                 # [1, 1, 3, 4, 5]
+      
+      # reverse() - reverse list in place
+      fruits.reverse()
+      print(fruits)                      # ["grape", "banana", "orange", "banana", "apple"]
+      
+      # min() and max()
+      print(min(numbers))                # 1
+      print(max(numbers))                # 9
+      
+      # sum() - for numeric lists
+      print(sum(numbers))                # 32
+      
+      # Converting to string
+      str_numbers = [str(x) for x in numbers]
+      joined = ", ".join(str_numbers)
+      print(joined)                      # "9, 6, 5, 4, 3, 2, 1, 1"
+
+  - question: "How do you modify existing items in a list?"
+    answer: "Use indexing to assign new values to specific positions, or use slicing to replace multiple items at once"
+    code_example: |
+      fruits = ["apple", "banana", "orange", "grape"]
+      
+      # Modify single item by index
+      fruits[1] = "blueberry"
+      print(fruits)                      # ["apple", "blueberry", "orange", "grape"]
+      
+      # Modify multiple items using slicing
+      fruits[1:3] = ["kiwi", "mango"]
+      print(fruits)                      # ["apple", "kiwi", "mango", "grape"]
+      
+      # Replace multiple items with different number of items
+      fruits[1:3] = ["strawberry"]       # Replaces 2 items with 1
+      print(fruits)                      # ["apple", "strawberry", "grape"]
+      
+      # Modify using negative indexing
+      fruits[-1] = "pear"
+      print(fruits)                      # ["apple", "strawberry", "pear"]
+      
+      # Modify all items using a loop
+      numbers = [1, 2, 3, 4, 5]
+      for i in range(len(numbers)):
+          numbers[i] = numbers[i] * 2
+      print(numbers)                     # [2, 4, 6, 8, 10]
+      
+      # Modify using enumerate
+      words = ["hello", "world", "python"]
+      for i, word in enumerate(words):
+          words[i] = word.upper()
+      print(words)                       # ["HELLO", "WORLD", "PYTHON"]
+      
+      # List comprehension for modification (creates new list)
+      original = [1, 2, 3, 4, 5]
+      doubled = [x * 2 for x in original]
+      print(doubled)                     # [2, 4, 6, 8, 10]
+      
+      # Conditional modification
+      grades = [85, 92, 78, 96, 88]
+      for i in range(len(grades)):
+          if grades[i] < 80:
+              grades[i] = 80             # Curve up low grades
+      print(grades)                      # [85, 92, 80, 96, 88]
+
+  - question: "What is a dictionary in Python and how do you create one?"
+    answer: "A dictionary is a collection of key-value pairs where each key is unique and maps to a value. Create dictionaries using curly braces {} with key:value pairs separated by commas"
+    code_example: |
+      # Empty dictionary
+      empty_dict = {}
+      
+      # Dictionary with string keys
+      person = {"name": "Alice", "age": 30, "city": "New York"}
+      
+      # Dictionary with mixed key types
+      mixed_keys = {1: "one", "two": 2, 3.0: "three"}
+      
+      # Dictionary with different value types
+      student = {
+          "name": "Bob",
+          "age": 22,
+          "grades": [85, 90, 78],
+          "is_enrolled": True
+      }
+      
+      # Creating dictionary from lists
+      keys = ["apple", "banana", "orange"]
+      values = [1.50, 0.75, 2.00]
+      prices = dict(zip(keys, values))   # {"apple": 1.50, "banana": 0.75, "orange": 2.00}
+      
+      # Dictionary constructor
+      colors = dict(red="#FF0000", green="#00FF00", blue="#0000FF")
+      
+      # Nested dictionaries
+      employees = {
+          "employee1": {"name": "Alice", "department": "IT"},
+          "employee2": {"name": "Bob", "department": "Sales"}
+      }
+      
+      # Dictionary from pairs
+      pairs = [("a", 1), ("b", 2), ("c", 3)]
+      letter_dict = dict(pairs)          # {"a": 1, "b": 2, "c": 3}
+
+  - question: "How do you access and modify values in a dictionary?"
+    answer: "Use square brackets [key] or get() method to access values. Use square brackets to modify existing values or add new key-value pairs"
+    code_example: |
+      person = {"name": "Alice", "age": 30, "city": "New York"}
+      
+      # Accessing values with square brackets
+      name = person["name"]              # "Alice"
+      age = person["age"]                # 30
+      
+      # Accessing with get() method (safer)
+      name = person.get("name")          # "Alice"
+      country = person.get("country")    # None (key doesn't exist)
+      
+      # get() with default value
+      country = person.get("country", "USA")  # "USA" (default)
+      
+      # Modifying existing values
+      person["age"] = 31
+      person["city"] = "Boston"
+      print(person)                      # {"name": "Alice", "age": 31, "city": "Boston"}
+      
+      # Adding new key-value pairs
+      person["email"] = "alice@example.com"
+      person["phone"] = "555-1234"
+      print(person)
+      
+      # Accessing nested dictionaries
+      employee = {
+          "name": "Bob",
+          "contact": {
+              "email": "bob@company.com",
+              "phone": "555-5678"
+          }
+      }
+      
+      email = employee["contact"]["email"]  # "bob@company.com"
+      
+      # Safe access to nested values
+      email = employee.get("contact", {}).get("email", "No email")
+      
+      # Error handling for missing keys
+      try:
+          salary = person["salary"]
+      except KeyError:
+          print("Salary not found")
+
+  - question: "What are common dictionary methods and operations?"
+    answer: "Common methods include keys(), values(), items(), pop(), update(), clear(), and operators like 'in' to check for key existence"
+    code_example: |
+      person = {"name": "Alice", "age": 30, "city": "New York", "email": "alice@example.com"}
+      
+      # Get all keys
+      keys = person.keys()
+      print(list(keys))                  # ["name", "age", "city", "email"]
+      
+      # Get all values
+      values = person.values()
+      print(list(values))                # ["Alice", 30, "New York", "alice@example.com"]
+      
+      # Get all key-value pairs
+      items = person.items()
+      print(list(items))                 # [("name", "Alice"), ("age", 30), ...]
+      
+      # Check if key exists
+      if "name" in person:
+          print("Name is in the dictionary")
+      
+      # Check if value exists
+      if "Alice" in person.values():
+          print("Alice is a value in the dictionary")
+      
+      # Get length (number of key-value pairs)
+      print(len(person))                 # 4
+      
+      # pop() - remove and return value
+      email = person.pop("email")
+      print(email)                       # "alice@example.com"
+      print(person)                      # email key is removed
+      
+      # pop() with default
+      phone = person.pop("phone", "No phone")  # "No phone"
+      
+      # update() - merge with another dictionary
+      additional_info = {"phone": "555-1234", "age": 31}
+      person.update(additional_info)
+      print(person)
+      
+      # clear() - remove all items
+      temp_dict = {"a": 1, "b": 2}
+      temp_dict.clear()
+      print(temp_dict)                   # {}
+      
+      # copy() - create a shallow copy
+      person_copy = person.copy()
+
+  - question: "How do you loop through dictionaries?"
+    answer: "You can loop through keys (default), values using .values(), or key-value pairs using .items(). Use different loop patterns based on what you need to access"
+    code_example: |
+      grades = {"Alice": 85, "Bob": 92, "Charlie": 78, "Diana": 96}
+      
+      # Loop through keys (default behavior)
+      for name in grades:
+          print(f"{name}: {grades[name]}")
+      
+      # Loop through keys explicitly
+      for name in grades.keys():
+          print(f"Student: {name}")
+      
+      # Loop through values
+      for grade in grades.values():
+          print(f"Grade: {grade}")
+      
+      # Loop through key-value pairs (most common)
+      for name, grade in grades.items():
+          print(f"{name} scored {grade}")
+      
+      # Loop with conditions
+      for name, grade in grades.items():
+          if grade >= 90:
+              print(f"{name} got an A!")
+      
+      # Calculate average using loop
+      total = 0
+      for grade in grades.values():
+          total += grade
+      average = total / len(grades)
+      print(f"Average grade: {average}")
+      
+      # Find highest grade
+      highest_grade = 0
+      best_student = ""
+      for name, grade in grades.items():
+          if grade > highest_grade:
+              highest_grade = grade
+              best_student = name
+      print(f"Best student: {best_student} with {highest_grade}")
+      
+      # Loop through nested dictionary
+      employees = {
+          "emp1": {"name": "Alice", "department": "IT"},
+          "emp2": {"name": "Bob", "department": "Sales"}
+      }
+      
+      for emp_id, info in employees.items():
+          print(f"{emp_id}: {info['name']} works in {info['department']}")
+
+  - question: "How do you add, remove, and modify dictionary items?"
+    answer: "Add items by assigning to new keys, remove with del, pop(), or popitem(), and modify by reassigning values to existing keys"
+    code_example: |
+      inventory = {"apples": 50, "bananas": 30, "oranges": 25}
+      
+      # Adding new items
+      inventory["grapes"] = 40
+      inventory["kiwis"] = 15
+      print(inventory)
+      
+      # Modifying existing items
+      inventory["apples"] = 60          # Update apple count
+      inventory["bananas"] += 20        # Add to banana count
+      print(inventory)
+      
+      # Removing items with del
+      del inventory["kiwis"]
+      print(inventory)
+      
+      # Removing items with pop() (returns value)
+      orange_count = inventory.pop("oranges")
+      print(f"Removed {orange_count} oranges")
+      print(inventory)
+      
+      # pop() with default value
+      mango_count = inventory.pop("mangoes", 0)  # 0 if key doesn't exist
+      print(f"Mango count: {mango_count}")
+      
+      # popitem() - removes and returns last item (Python 3.7+)
+      last_item = inventory.popitem()
+      print(f"Removed item: {last_item}")
+      
+      # Conditional adding/updating
+      product = "strawberries"
+      if product in inventory:
+          inventory[product] += 10
+      else:
+          inventory[product] = 10
+      
+      # Using setdefault() for conditional adding
+      inventory.setdefault("blueberries", 0)  # Adds key with value 0 if not exists
+      inventory.setdefault("apples", 0)       # Doesn't change existing value
+      
+      # Bulk updates with update()
+      new_stock = {"pears": 35, "apples": 70, "cherries": 20}
+      inventory.update(new_stock)
+      print(inventory)
+      
+      # Remove all items
+      inventory.clear()
+      print(inventory)                   # {}
+
+  - question: "What are dictionary comprehensions and how do you use them?"
+    answer: "Dictionary comprehensions create dictionaries using concise syntax: {key_expr: value_expr for item in iterable}. They're useful for transforming data or filtering"
+    code_example: |
+      # Basic dictionary comprehension
+      numbers = [1, 2, 3, 4, 5]
+      squares = {x: x**2 for x in numbers}
+      print(squares)                     # {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
+      
+      # From two lists
+      names = ["Alice", "Bob", "Charlie"]
+      ages = [30, 25, 35]
+      people = {name: age for name, age in zip(names, ages)}
+      print(people)                      # {"Alice": 30, "Bob": 25, "Charlie": 35}
+      
+      # With condition (filtering)
+      grades = {"Alice": 85, "Bob": 92, "Charlie": 78, "Diana": 96}
+      high_grades = {name: grade for name, grade in grades.items() if grade >= 90}
+      print(high_grades)                 # {"Bob": 92, "Diana": 96}
+      
+      # Transform values
+      celsius = {"Monday": 20, "Tuesday": 25, "Wednesday": 18}
+      fahrenheit = {day: (temp * 9/5) + 32 for day, temp in celsius.items()}
+      print(fahrenheit)                  # {"Monday": 68.0, "Tuesday": 77.0, "Wednesday": 64.4}
+      
+      # Transform keys
+      original = {1: "one", 2: "two", 3: "three"}
+      string_keys = {str(key): value for key, value in original.items()}
+      print(string_keys)                 # {"1": "one", "2": "two", "3": "three"}
+      
+      # With string methods
+      words = ["hello", "world", "python"]
+      word_lengths = {word: len(word) for word in words}
+      print(word_lengths)                # {"hello": 5, "world": 5, "python": 6}
+      
+      # Nested dictionary comprehension
+      students = ["Alice", "Bob", "Charlie"]
+      subjects = ["Math", "Science", "English"]
+      gradebook = {student: {subject: 0 for subject in subjects} for student in students}
+      print(gradebook)
+      
+      # From existing dictionary
+      inventory = {"apples": 50, "bananas": 30, "oranges": 25}
+      low_stock = {item: count for item, count in inventory.items() if count < 40}
+      print(low_stock)                   # {"bananas": 30, "oranges": 25}
+
+  - question: "When should you use lists vs dictionaries?"
+    answer: "Use lists for ordered collections accessed by position/index. Use dictionaries for key-value relationships where you need fast lookups by unique identifiers"
+    code_example: |
+      # Use LIST when:
+      # - Order matters
+      # - You access items by position
+      # - You need to maintain sequence
+      # - You want to allow duplicates
+      
+      # Examples where lists are better:
+      shopping_list = ["milk", "bread", "eggs", "milk"]  # Order matters, duplicates OK
+      grades = [85, 90, 78, 92]                          # Position indicates test number
+      steps = ["Wash hands", "Prep ingredients", "Cook"] # Sequential steps
+      
+      # Use DICTIONARY when:
+      # - You need fast lookups by key
+      # - You want to associate values with identifiers
+      # - Order doesn't matter (or only insertion order)
+      # - Keys should be unique
+      
+      # Examples where dictionaries are better:
+      phone_book = {"Alice": "555-1234", "Bob": "555-5678"}  # Look up by name
+      student_grades = {"Alice": 85, "Bob": 90, "Charlie": 78}  # Associate grades with names
+      config = {"debug": True, "port": 8080, "host": "localhost"}  # Configuration settings
+      
+      # COMPARISON EXAMPLE:
+      # Bad: Using list for student data
+      students = [
+          ["Alice", 85, "alice@email.com"],
+          ["Bob", 90, "bob@email.com"]
+      ]
+      # To find Alice's grade: need to search through all students
+      for student in students:
+          if student[0] == "Alice":
+              print(f"Alice's grade: {student[1]}")
+      
+      # Better: Using dictionary
+      students = {
+          "Alice": {"grade": 85, "email": "alice@email.com"},
+          "Bob": {"grade": 90, "email": "bob@email.com"}
+      }
+      # Direct lookup - much faster!
+      print(f"Alice's grade: {students['Alice']['grade']}")
+      
+      # HYBRID APPROACH:
+      # Sometimes you need both - list of dictionaries
+      students = [
+          {"name": "Alice", "grade": 85, "email": "alice@email.com"},
+          {"name": "Bob", "grade": 90, "email": "bob@email.com"}
+      ]
+      # Maintains order AND allows structured data
+
+  - question: "What does 'indentation' mean in programming?"
+    answer: "Indentation refers to the spaces or tabs at the beginning of code lines. In Python, indentation is crucial as it defines code blocks and structure"
+    code_example: |
+      # Python uses indentation to define code blocks
+      
+      # Correct indentation
+      if True:
+          print("This is indented")        # 4 spaces
+          print("This is also indented")   # 4 spaces
+      
+      # Nested indentation
+      for i in range(3):
+          print(f"Outer loop: {i}")        # 4 spaces
+          for j in range(2):
+              print(f"  Inner loop: {j}")  # 8 spaces
+      
+      # Function indentation
+      def my_function():
+          x = 5                           # 4 spaces
+          if x > 0:
+              print("Positive")           # 8 spaces
+          else:
+              print("Not positive")       # 8 spaces
+      
+      # IndentationError example
+      # if True:
+      # print("This will cause an error")  # ERROR: not indented
+      
+      # Consistent indentation is important
+      if True:
+          print("First line")             # 4 spaces
+          print("Second line")            # 4 spaces (consistent)
+
+  - question: "What is 'syntax' in programming?"
+    answer: "Syntax refers to the set of rules that define how to write valid code in a programming language. It's like grammar rules for code"
+    code_example: |
+      # Python syntax examples:
+      
+      # Variable assignment syntax
+      name = "Alice"                      # Correct syntax
+      # name = Alice                      # ERROR: missing quotes
+      
+      # Function definition syntax
+      def greet(name):                    # Correct: def, name, parentheses, colon
+          return f"Hello, {name}"
+      
+      # def greet name:                   # ERROR: missing parentheses
+      # def greet(name)                   # ERROR: missing colon
+      
+      # If statement syntax
+      if x > 5:                          # Correct: if, condition, colon
+          print("Greater than 5")
+      
+      # if x > 5                         # ERROR: missing colon
+      # if (x > 5):                      # Valid but not typical Python style
+      
+      # List syntax
+      numbers = [1, 2, 3, 4, 5]          # Correct: square brackets, commas
+      # numbers = (1, 2, 3, 4, 5)        # This is a tuple, not a list
+      
+      # Dictionary syntax
+      person = {"name": "Alice", "age": 30}  # Correct: curly braces, colons
+      # person = {name: "Alice", age: 30}     # ERROR: keys need quotes
