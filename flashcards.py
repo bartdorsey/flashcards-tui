@@ -29,9 +29,8 @@ class FlashcardApp:
         self.file_path: str = file_path
         self.stats_file: str = stats_file
         self.flashcards: list[FlashCard] = []
-        self.correct_answers: int = 0
-        self.total_attempts: int = 0
-        self.card_stats: dict[str, dict[str, int]] = {}  # Track per-card performance
+        self.set_stats: dict[str, dict[str, any]] = {}  # Stats organized by flashcard set
+        self.current_set_name: str = ""  # Name of current flashcard set
         self.load_statistics()
 
     def load_flashcards(self) -> None:
@@ -41,6 +40,9 @@ class FlashcardApp:
                     data = yaml.safe_load(f)
                 else:
                     data = json.load(f)
+                
+                # Extract set name from file path
+                self.current_set_name = os.path.basename(self.file_path).replace('.yaml', '').replace('.yml', '').replace('.json', '')
                 
                 self.flashcards = [
                     FlashCard(
@@ -71,25 +73,41 @@ class FlashcardApp:
         try:
             with open(self.stats_file, "r") as f:
                 stats = json.load(f)
-                self.correct_answers = stats.get("correct_answers", 0)
-                self.total_attempts = stats.get("total_attempts", 0)
-                self.card_stats = stats.get("card_stats", {})
+                
+                # Check if this is the old format (needs migration)
+                if "correct_answers" in stats and "flashcard_sets" not in stats:
+                    # Migrate old format to new per-set format
+                    self.set_stats = {
+                        "legacy_data": {
+                            "correct_answers": stats.get("correct_answers", 0),
+                            "total_attempts": stats.get("total_attempts", 0),
+                            "card_stats": stats.get("card_stats", {})
+                        }
+                    }
+                else:
+                    # Load new format
+                    self.set_stats = stats.get("flashcard_sets", {})
+                    
         except FileNotFoundError:
             # First time running, stats file doesn't exist yet
-            self.correct_answers = 0
-            self.total_attempts = 0
-            self.card_stats = {}
+            self.set_stats = {}
         except json.JSONDecodeError:
             # Corrupted stats file, reset to defaults
-            self.correct_answers = 0
-            self.total_attempts = 0
-            self.card_stats = {}
+            self.set_stats = {}
+    
+    def get_current_set_stats(self) -> dict:
+        """Get statistics for the current flashcard set."""
+        if self.current_set_name not in self.set_stats:
+            self.set_stats[self.current_set_name] = {
+                "correct_answers": 0,
+                "total_attempts": 0,
+                "card_stats": {}
+            }
+        return self.set_stats[self.current_set_name]
 
     def save_statistics(self) -> None:
         stats = {
-            "correct_answers": self.correct_answers,
-            "total_attempts": self.total_attempts,
-            "card_stats": self.card_stats
+            "flashcard_sets": self.set_stats
         }
         try:
             with open(self.stats_file, "w") as f:
@@ -181,18 +199,20 @@ class FlashcardApp:
         )
 
     def _handle_user_response(self, response: str, card: FlashCard) -> None:
-        self.total_attempts += 1
+        # Get current set stats
+        current_stats = self.get_current_set_stats()
+        current_stats["total_attempts"] += 1
 
         # Track per-card statistics
         card_key = card.question[:50]  # Use first 50 chars as key
-        if card_key not in self.card_stats:
-            self.card_stats[card_key] = {"correct": 0, "total": 0}
+        if card_key not in current_stats["card_stats"]:
+            current_stats["card_stats"][card_key] = {"correct": 0, "total": 0}
         
-        self.card_stats[card_key]["total"] += 1
+        current_stats["card_stats"][card_key]["total"] += 1
 
         if response == "y":
-            self.correct_answers += 1
-            self.card_stats[card_key]["correct"] += 1
+            current_stats["correct_answers"] += 1
+            current_stats["card_stats"][card_key]["correct"] += 1
             self.console.print("[green]Great job! 🎉[/green]")
         elif response == "n":
             self.console.print("[yellow]Keep practicing! 💪[/yellow]")
@@ -210,8 +230,9 @@ class FlashcardApp:
             )
 
     def _show_session_summary(self, cards_studied: int) -> None:
-        if self.total_attempts > 0:
-            accuracy = (self.correct_answers / self.total_attempts) * 100
+        current_stats = self.get_current_set_stats()
+        if current_stats["total_attempts"] > 0:
+            accuracy = (current_stats["correct_answers"] / current_stats["total_attempts"]) * 100
             self.console.print("\n[bold]Session Summary:[/bold]")
             self.console.print(f"Cards studied: {cards_studied}")
             self.console.print(f"Accuracy: {accuracy:.1f}%")
@@ -251,32 +272,36 @@ class FlashcardApp:
     def show_statistics(self) -> None:
         self.console.clear()
 
+        # Show statistics for the current set
+        current_stats = self.get_current_set_stats()
+        set_name = self.current_set_name.replace('_', ' ').title()
+        
         table = Table(
-            title="📊 Study Statistics",
+            title=f"📊 {set_name} Statistics",
             show_header=True,
             header_style="bold magenta",
         )
         table.add_column("Metric", style="cyan")
         table.add_column("Value", style="green")
-
+        
         table.add_row("Total Flashcards", str(len(self.flashcards)))
-        table.add_row("Total Attempts", str(self.total_attempts))
-        table.add_row("Correct Answers", str(self.correct_answers))
+        table.add_row("Total Attempts", str(current_stats["total_attempts"]))
+        table.add_row("Correct Answers", str(current_stats["correct_answers"]))
 
-        if self.total_attempts > 0:
-            accuracy = (self.correct_answers / self.total_attempts) * 100
+        if current_stats["total_attempts"] > 0:
+            accuracy = (current_stats["correct_answers"] / current_stats["total_attempts"]) * 100
             table.add_row("Overall Accuracy", f"{accuracy:.1f}%")
         else:
             table.add_row("Overall Accuracy", "No attempts yet")
 
-        # Show most challenging cards
-        if self.card_stats:
+        # Show most challenging cards for this set
+        if current_stats["card_stats"]:
             table.add_row("", "")  # Empty row for spacing
             table.add_row("Most Challenging Cards", "")
             
             # Calculate accuracy for each card and sort by difficulty
             card_difficulties = []
-            for card_key, stats in self.card_stats.items():
+            for card_key, stats in current_stats["card_stats"].items():
                 if stats["total"] > 0:
                     accuracy = (stats["correct"] / stats["total"]) * 100
                     card_difficulties.append((card_key, accuracy, stats["total"]))
@@ -285,6 +310,32 @@ class FlashcardApp:
             card_difficulties.sort(key=lambda x: x[1])
             for i, (card_key, accuracy, total) in enumerate(card_difficulties[:3]):
                 table.add_row(f"  {i+1}. {card_key}...", f"{accuracy:.1f}% ({total} attempts)")
+
+        # Show overall statistics across all sets
+        if len(self.set_stats) > 1:
+            table.add_row("", "")  # Empty row for spacing
+            table.add_row("[bold]All Flashcard Sets", "")
+            
+            total_attempts_all = 0
+            total_correct_all = 0
+            
+            for set_name_key, stats in self.set_stats.items():
+                if set_name_key != "legacy_data":  # Skip legacy data in display
+                    display_name = set_name_key.replace('_', ' ').title()
+                    set_attempts = stats.get("total_attempts", 0)
+                    set_correct = stats.get("correct_answers", 0)
+                    total_attempts_all += set_attempts
+                    total_correct_all += set_correct
+                    
+                    if set_attempts > 0:
+                        set_accuracy = (set_correct / set_attempts) * 100
+                        table.add_row(f"  {display_name}", f"{set_accuracy:.1f}% ({set_attempts} attempts)")
+                    else:
+                        table.add_row(f"  {display_name}", "No attempts yet")
+            
+            if total_attempts_all > 0:
+                overall_accuracy = (total_correct_all / total_attempts_all) * 100
+                table.add_row("  [bold]Overall Accuracy", f"[bold]{overall_accuracy:.1f}% ({total_attempts_all} total)")
 
         self.console.print(table)
         Prompt.ask("\n[dim]Press Enter to return to menu[/dim]", default="")

@@ -47,9 +47,7 @@ class TestFlashcardApp:
             app = FlashcardApp(stats_file=stats_file.name)
             assert app.file_path == "flashcards.yaml"
             assert app.flashcards == []
-            assert app.correct_answers == 0
-            assert app.total_attempts == 0
-            assert app.card_stats == {}
+            assert app.set_stats == {}
             assert app.console is not None
         os.unlink(stats_file.name)
     
@@ -102,8 +100,9 @@ class TestFlashcardApp:
                  patch.object(app.console, 'print'):
                 app.study_flashcards()
             
-            assert app.correct_answers == 2
-            assert app.total_attempts == 2
+            current_stats = app.get_current_set_stats()
+            assert current_stats["correct_answers"] == 2
+            assert current_stats["total_attempts"] == 2
         os.unlink(stats_file.name)
     
     @patch('flashcards.Prompt.ask')
@@ -118,8 +117,9 @@ class TestFlashcardApp:
                  patch.object(app.console, 'print'):
                 app.study_flashcards()
             
-            assert app.correct_answers == 0
-            assert app.total_attempts == 2
+            current_stats = app.get_current_set_stats()
+            assert current_stats["correct_answers"] == 0
+            assert current_stats["total_attempts"] == 2
         os.unlink(stats_file.name)
     
     @patch('flashcards.Prompt.ask')
@@ -134,7 +134,8 @@ class TestFlashcardApp:
                  patch.object(app.console, 'print'):
                 app.study_flashcards()
             
-            assert app.total_attempts == 1
+            current_stats = app.get_current_set_stats()
+            assert current_stats["total_attempts"] == 1
         os.unlink(stats_file.name)
     
     @patch('flashcards.random.shuffle')
@@ -163,8 +164,9 @@ class TestFlashcardApp:
     def test_show_statistics_with_attempts(self, temp_json_file):
         app = FlashcardApp(temp_json_file)
         app.load_flashcards()
-        app.total_attempts = 5
-        app.correct_answers = 3
+        current_stats = app.get_current_set_stats()
+        current_stats["total_attempts"] = 5
+        current_stats["correct_answers"] = 3
         
         with patch.object(app.console, 'clear'), \
              patch.object(app.console, 'print') as mock_print, \
