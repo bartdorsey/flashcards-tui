@@ -58,7 +58,7 @@ def run_flashcard_app(file_path: str, stats_file: str) -> None:
         display_menu(console, flashcard_set.title)
         choice = Prompt.ask(
             "[yellow]Choose an option[/yellow]",
-            choices=["1", "2", "3", "4"],
+            choices=["1", "2", "s", "q"],
             default="1",
         )
 

@@ -136,10 +136,10 @@ def handle_menu_choice(
             console, flashcard_set, set_stats, randomize=True
         )
         return new_stats
-    elif choice == "3":
+    elif choice == "s":
         display_statistics_table(console, flashcard_set, set_stats)
         return None
-    elif choice == "4":
+    elif choice == "q":
         display_exit_message(console)
         return "exit"
 

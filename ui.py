@@ -28,8 +28,8 @@ def display_menu(console: Console, set_title: str) -> None:
     menu_options = [
         "1. Study all flashcards",
         "2. Study random flashcards",
-        "3. View statistics",
-        "4. Exit",
+        "s. View statistics",
+        "q. Exit",
     ]
 
     for option in menu_options:
