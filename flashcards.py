@@ -220,6 +220,7 @@ class FlashcardApp:
             title="❓ Question",
             border_style="blue",
             padding=(1, 2),
+            width=80,
         )
         self.console.print(question_panel)
 
@@ -238,6 +239,7 @@ class FlashcardApp:
             title="✅ Answer",
             border_style="green",
             padding=(1, 2),
+            width=80,
         )
         self.console.print(answer_panel)
 
@@ -256,6 +258,7 @@ class FlashcardApp:
                 title="💻 Code Example",
                 border_style="cyan",
                 padding=(1, 2),
+                width=80,
             )
             self.console.print(code_panel)
 
