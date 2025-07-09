@@ -397,9 +397,8 @@ class FlashcardApp:
             total_correct_all = 0
 
             for set_name_key, stats in self.set_stats.items():
-                if (
-                    set_name_key != "legacy_data"
-                ):  # Skip legacy data in display
+                if (set_name_key != "legacy_data" and 
+                    not set_name_key.startswith("tmp")):  # Skip legacy data and test temp files
                     # Try to get custom title for this set
                     display_name = self._get_set_display_name(set_name_key)
                     set_attempts = stats.total_attempts
@@ -567,6 +566,161 @@ class FlashcardApp:
         selected_index = int(choice) - 1
         return flashcard_sets[selected_index][1]
 
+    def display_flashcard_set_menu_with_stats(
+        self, flashcard_sets: list[tuple[str, str]]
+    ) -> str:
+        """Display menu to select flashcard set with statistics option and return chosen action."""
+        self.console.clear()
+        title = Text("🎓 Choose Your Flashcard Set", style="bold blue")
+        self.console.print(Align.center(title))
+        self.console.print()
+        
+        if not flashcard_sets:
+            self.console.print(
+                "[red]No flashcard sets found in "
+                "flashcard_sets directory![/red]"
+            )
+            self.console.print(
+                "[yellow]Please add some .yaml or .json files to the "
+                "flashcard_sets directory.[/yellow]"
+            )
+            sys.exit(1)
+        
+        # Display available sets
+        choices = []
+        for i, (display_name, file_path) in enumerate(flashcard_sets, 1):
+            choices.append(str(i))
+            
+            # Try to get card count
+            try:
+                with open(file_path, 'r') as f:
+                    if file_path.endswith(('.yaml', '.yml')):
+                        data = yaml.safe_load(f)
+                    else:
+                        data = json.load(f)
+                    card_count = len(data.get('flashcards', []))
+                    card_display = f"({card_count} cards)"
+                    self.console.print(
+                        f"  {i}. {display_name} ([dim]{card_display}[/dim])"
+                    )
+            except Exception:
+                self.console.print(
+                    f"  {i}. {display_name} ([dim]? cards[/dim])"
+                )
+        
+        choices.extend(["s", "q"])
+        self.console.print("  s. View statistics for all sets")
+        self.console.print("  q. Quit")
+        self.console.print()
+        
+        choice = Prompt.ask(
+            "[yellow]Select a flashcard set[/yellow]",
+            choices=choices,
+            default="1" if flashcard_sets else "q"
+        )
+        
+        if choice == "q":
+            return "quit"
+        elif choice == "s":
+            return "stats"
+        else:
+            selected_index = int(choice) - 1
+            return flashcard_sets[selected_index][1]
+
+    def show_global_statistics(self) -> None:
+        """Show statistics for all flashcard sets."""
+        self.console.clear()
+
+        table = Table(
+            title="📊 All Flashcard Sets Statistics",
+            show_header=True,
+            header_style="bold magenta",
+        )
+        table.add_column("Flashcard Set", style="cyan")
+        table.add_column("Total Cards", style="blue")
+        table.add_column("Attempts", style="yellow")
+        table.add_column("Accuracy", style="green")
+
+        total_attempts_all = 0
+        total_correct_all = 0
+        sets_with_data = 0
+
+        for set_name_key, stats in self.set_stats.items():
+            if (set_name_key != "legacy_data" and 
+                not set_name_key.startswith("tmp")):  # Skip legacy data and test temp files
+                display_name = self._get_set_display_name(set_name_key)
+                set_attempts = stats.total_attempts
+                set_correct = stats.correct_answers
+                total_attempts_all += set_attempts
+                total_correct_all += set_correct
+
+                # Try to get card count for this set
+                try:
+                    card_count = self._get_set_card_count(set_name_key)
+                    card_count_str = str(card_count) if card_count > 0 else "?"
+                except:
+                    card_count_str = "?"
+
+                if set_attempts > 0:
+                    set_accuracy = (set_correct / set_attempts) * 100
+                    table.add_row(
+                        display_name,
+                        card_count_str,
+                        str(set_attempts),
+                        f"{set_accuracy:.1f}%"
+                    )
+                    sets_with_data += 1
+                elif card_count_str != "?":
+                    table.add_row(
+                        display_name,
+                        card_count_str,
+                        "0",
+                        "No attempts yet"
+                    )
+
+        # Add overall summary if we have data from multiple sets
+        if sets_with_data > 1 and total_attempts_all > 0:
+            overall_accuracy = (total_correct_all / total_attempts_all) * 100
+            table.add_row(
+                "[bold]Overall Summary",
+                "-",
+                f"[bold]{total_attempts_all}",
+                f"[bold]{overall_accuracy:.1f}%"
+            )
+
+        if total_attempts_all == 0:
+            self.console.print("[yellow]No statistics available yet. Start studying some flashcards![/yellow]")
+        else:
+            self.console.print(table)
+
+        Prompt.ask("\n[dim]Press Enter to return to menu[/dim]", default="")
+
+    def _get_set_card_count(self, set_name: str) -> int:
+        """Get the number of cards in a flashcard set."""
+        directory = "flashcard_sets"
+        if os.path.exists(directory):
+            for filename in os.listdir(directory):
+                if filename.endswith(('.yaml', '.yml', '.json')):
+                    file_set_name = (
+                        filename.replace(".yaml", "")
+                        .replace(".yml", "")
+                        .replace(".json", "")
+                    )
+                    if file_set_name == set_name:
+                        try:
+                            file_path = os.path.join(directory, filename)
+                            with open(file_path, 'r') as f:
+                                if filename.endswith(('.yaml', '.yml')):
+                                    data = yaml.safe_load(f)
+                                else:
+                                    data = json.load(f)
+                            
+                            if data and "flashcards" in data:
+                                return len(data["flashcards"])
+                        except Exception:
+                            pass
+        return 0
+
     def run(self) -> None:
         self.load_flashcards()
 
@@ -620,24 +774,35 @@ Examples:
 
     args = parser.parse_args()
 
-    # If no file specified, show set selection menu
+    # If no file specified, show set selection menu with statistics option
     if args.file is None:
-        # Create a temporary app just for set selection (no file loading)
+        # Create a temporary app just for set selection and statistics
         temp_app = FlashcardApp(
             file_path="dummy.yaml", stats_file=args.stats
         )
-        flashcard_sets = temp_app.discover_flashcard_sets()
-        selected_file = temp_app.display_flashcard_set_menu(
-            flashcard_sets
-        )
-
-        # Create the actual app with selected file
-        app = FlashcardApp(
-            file_path=selected_file, stats_file=args.stats
-        )
-        app.run()
+        
+        while True:
+            flashcard_sets = temp_app.discover_flashcard_sets()
+            choice = temp_app.display_flashcard_set_menu_with_stats(flashcard_sets)
+            
+            if choice == "stats":
+                temp_app.show_global_statistics()
+            elif choice == "quit":
+                temp_app.console.print(
+                    "[green]Thanks for studying! Keep coding! 👨‍💻[/green]"
+                )
+                break
+            else:
+                # choice is a file path, create the actual app and run
+                app = FlashcardApp(
+                    file_path=choice, stats_file=args.stats
+                )
+                app.run()
+                # Reload stats after study session
+                temp_app.load_statistics()
+                
     else:
-        # Validate file exists
+        # Direct file specified - validate and run
         if not os.path.exists(args.file):
             print(f"Error: Flashcard file '{args.file}' not found.")
             print(
