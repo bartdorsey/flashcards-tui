@@ -32,7 +32,7 @@ An interactive command-line flashcard application built with Python and Rich for
 Run the application without arguments to see all available flashcard sets:
 
 ```bash
-python flashcards.py
+python main.py
 ```
 
 This will show a menu where you can:
@@ -45,8 +45,8 @@ This will show a menu where you can:
 You can also run a specific flashcard set directly:
 
 ```bash
-python flashcards.py flashcard_sets/python_basic_flashcards.yaml
-python flashcards.py flashcard_sets/git_basics_flashcards.yaml
+python main.py flashcard_sets/python_basic_flashcards.yaml
+python main.py flashcard_sets/git_basics_flashcards.yaml
 ```
 
 ### Study Modes
@@ -127,29 +127,29 @@ Statistics are automatically saved to `flashcard_stats.json`.
 
 ```bash
 # Show flashcard set selection menu
-python flashcards.py
+python main.py
 
 # Study specific flashcard set
-python flashcards.py path/to/flashcards.yaml
+python main.py path/to/flashcards.yaml
 
 # Use custom statistics file
-python flashcards.py --stats my_stats.json
+python main.py --stats my_stats.json
 
 # Show help
-python flashcards.py --help
+python main.py --help
 ```
 
 ## Examples
 
 ```bash
 # Interactive mode - choose from available sets
-python flashcards.py
+python main.py
 
 # Study Python basics directly
-python flashcards.py flashcard_sets/python_basic_flashcards.yaml
+python main.py flashcard_sets/python_basic_flashcards.yaml
 
 # Study Git with custom stats file
-python flashcards.py flashcard_sets/git_basics_flashcards.yaml --stats git_progress.json
+python main.py flashcard_sets/git_basics_flashcards.yaml --stats git_progress.json
 ```
 
 ## Requirements
@@ -164,7 +164,7 @@ python flashcards.py flashcard_sets/git_basics_flashcards.yaml --stats git_progr
 
 ```
 flashcards/
-├── flashcards.py              # Main application
+├── main.py                     # Main application
 ├── test_flashcards.py         # Unit tests
 ├── flashcard_stats.json       # Statistics storage
 ├── flashcard_schema.yaml      # YAML schema for validation
