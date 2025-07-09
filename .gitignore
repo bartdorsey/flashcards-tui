@@ -57,6 +57,9 @@ venv.bak/
 *.swo
 *~
 
+# Claude AI
+.claude/
+
 # OS
 .DS_Store
 Thumbs.db
