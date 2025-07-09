@@ -1,3 +1,4 @@
+title: "🗄️ PostgreSQL Basics"
 flashcards:
   - question: "How do you create a new table in PostgreSQL?"
     answer: "Use CREATE TABLE statement with column names and their data types"

@@ -1,0 +1,224 @@
+title: "🚀 Python Advanced"
+flashcards:
+  - question: "What is a Python list comprehension?"
+    answer: "A concise way to create lists using a single line of code with optional filtering"
+    code_example: |
+      # Traditional approach
+      squares = []
+      for x in range(10):
+          if x % 2 == 0:
+              squares.append(x**2)
+      
+      # List comprehension
+      squares = [x**2 for x in range(10) if x % 2 == 0]
+      
+      # More examples
+      words = ["hello", "world", "python"]
+      lengths = [len(word) for word in words]  # [5, 5, 6]
+      
+      # Nested list comprehension
+      matrix = [[i*j for j in range(3)] for i in range(3)]
+      # [[0, 0, 0], [0, 1, 2], [0, 2, 4]]
+
+  - question: "What is a Python decorator?"
+    answer: "A function that wraps another function to extend or modify its behavior without permanently modifying it"
+    code_example: |
+      def my_decorator(func):
+          def wrapper(*args, **kwargs):
+              print("Before function execution")
+              result = func(*args, **kwargs)
+              print("After function execution")
+              return result
+          return wrapper
+
+      @my_decorator
+      def say_hello(name):
+          print(f"Hello, {name}!")
+
+      say_hello("Alice")
+      
+      # Decorator with parameters
+      def repeat(times):
+          def decorator(func):
+              def wrapper(*args, **kwargs):
+                  for _ in range(times):
+                      result = func(*args, **kwargs)
+                  return result
+              return wrapper
+          return decorator
+      
+      @repeat(3)
+      def greet():
+          print("Hi!")
+
+  - question: "What are Python's magic methods (dunder methods)?"
+    answer: "Special methods with double underscores that allow objects to interact with Python's built-in functions and operators"
+    code_example: |
+      class Point:
+          def __init__(self, x, y):
+              self.x = x
+              self.y = y
+          
+          def __str__(self):
+              return f"Point({self.x}, {self.y})"
+          
+          def __repr__(self):
+              return f"Point(x={self.x}, y={self.y})"
+          
+          def __add__(self, other):
+              return Point(self.x + other.x, self.y + other.y)
+          
+          def __eq__(self, other):
+              return self.x == other.x and self.y == other.y
+          
+          def __len__(self):
+              return int((self.x**2 + self.y**2)**0.5)
+      
+      p1 = Point(1, 2)
+      p2 = Point(3, 4)
+      print(str(p1))     # Point(1, 2)
+      print(p1 + p2)     # Point(4, 6)
+      print(p1 == p2)    # False
+
+  - question: "What is a lambda function in Python?"
+    answer: "A small anonymous function defined with the lambda keyword, used for simple one-line functions"
+    code_example: |
+      # Lambda function
+      square = lambda x: x**2
+      print(square(5))  # 25
+      
+      # Used with map, filter, sorted
+      numbers = [1, 2, 3, 4, 5]
+      squares = list(map(lambda x: x**2, numbers))
+      evens = list(filter(lambda x: x % 2 == 0, numbers))
+      
+      # Sorting with lambda
+      students = [('Alice', 85), ('Bob', 90), ('Charlie', 78)]
+      sorted_by_grade = sorted(students, key=lambda student: student[1])
+      print(sorted_by_grade)  # [('Charlie', 78), ('Alice', 85), ('Bob', 90)]
+      
+      # Lambda with multiple arguments
+      multiply = lambda x, y: x * y
+      print(multiply(3, 4))  # 12
+
+  - question: "What is the difference between @staticmethod and @classmethod decorators?"
+    answer: "@staticmethod doesn't receive any automatic arguments, @classmethod receives the class as first argument (cls)"
+    code_example: |
+      class MathUtils:
+          pi = 3.14159
+          
+          @staticmethod
+          def add(x, y):
+              # No access to class or instance
+              return x + y
+          
+          @classmethod
+          def get_pi(cls):
+              # Access to class variables and methods
+              return cls.pi
+          
+          @classmethod
+          def from_string(cls, math_string):
+              # Alternative constructor
+              x, y = map(int, math_string.split('+'))
+              return cls.add(x, y)
+      
+      # Usage
+      print(MathUtils.add(5, 3))              # 8
+      print(MathUtils.get_pi())               # 3.14159
+      print(MathUtils.from_string("10+20"))   # 30
+
+  - question: "What are Python generators?"
+    answer: "Functions that return an iterator object which produces values on-demand using yield"
+    code_example: |
+      # Generator function
+      def fibonacci():
+          a, b = 0, 1
+          while True:
+              yield a
+              a, b = b, a + b
+
+      # Generator expression
+      squares = (x**2 for x in range(10))
+
+      # Usage
+      fib = fibonacci()
+      print(next(fib))  # 0
+      print(next(fib))  # 1
+      print(next(fib))  # 1
+      
+      # Generator for reading large files
+      def read_large_file(file_path):
+          with open(file_path, 'r') as file:
+              for line in file:
+                  yield line.strip()
+      
+      # Memory efficient - doesn't load entire file
+      for line in read_large_file('large_file.txt'):
+          process(line)
+
+  - question: "What is the Global Interpreter Lock (GIL)?"
+    answer: "A mutex that prevents multiple native threads from executing Python bytecode simultaneously"
+    code_example: |
+      import threading
+      import time
+
+      def cpu_bound_task():
+          # This won't run in parallel due to GIL
+          count = 0
+          for i in range(1000000):
+              count += 1
+          return count
+
+      # Multiple threads won't speed this up
+      threads = []
+      start_time = time.time()
+      
+      for i in range(4):
+          t = threading.Thread(target=cpu_bound_task)
+          threads.append(t)
+          t.start()
+      
+      for t in threads:
+          t.join()
+      
+      print(f"Time taken: {time.time() - start_time}")
+      
+      # For CPU-bound tasks, use multiprocessing instead
+      import multiprocessing
+      
+      with multiprocessing.Pool() as pool:
+          results = pool.map(cpu_bound_task, range(4))
+
+  - question: "What is the difference between *args and **kwargs?"
+    answer: "*args collects positional arguments into a tuple, **kwargs collects keyword arguments into a dictionary"
+    code_example: |
+      def flexible_function(*args, **kwargs):
+          print("Positional args:", args)
+          print("Keyword args:", kwargs)
+
+      flexible_function(1, 2, 3, name="Alice", age=30)
+      # Output:
+      # Positional args: (1, 2, 3)
+      # Keyword args: {'name': 'Alice', 'age': 30}
+
+      # Unpacking arguments
+      def greet(name, age):
+          return f"Hello {name}, you are {age} years old"
+
+      person = ("Bob", 25)
+      info = {"name": "Charlie", "age": 35}
+      
+      print(greet(*person))      # Unpack tuple
+      print(greet(**info))       # Unpack dictionary
+      
+      # Common use case: extending parent class methods
+      class Parent:
+          def __init__(self, name, age):
+              self.name = name
+              self.age = age
+      
+      class Child(Parent):
+          def __init__(self, *args, **kwargs):
+              super().__init__(*args, **kwargs)
+              self.is_child = True

@@ -1,21 +1,5 @@
+title: "🔥 JavaScript Advanced"
 flashcards:
-  - question: "What is the difference between let, const, and var in JavaScript?"
-    answer: "var is function-scoped and can be redeclared; let is block-scoped and can be reassigned; const is block-scoped and cannot be reassigned"
-    code_example: |
-      var x = 1;    // Function-scoped, can be redeclared
-      let y = 2;    // Block-scoped, can be reassigned
-      const z = 3;  // Block-scoped, cannot be reassigned
-      
-      if (true) {
-        var x = 10;   // Same variable
-        let y = 20;   // Different variable
-        const z = 30; // Different variable
-      }
-      
-      console.log(x); // 10
-      console.log(y); // 2
-      console.log(z); // 3
-
   - question: "What is a JavaScript closure?"
     answer: "A closure is a function that has access to variables in its outer (enclosing) scope even after the outer function has returned"
     code_example: |
@@ -34,28 +18,31 @@ flashcards:
       console.log(addFive(10)); // 15
       
       // 'x' is still accessible even after outerFunction returns
-
-  - question: "What is the difference between == and === in JavaScript?"
-    answer: "== performs type coercion (converts types), while === checks for strict equality (same type and value)"
-    code_example: |
-      // Double equals (==) with type coercion
-      console.log(5 == '5');    // true (string '5' converted to number)
-      console.log(true == 1);   // true (boolean converted to number)
-      console.log(null == undefined); // true
       
-      // Triple equals (===) strict equality
-      console.log(5 === '5');   // false (different types)
-      console.log(true === 1);  // false (different types)
-      console.log(null === undefined); // false
+      // Practical example: creating private variables
+      function createCounter() {
+        let count = 0; // Private variable
+        
+        return {
+          increment: () => ++count,
+          decrement: () => --count,
+          getCount: () => count
+        };
+      }
+      
+      const counter = createCounter();
+      console.log(counter.increment()); // 1
+      console.log(counter.getCount());  // 1
 
   - question: "What is event bubbling in JavaScript?"
     answer: "Event bubbling is when an event starts at the target element and bubbles up through its parent elements in the DOM tree"
     code_example: |
-      <div id="outer">
-        <div id="middle">
-          <button id="inner">Click me</button>
-        </div>
-      </div>
+      // HTML structure:
+      // <div id="outer">
+      //   <div id="middle">
+      //     <button id="inner">Click me</button>
+      //   </div>
+      // </div>
       
       document.getElementById('outer').addEventListener('click', () => {
         console.log('Outer div clicked');
@@ -65,34 +52,15 @@ flashcards:
         console.log('Middle div clicked');
       });
       
-      document.getElementById('inner').addEventListener('click', () => {
+      document.getElementById('inner').addEventListener('click', (event) => {
         console.log('Button clicked');
+        // event.stopPropagation(); // Stops bubbling
       });
       
       // Clicking button outputs:
       // "Button clicked"
       // "Middle div clicked"
       // "Outer div clicked"
-
-  - question: "What is the difference between function declarations and function expressions?"
-    answer: "Function declarations are hoisted (can be called before declaration), while function expressions are not hoisted"
-    code_example: |
-      // Function Declaration - hoisted
-      console.log(declared()); // "I'm declared!" (works)
-      
-      function declared() {
-        return "I'm declared!";
-      }
-      
-      // Function Expression - not hoisted
-      console.log(expressed()); // TypeError: expressed is not a function
-      
-      const expressed = function() {
-        return "I'm expressed!";
-      };
-      
-      // Arrow Function Expression - also not hoisted
-      const arrow = () => "I'm an arrow function!";
 
   - question: "What is the 'this' keyword in JavaScript?"
     answer: "The 'this' keyword refers to the context in which a function is called. Its value depends on how the function is invoked"
@@ -113,6 +81,10 @@ flashcards:
       // Changing context with call/apply/bind
       const person = { name: 'Bob' };
       console.log(obj.greet.call(person)); // "Hello, Bob!"
+      
+      // Binding context
+      const boundGreet = obj.greet.bind(person);
+      console.log(boundGreet()); // "Hello, Bob!"
 
   - question: "What is a JavaScript Promise?"
     answer: "A Promise is an object representing the eventual completion or failure of an asynchronous operation"
@@ -147,57 +119,6 @@ flashcards:
           console.log(error);
         }
       }
-
-  - question: "What is destructuring in JavaScript?"
-    answer: "Destructuring is a syntax that allows you to extract values from arrays or properties from objects into distinct variables"
-    code_example: |
-      // Array destructuring
-      const [first, second, ...rest] = [1, 2, 3, 4, 5];
-      console.log(first); // 1
-      console.log(second); // 2
-      console.log(rest); // [3, 4, 5]
-      
-      // Object destructuring
-      const person = { name: 'Alice', age: 30, city: 'New York' };
-      const { name, age, city = 'Unknown' } = person;
-      console.log(name); // 'Alice'
-      console.log(age); // 30
-      
-      // Nested destructuring
-      const user = {
-        id: 1,
-        profile: {
-          username: 'alice123',
-          email: 'alice@example.com'
-        }
-      };
-      
-      const { profile: { username, email } } = user;
-      console.log(username); // 'alice123'
-
-  - question: "What are JavaScript array methods map(), filter(), and reduce()?"
-    answer: "map() transforms elements, filter() selects elements, reduce() accumulates elements into a single value"
-    code_example: |
-      const numbers = [1, 2, 3, 4, 5];
-      
-      // map() - transform each element
-      const doubled = numbers.map(num => num * 2);
-      console.log(doubled); // [2, 4, 6, 8, 10]
-      
-      // filter() - select elements that pass a test
-      const evens = numbers.filter(num => num % 2 === 0);
-      console.log(evens); // [2, 4]
-      
-      // reduce() - accumulate to single value
-      const sum = numbers.reduce((acc, num) => acc + num, 0);
-      console.log(sum); // 15
-      
-      // Chaining methods
-      const result = numbers
-        .filter(num => num > 2)
-        .map(num => num * 2)
-        .reduce((acc, num) => acc + num, 0);
-      console.log(result); // 24 (3*2 + 4*2 + 5*2)
 
   - question: "What is the difference between synchronous and asynchronous JavaScript?"
     answer: "Synchronous code executes line by line, blocking the thread. Asynchronous code allows other operations to continue while waiting for completion"
@@ -246,7 +167,7 @@ flashcards:
       // x = 5;
       
       // let and const are hoisted but in temporal dead zone
-      console.log(y); // ReferenceError: Cannot access 'y' before initialization
+      // console.log(y); // ReferenceError: Cannot access 'y' before initialization
       let y = 10;
       
       // Function hoisting
@@ -257,80 +178,10 @@ flashcards:
       }
       
       // Function expressions are not hoisted
-      sayGoodbye(); // TypeError: sayGoodbye is not a function
+      // sayGoodbye(); // TypeError: sayGoodbye is not a function
       var sayGoodbye = function() {
         console.log("Goodbye!");
       };
-
-  - question: "What are template literals in JavaScript?"
-    answer: "Template literals are string literals that allow embedded expressions, multi-line strings, and string interpolation using backticks"
-    code_example: |
-      const name = 'Alice';
-      const age = 30;
-      
-      // String interpolation
-      const greeting = `Hello, my name is ${name} and I am ${age} years old.`;
-      console.log(greeting);
-      
-      // Multi-line strings
-      const multiline = `
-        This is a multi-line string.
-        It preserves line breaks
-        and whitespace.
-      `;
-      
-      // Expression evaluation
-      const math = `2 + 3 = ${2 + 3}`;
-      console.log(math); // "2 + 3 = 5"
-      
-      // Function calls in template literals
-      function getGreeting(name) {
-        return `Welcome, ${name}!`;
-      }
-      
-      const welcome = `${getGreeting('Bob')} How are you today?`;
-      console.log(welcome); // "Welcome, Bob! How are you today?"
-      
-      // Tagged template literals
-      function highlight(strings, ...values) {
-        return strings.reduce((result, string, i) => {
-          const value = values[i] ? `<mark>${values[i]}</mark>` : '';
-          return result + string + value;
-        }, '');
-      }
-      
-      const highlighted = highlight`Hello ${name}, you are ${age} years old!`;
-
-  - question: "What is the spread operator (...) in JavaScript?"
-    answer: "The spread operator expands iterables (arrays, objects, strings) into individual elements"
-    code_example: |
-      // Array spreading
-      const arr1 = [1, 2, 3];
-      const arr2 = [4, 5, 6];
-      const combined = [...arr1, ...arr2]; // [1, 2, 3, 4, 5, 6]
-      
-      // Function arguments
-      function sum(a, b, c) {
-        return a + b + c;
-      }
-      const numbers = [1, 2, 3];
-      console.log(sum(...numbers)); // 6
-      
-      // Object spreading
-      const obj1 = { a: 1, b: 2 };
-      const obj2 = { c: 3, d: 4 };
-      const merged = { ...obj1, ...obj2 }; // { a: 1, b: 2, c: 3, d: 4 }
-      
-      // Copying arrays/objects
-      const originalArray = [1, 2, 3];
-      const copiedArray = [...originalArray];
-      
-      const originalObj = { name: 'Alice', age: 30 };
-      const copiedObj = { ...originalObj };
-      
-      // String spreading
-      const str = 'hello';
-      const chars = [...str]; // ['h', 'e', 'l', 'l', 'o']
 
   - question: "What are JavaScript classes and how do they work?"
     answer: "Classes are templates for creating objects with shared properties and methods, providing a cleaner syntax for prototypal inheritance"
@@ -404,14 +255,6 @@ flashcards:
         console.log(`Button ${event.target.textContent} clicked`);
       }
       
-      // HTML structure:
-      // <div id="button-container">
-      //   <button class="button">Button 1</button>
-      //   <button class="button">Button 2</button>
-      //   <button class="button">Button 3</button>
-      //   <!-- Dynamically added buttons will also work -->
-      // </div>
-      
       // Benefits:
       // 1. Better performance (one listener instead of many)
       // 2. Works with dynamically added elements
@@ -452,11 +295,6 @@ flashcards:
         const mathModule = await import('./math.js');
         console.log(mathModule.add(2, 3)); // 5
       }
-      
-      // Re-exports
-      // utils.js
-      export { add, subtract } from './math.js';
-      export { default as multiply } from './math.js';
 
   - question: "What is the JavaScript call stack and event loop?"
     answer: "The call stack tracks function execution, while the event loop manages asynchronous operations by moving callbacks from queues to the stack when it's empty"
@@ -488,11 +326,4 @@ flashcards:
       // Promise callback (microtask queue processed first)
       // Timeout callback (callback queue processed after microtasks)
       
-      // Call stack visualization:
-      // 1. console.log('Start') - added to stack, executed, removed
-      // 2. setTimeout() - added to stack, handed to Web API, removed
-      // 3. Promise.resolve().then() - added to stack, microtask queued, removed
-      // 4. syncFunction() - added to stack, executed, removed
-      // 5. console.log('End') - added to stack, executed, removed
-      // 6. Event loop moves Promise callback to stack
-      // 7. Event loop moves setTimeout callback to stack
+      // Event loop prioritizes microtasks over macrotasks

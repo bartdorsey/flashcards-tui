@@ -50,6 +50,7 @@ class FlashcardApp:
             {}
         )  # Stats organized by flashcard set
         self.current_set_name: str = ""  # Name of current flashcard set
+        self.current_set_title: str = ""  # Display title of current flashcard set
         self.load_statistics()
 
     def load_flashcards(self) -> None:
@@ -67,6 +68,9 @@ class FlashcardApp:
                     .replace(".yml", "")
                     .replace(".json", "")
                 )
+                
+                # Get custom title or use filename as fallback
+                self.current_set_title = data.get("title", self.current_set_name.replace("_", " ").title())
 
                 self.flashcards = [
                     FlashCard(
@@ -183,7 +187,7 @@ class FlashcardApp:
 
     def display_menu(self) -> None:
         self.console.clear()
-        title = Text("🎓 Python Flashcards", style="bold blue")
+        title = Text(f"🎓 {self.current_set_title}", style="bold blue")
         self.console.print(Align.center(title))
         self.console.print()
 
@@ -341,10 +345,9 @@ class FlashcardApp:
 
         # Show statistics for the current set
         current_stats = self.get_current_set_stats()
-        set_name = self.current_set_name.replace("_", " ").title()
 
         table = Table(
-            title=f"📊 {set_name} Statistics",
+            title=f"📊 {self.current_set_title} Statistics",
             show_header=True,
             header_style="bold magenta",
         )
@@ -397,7 +400,8 @@ class FlashcardApp:
                 if (
                     set_name_key != "legacy_data"
                 ):  # Skip legacy data in display
-                    display_name = set_name_key.replace("_", " ").title()
+                    # Try to get custom title for this set
+                    display_name = self._get_set_display_name(set_name_key)
                     set_attempts = stats.total_attempts
                     set_correct = stats.correct_answers
                     total_attempts_all += set_attempts
@@ -424,6 +428,35 @@ class FlashcardApp:
         self.console.print(table)
         Prompt.ask("\n[dim]Press Enter to return to menu[/dim]", default="")
 
+    def _get_set_display_name(self, set_name: str) -> str:
+        """Get the display name for a flashcard set, trying to read custom title from file."""
+        # Try to find the corresponding file and read its title
+        directory = "flashcard_sets"
+        if os.path.exists(directory):
+            for filename in os.listdir(directory):
+                if filename.endswith(('.yaml', '.yml', '.json')):
+                    file_set_name = (
+                        filename.replace(".yaml", "")
+                        .replace(".yml", "")
+                        .replace(".json", "")
+                    )
+                    if file_set_name == set_name:
+                        try:
+                            file_path = os.path.join(directory, filename)
+                            with open(file_path, 'r') as f:
+                                if filename.endswith(('.yaml', '.yml')):
+                                    data = yaml.safe_load(f)
+                                else:
+                                    data = json.load(f)
+                            
+                            if data and "title" in data:
+                                return data["title"]
+                        except Exception:
+                            pass
+        
+        # Fallback to formatted filename
+        return set_name.replace("_", " ").title()
+
     def discover_flashcard_sets(
         self, directory: str = "flashcard_sets"
     ) -> list[tuple[str, str]]:
@@ -443,13 +476,32 @@ class FlashcardApp:
                 not filename.startswith(".")):
                 file_path = os.path.join(directory, filename)
 
-                # Create a display name from filename
-                display_name = (
-                    filename.replace(".yaml", "")
-                    .replace(".yml", "")
-                    .replace(".json", "")
-                )
-                display_name = display_name.replace("_", " ").title()
+                # Try to read the custom title from the file
+                try:
+                    with open(file_path, 'r') as f:
+                        if file_path.endswith(('.yaml', '.yml')):
+                            data = yaml.safe_load(f)
+                        else:
+                            data = json.load(f)
+                    
+                    # Use custom title if available, otherwise fallback to filename
+                    if data and "title" in data:
+                        display_name = data["title"]
+                    else:
+                        display_name = (
+                            filename.replace(".yaml", "")
+                            .replace(".yml", "")
+                            .replace(".json", "")
+                        )
+                        display_name = display_name.replace("_", " ").title()
+                except Exception:
+                    # If file can't be read, use filename as fallback
+                    display_name = (
+                        filename.replace(".yaml", "")
+                        .replace(".yml", "")
+                        .replace(".json", "")
+                    )
+                    display_name = display_name.replace("_", " ").title()
 
                 flashcard_sets.append((display_name, file_path))
 

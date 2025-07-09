@@ -12,6 +12,7 @@ class TestFlashcardApp:
     @pytest.fixture
     def sample_flashcards_data(self):
         return {
+            "title": "🧪 Test Flashcards",
             "flashcards": [
                 {
                     "question": "What is a Python list?",
@@ -22,6 +23,18 @@ class TestFlashcardApp:
                     "question": "What is a Python dictionary?",
                     "answer": "A mutable mapping type that stores key-value pairs",
                     "code_example": "my_dict = {'key': 'value'}"
+                }
+            ]
+        }
+    
+    @pytest.fixture
+    def sample_flashcards_data_no_title(self):
+        return {
+            "flashcards": [
+                {
+                    "question": "What is a Python list?",
+                    "answer": "A mutable sequence type that can hold multiple items",
+                    "code_example": "my_list = [1, 2, 3]"
                 }
             ]
         }
@@ -38,6 +51,14 @@ class TestFlashcardApp:
     def temp_yaml_file(self, sample_flashcards_data):
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
             yaml.dump(sample_flashcards_data, f)
+            temp_file = f.name
+        yield temp_file
+        os.unlink(temp_file)
+    
+    @pytest.fixture
+    def temp_json_file_no_title(self, sample_flashcards_data_no_title):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            json.dump(sample_flashcards_data_no_title, f)
             temp_file = f.name
         yield temp_file
         os.unlink(temp_file)
@@ -223,3 +244,71 @@ class TestFlashcardApp:
             app.run()
         
         assert len(app.flashcards) == 2
+    
+    def test_load_flashcards_with_title(self, temp_json_file):
+        app = FlashcardApp(temp_json_file)
+        app.load_flashcards()
+        assert app.current_set_title == "🧪 Test Flashcards"
+        assert app.current_set_name == os.path.basename(temp_json_file).replace('.json', '')
+    
+    def test_load_flashcards_without_title(self, temp_json_file_no_title):
+        app = FlashcardApp(temp_json_file_no_title)
+        app.load_flashcards()
+        # Should fallback to formatted filename
+        expected_title = os.path.basename(temp_json_file_no_title).replace('.json', '').replace('_', ' ').title()
+        assert app.current_set_title == expected_title
+    
+    def test_discover_flashcard_sets_with_titles(self):
+        # Create a temporary directory with flashcard files
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Create a file with title
+            with_title_file = os.path.join(temp_dir, 'test_with_title.yaml')
+            with open(with_title_file, 'w') as f:
+                yaml.dump({
+                    "title": "🚀 Test With Title",
+                    "flashcards": [{"question": "Q", "answer": "A"}]
+                }, f)
+            
+            # Create a file without title
+            without_title_file = os.path.join(temp_dir, 'test_without_title.yaml')
+            with open(without_title_file, 'w') as f:
+                yaml.dump({
+                    "flashcards": [{"question": "Q", "answer": "A"}]
+                }, f)
+            
+            app = FlashcardApp()
+            sets = app.discover_flashcard_sets(temp_dir)
+            
+            # Should have both files
+            assert len(sets) == 2
+            
+            # Find the sets by their display names
+            set_names = [name for name, _path in sets]
+            assert "🚀 Test With Title" in set_names
+            assert "Test Without Title" in set_names
+    
+    def test_get_set_display_name(self):
+        # Create a temporary directory with a flashcard file
+        with tempfile.TemporaryDirectory() as temp_dir:
+            test_file = os.path.join(temp_dir, 'test_flashcard.yaml')
+            with open(test_file, 'w') as f:
+                yaml.dump({
+                    "title": "🎯 Custom Title",
+                    "flashcards": [{"question": "Q", "answer": "A"}]
+                }, f)
+            
+            app = FlashcardApp()
+            
+            # Mock the flashcard_sets directory to point to our temp directory
+            with patch('os.path.exists', return_value=True), \
+                 patch('os.listdir', return_value=['test_flashcard.yaml']):
+                # Patch the open call to read from our temp file
+                original_open = open
+                def mock_open(file_path, *args, **kwargs):
+                    if 'flashcard_sets' in file_path and 'test_flashcard.yaml' in file_path:
+                        return original_open(test_file, *args, **kwargs)
+                    return original_open(file_path, *args, **kwargs)
+                
+                with patch('builtins.open', side_effect=mock_open):
+                    display_name = app._get_set_display_name('test_flashcard')
+                    assert display_name == "🎯 Custom Title"

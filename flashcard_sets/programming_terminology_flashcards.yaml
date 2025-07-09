@@ -1,0 +1,367 @@
+title: "📚 Programming Terminology"
+flashcards:
+  - question: "What is an algorithm?"
+    answer: "A step-by-step set of instructions or rules designed to solve a specific problem or perform a particular task"
+    code_example: |
+      # Example: Algorithm to find the largest number in a list
+      def find_largest(numbers):
+          largest = numbers[0]
+          for number in numbers:
+              if number > largest:
+                  largest = number
+          return largest
+      
+      # Steps: 1. Start with first number
+      #        2. Compare with each other number
+      #        3. Update if larger number found
+      #        4. Return the largest
+
+  - question: "What is a variable?"
+    answer: "A named storage location in memory that holds a value which can be changed during program execution"
+    code_example: |
+      # Variables store different types of data
+      name = "Alice"        # String variable
+      age = 25             # Integer variable
+      height = 5.6         # Float variable
+      is_student = True    # Boolean variable
+      
+      # Variables can be reassigned
+      age = 26             # Changed the value
+      print(f"{name} is {age} years old")
+
+  - question: "What is a function?"
+    answer: "A reusable block of code that performs a specific task and can accept inputs (parameters) and return outputs"
+    code_example: |
+      # Function definition
+      def greet(name, greeting="Hello"):
+          return f"{greeting}, {name}!"
+      
+      # Function call
+      message = greet("Alice")        # "Hello, Alice!"
+      message2 = greet("Bob", "Hi")   # "Hi, Bob!"
+      
+      # Functions help avoid code repetition
+      # and make code more organized
+
+  - question: "What is a loop?"
+    answer: "A programming construct that repeats a block of code multiple times until a certain condition is met"
+    code_example: |
+      # For loop - repeats a specific number of times
+      for i in range(5):
+          print(f"Count: {i}")
+      
+      # While loop - repeats while condition is true
+      count = 0
+      while count < 3:
+          print(f"While count: {count}")
+          count += 1
+      
+      # Loops help process collections of data
+      fruits = ["apple", "banana", "orange"]
+      for fruit in fruits:
+          print(f"I like {fruit}")
+
+  - question: "What is a conditional statement?"
+    answer: "A programming construct that executes different code blocks based on whether certain conditions are true or false"
+    code_example: |
+      # If statement
+      age = 18
+      
+      if age >= 18:
+          print("You are an adult")
+      elif age >= 13:
+          print("You are a teenager")
+      else:
+          print("You are a child")
+      
+      # Conditions use comparison operators
+      # == (equal), != (not equal), > (greater than)
+      # < (less than), >= (greater or equal), <= (less or equal)
+
+  - question: "What is a data type?"
+    answer: "A classification that specifies what kind of value a variable can hold and what operations can be performed on it"
+    code_example: |
+      # Common data types:
+      
+      # Integer (whole numbers)
+      count = 42
+      
+      # Float (decimal numbers)
+      price = 19.99
+      
+      # String (text)
+      message = "Hello World"
+      
+      # Boolean (true/false)
+      is_active = True
+      
+      # List (ordered collection)
+      numbers = [1, 2, 3, 4, 5]
+      
+      # Dictionary (key-value pairs)
+      person = {"name": "Alice", "age": 30}
+
+  - question: "What is debugging?"
+    answer: "The process of finding, analyzing, and fixing errors or bugs in computer programs"
+    code_example: |
+      # Common debugging techniques:
+      
+      # 1. Print statements to check values
+      def calculate_average(numbers):
+          print(f"Input: {numbers}")  # Debug output
+          total = sum(numbers)
+          print(f"Total: {total}")    # Debug output
+          average = total / len(numbers)
+          print(f"Average: {average}") # Debug output
+          return average
+      
+      # 2. Use try-catch to handle errors
+      try:
+          result = 10 / 0
+      except ZeroDivisionError:
+          print("Error: Cannot divide by zero")
+
+  - question: "What is a syntax error?"
+    answer: "An error that occurs when code doesn't follow the correct grammar rules of the programming language"
+    code_example: |
+      # Examples of syntax errors:
+      
+      # Missing colon
+      # if x > 5      # ERROR: Missing colon
+      if x > 5:       # CORRECT
+          print("x is greater than 5")
+      
+      # Mismatched parentheses
+      # print("Hello"  # ERROR: Missing closing parenthesis
+      print("Hello")   # CORRECT
+      
+      # Incorrect indentation
+      # if True:
+      # print("This")  # ERROR: Not indented
+      if True:
+          print("This")  # CORRECT
+
+  - question: "What is an array or list?"
+    answer: "A data structure that stores multiple values in a single variable, accessed by index positions"
+    code_example: |
+      # List/Array creation
+      fruits = ["apple", "banana", "orange", "grape"]
+      numbers = [1, 2, 3, 4, 5]
+      
+      # Accessing elements by index (starts at 0)
+      first_fruit = fruits[0]    # "apple"
+      second_fruit = fruits[1]   # "banana"
+      last_fruit = fruits[-1]    # "grape" (negative index)
+      
+      # Common operations
+      fruits.append("mango")     # Add to end
+      fruits.remove("banana")    # Remove specific item
+      length = len(fruits)       # Get number of items
+
+  - question: "What is a comment?"
+    answer: "Text in code that is ignored by the computer but helps humans understand what the code does"
+    code_example: |
+      # This is a single-line comment in Python
+      
+      # Calculate the area of a rectangle
+      length = 10  # Length in meters
+      width = 5    # Width in meters
+      area = length * width  # Area formula: length × width
+      
+      """
+      This is a multi-line comment (docstring).
+      It can span multiple lines and is often used
+      to document functions or modules.
+      """
+      
+      # Comments are essential for code documentation
+
+  - question: "What is a string?"
+    answer: "A data type that represents a sequence of characters (letters, numbers, symbols) used to store and manipulate text"
+    code_example: |
+      # String creation
+      name = "Alice"
+      message = 'Hello World'
+      multiline = """This is a
+      multiline string"""
+      
+      # String operations
+      full_name = "Alice" + " " + "Smith"  # Concatenation
+      greeting = f"Hello, {name}!"         # String formatting
+      
+      # String methods
+      uppercase = name.upper()       # "ALICE"
+      lowercase = name.lower()       # "alice"
+      length = len(name)            # 5
+      contains = "A" in name        # True
+
+  - question: "What is an API?"
+    answer: "Application Programming Interface - a set of rules and protocols that allows different software applications to communicate with each other"
+    code_example: |
+      # Example: Using a weather API
+      import requests
+      
+      # API endpoint URL
+      url = "https://api.weather.com/current"
+      
+      # API request with parameters
+      response = requests.get(url, params={
+          "city": "New York",
+          "api_key": "your_api_key"
+      })
+      
+      # API response (usually JSON)
+      if response.status_code == 200:
+          weather_data = response.json()
+          temperature = weather_data["temperature"]
+          print(f"Temperature: {temperature}°F")
+
+  - question: "What is a library or framework?"
+    answer: "Pre-written code that provides ready-made functions and tools to help developers build applications more efficiently"
+    code_example: |
+      # Using libraries/frameworks
+      
+      # Library: Collection of functions you can use
+      import math
+      import datetime
+      
+      # Using library functions
+      result = math.sqrt(25)        # 5.0
+      now = datetime.datetime.now() # Current date/time
+      
+      # Framework: Structure that controls your application
+      # Example: Flask web framework
+      from flask import Flask
+      
+      app = Flask(__name__)
+      
+      @app.route('/')
+      def home():
+          return "Hello World!"
+
+  - question: "What is version control?"
+    answer: "A system that tracks and manages changes to code over time, allowing multiple developers to collaborate and maintain a history of modifications"
+    code_example: |
+      # Git is the most popular version control system
+      
+      # Initialize a new repository
+      # git init
+      
+      # Add files to staging area
+      # git add filename.py
+      # git add .  (adds all files)
+      
+      # Commit changes with a message
+      # git commit -m "Add new feature"
+      
+      # View commit history
+      # git log
+      
+      # Create and switch branches
+      # git branch feature-branch
+      # git checkout feature-branch
+
+  - question: "What is an IDE?"
+    answer: "Integrated Development Environment - a software application that provides comprehensive tools for writing, testing, and debugging code"
+    code_example: |
+      # Popular IDEs and their features:
+      
+      # Visual Studio Code
+      # - Syntax highlighting
+      # - Code completion
+      # - Debugging tools
+      # - Extensions
+      
+      # PyCharm (for Python)
+      # - Advanced debugging
+      # - Code refactoring
+      # - Testing integration
+      
+      # Basic IDE features:
+      # 1. Text editor with syntax highlighting
+      # 2. File explorer
+      # 3. Terminal/console
+      # 4. Debugger
+      # 5. Plugin system
+
+  - question: "What is object-oriented programming (OOP)?"
+    answer: "A programming paradigm that organizes code into objects containing both data (attributes) and functions (methods) that operate on that data"
+    code_example: |
+      # Class definition (blueprint for objects)
+      class Car:
+          def __init__(self, make, model, year):
+              self.make = make      # Attribute
+              self.model = model    # Attribute
+              self.year = year      # Attribute
+              self.speed = 0        # Attribute
+          
+          def accelerate(self):     # Method
+              self.speed += 10
+          
+          def brake(self):          # Method
+              self.speed = max(0, self.speed - 10)
+      
+      # Creating objects (instances)
+      my_car = Car("Toyota", "Camry", 2022)
+      my_car.accelerate()
+      print(f"Speed: {my_car.speed}")  # Speed: 10
+
+  - question: "What is a database?"
+    answer: "An organized collection of structured data that is stored electronically and can be easily accessed, managed, and updated"
+    code_example: |
+      # Database concepts:
+      
+      # Table: Collection of related data
+      # Example: Users table
+      # | ID | Name    | Email           | Age |
+      # |----|---------|-----------------|-----|
+      # | 1  | Alice   | alice@email.com | 25  |
+      # | 2  | Bob     | bob@email.com   | 30  |
+      
+      # SQL: Language to interact with databases
+      # SELECT * FROM users WHERE age > 25;
+      # INSERT INTO users (name, email, age) VALUES ('Charlie', 'charlie@email.com', 28);
+      # UPDATE users SET age = 26 WHERE name = 'Alice';
+      # DELETE FROM users WHERE id = 2;
+
+  - question: "What is recursion?"
+    answer: "A programming technique where a function calls itself to solve a problem by breaking it down into smaller, similar subproblems"
+    code_example: |
+      # Example: Calculating factorial using recursion
+      def factorial(n):
+          # Base case: stop the recursion
+          if n == 0 or n == 1:
+              return 1
+          
+          # Recursive case: function calls itself
+          return n * factorial(n - 1)
+      
+      # How it works:
+      # factorial(5) = 5 * factorial(4)
+      # factorial(4) = 4 * factorial(3)
+      # factorial(3) = 3 * factorial(2)
+      # factorial(2) = 2 * factorial(1)
+      # factorial(1) = 1 (base case)
+      
+      result = factorial(5)  # 120
+
+  - question: "What is the difference between a compiler and an interpreter?"
+    answer: "A compiler translates entire source code into machine code before execution, while an interpreter executes code line by line in real-time"
+    code_example: |
+      # Compiled Languages (e.g., C++, Go, Rust):
+      # 1. Write source code: hello.cpp
+      # 2. Compile: g++ hello.cpp -o hello
+      # 3. Execute: ./hello
+      # 
+      # Advantages: Faster execution, optimized code
+      # Disadvantages: Must recompile for changes
+      
+      # Interpreted Languages (e.g., Python, JavaScript):
+      # 1. Write source code: hello.py
+      # 2. Execute directly: python hello.py
+      # 
+      # Advantages: Interactive development, cross-platform
+      # Disadvantages: Slower execution, needs interpreter
+      
+      # Some languages (Java, C#) use both:
+      # Source code → Bytecode → Virtual Machine

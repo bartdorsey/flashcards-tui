@@ -1,0 +1,143 @@
+title: "🐍 Python Basics"
+flashcards:
+  - question: "What is the difference between mutable and immutable objects in Python?"
+    answer: "Mutable objects can be changed after creation (lists, dicts, sets), while immutable objects cannot be changed (strings, tuples, integers)"
+    code_example: |
+      # Mutable objects
+      my_list = [1, 2, 3]
+      my_list.append(4)  # Modifies the original list
+      print(my_list)     # [1, 2, 3, 4]
+      
+      my_dict = {"a": 1}
+      my_dict["b"] = 2   # Modifies the original dict
+      print(my_dict)     # {"a": 1, "b": 2}
+      
+      # Immutable objects
+      my_string = "hello"
+      new_string = my_string + " world"  # Creates new string
+      print(my_string)    # "hello" (unchanged)
+      print(new_string)   # "hello world"
+      
+      my_tuple = (1, 2, 3)
+      # my_tuple[0] = 5   # This would raise TypeError
+
+  - question: "What is Python's self parameter in class methods?"
+    answer: "A reference to the current instance of the class, allowing access to instance variables and methods"
+    code_example: |
+      class Dog:
+          def __init__(self, name, breed):
+              self.name = name      # Instance variable
+              self.breed = breed    # Instance variable
+          
+          def bark(self):
+              return f"{self.name} says Woof!"
+          
+          def get_info(self):
+              return f"{self.name} is a {self.breed}"
+          
+          def change_name(self, new_name):
+              self.name = new_name  # Modify instance variable
+      
+      my_dog = Dog("Buddy", "Golden Retriever")
+      print(my_dog.bark())        # Buddy says Woof!
+      print(my_dog.get_info())    # Buddy is a Golden Retriever
+      my_dog.change_name("Max")
+      print(my_dog.bark())        # Max says Woof!
+
+  - question: "What is list slicing in Python?"
+    answer: "A way to extract a portion of a list using [start:stop:step] syntax"
+    code_example: |
+      numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      
+      # Basic slicing
+      print(numbers[2:7])     # [2, 3, 4, 5, 6]
+      print(numbers[:5])      # [0, 1, 2, 3, 4]
+      print(numbers[5:])      # [5, 6, 7, 8, 9]
+      print(numbers[:])       # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] (copy)
+      
+      # Step slicing
+      print(numbers[::2])     # [0, 2, 4, 6, 8] (every 2nd element)
+      print(numbers[1::2])    # [1, 3, 5, 7, 9] (every 2nd starting from 1)
+      print(numbers[::-1])    # [9, 8, 7, 6, 5, 4, 3, 2, 1, 0] (reverse)
+      
+      # Negative indices
+      print(numbers[-3:])     # [7, 8, 9] (last 3 elements)
+      print(numbers[:-2])     # [0, 1, 2, 3, 4, 5, 6, 7] (all but last 2)
+
+  - question: "What are Python sets and how do they differ from lists?"
+    answer: "Sets are unordered collections of unique elements that support mathematical set operations"
+    code_example: |
+      # Creating sets
+      fruits = {"apple", "banana", "orange"}
+      numbers = set([1, 2, 3, 2, 1])  # {1, 2, 3} - duplicates removed
+      
+      # Set operations
+      set1 = {1, 2, 3, 4}
+      set2 = {3, 4, 5, 6}
+      
+      print(set1.union(set2))         # {1, 2, 3, 4, 5, 6}
+      print(set1.intersection(set2))  # {3, 4}
+      print(set1.difference(set2))    # {1, 2}
+      print(set1.symmetric_difference(set2))  # {1, 2, 5, 6}
+      
+      # Set methods
+      fruits.add("grape")
+      fruits.remove("banana")  # KeyError if not found
+      fruits.discard("kiwi")   # No error if not found
+      
+      # Membership testing (very fast)
+      print("apple" in fruits)  # True
+
+  - question: "What is exception handling in Python and how does try/except work?"
+    answer: "Exception handling allows you to catch and handle errors gracefully using try/except/finally blocks"
+    code_example: |
+      # Basic exception handling
+      try:
+          result = 10 / 0
+      except ZeroDivisionError:
+          print("Cannot divide by zero!")
+      except Exception as e:
+          print(f"An error occurred: {e}")
+      else:
+          print("No exceptions occurred")
+      finally:
+          print("This always executes")
+      
+      # Multiple exception types
+      try:
+          value = int(input("Enter a number: "))
+          result = 100 / value
+      except (ValueError, TypeError):
+          print("Invalid input type")
+      except ZeroDivisionError:
+          print("Cannot divide by zero")
+      
+      # Raising custom exceptions
+      def validate_age(age):
+          if age < 0:
+              raise ValueError("Age cannot be negative")
+          if age > 150:
+              raise ValueError("Age seems unrealistic")
+          return age
+
+  - question: "What is the difference between == and is in Python?"
+    answer: "== compares values for equality, while is compares object identity (memory location)"
+    code_example: |
+      a = [1, 2, 3]
+      b = [1, 2, 3]
+      c = a
+      
+      print(a == b)  # True (same values)
+      print(a is b)  # False (different objects)
+      print(a is c)  # True (same object)
+      
+      # With immutable objects
+      x = 1000
+      y = 1000
+      print(x == y)  # True (same values)
+      print(x is y)  # False (different objects for large numbers)
+      
+      # Small integers are cached
+      x = 5
+      y = 5
+      print(x is y)  # True (Python caches small integers)
