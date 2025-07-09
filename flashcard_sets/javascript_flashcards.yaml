@@ -174,3 +174,325 @@ flashcards:
       
       const { profile: { username, email } } = user;
       console.log(username); // 'alice123'
+
+  - question: "What are JavaScript array methods map(), filter(), and reduce()?"
+    answer: "map() transforms elements, filter() selects elements, reduce() accumulates elements into a single value"
+    code_example: |
+      const numbers = [1, 2, 3, 4, 5];
+      
+      // map() - transform each element
+      const doubled = numbers.map(num => num * 2);
+      console.log(doubled); // [2, 4, 6, 8, 10]
+      
+      // filter() - select elements that pass a test
+      const evens = numbers.filter(num => num % 2 === 0);
+      console.log(evens); // [2, 4]
+      
+      // reduce() - accumulate to single value
+      const sum = numbers.reduce((acc, num) => acc + num, 0);
+      console.log(sum); // 15
+      
+      // Chaining methods
+      const result = numbers
+        .filter(num => num > 2)
+        .map(num => num * 2)
+        .reduce((acc, num) => acc + num, 0);
+      console.log(result); // 24 (3*2 + 4*2 + 5*2)
+
+  - question: "What is the difference between synchronous and asynchronous JavaScript?"
+    answer: "Synchronous code executes line by line, blocking the thread. Asynchronous code allows other operations to continue while waiting for completion"
+    code_example: |
+      // Synchronous code
+      console.log("Start");
+      function syncFunction() {
+        for (let i = 0; i < 1000000000; i++) {
+          // This blocks the thread
+        }
+        console.log("Sync function done");
+      }
+      syncFunction();
+      console.log("End");
+      // Output: Start, Sync function done, End
+      
+      // Asynchronous code
+      console.log("Start");
+      setTimeout(() => {
+        console.log("Async function done");
+      }, 1000);
+      console.log("End");
+      // Output: Start, End, Async function done (after 1 second)
+      
+      // Using async/await
+      async function fetchData() {
+        try {
+          const response = await fetch('https://api.example.com/data');
+          const data = await response.json();
+          return data;
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      }
+
+  - question: "What is JavaScript hoisting?"
+    answer: "Hoisting is JavaScript's behavior of moving variable and function declarations to the top of their scope during compilation"
+    code_example: |
+      // Variable hoisting with var
+      console.log(x); // undefined (not ReferenceError)
+      var x = 5;
+      
+      // Equivalent to:
+      // var x;
+      // console.log(x); // undefined
+      // x = 5;
+      
+      // let and const are hoisted but in temporal dead zone
+      console.log(y); // ReferenceError: Cannot access 'y' before initialization
+      let y = 10;
+      
+      // Function hoisting
+      sayHello(); // "Hello!" (works because function is hoisted)
+      
+      function sayHello() {
+        console.log("Hello!");
+      }
+      
+      // Function expressions are not hoisted
+      sayGoodbye(); // TypeError: sayGoodbye is not a function
+      var sayGoodbye = function() {
+        console.log("Goodbye!");
+      };
+
+  - question: "What are template literals in JavaScript?"
+    answer: "Template literals are string literals that allow embedded expressions, multi-line strings, and string interpolation using backticks"
+    code_example: |
+      const name = 'Alice';
+      const age = 30;
+      
+      // String interpolation
+      const greeting = `Hello, my name is ${name} and I am ${age} years old.`;
+      console.log(greeting);
+      
+      // Multi-line strings
+      const multiline = `
+        This is a multi-line string.
+        It preserves line breaks
+        and whitespace.
+      `;
+      
+      // Expression evaluation
+      const math = `2 + 3 = ${2 + 3}`;
+      console.log(math); // "2 + 3 = 5"
+      
+      // Function calls in template literals
+      function getGreeting(name) {
+        return `Welcome, ${name}!`;
+      }
+      
+      const welcome = `${getGreeting('Bob')} How are you today?`;
+      console.log(welcome); // "Welcome, Bob! How are you today?"
+      
+      // Tagged template literals
+      function highlight(strings, ...values) {
+        return strings.reduce((result, string, i) => {
+          const value = values[i] ? `<mark>${values[i]}</mark>` : '';
+          return result + string + value;
+        }, '');
+      }
+      
+      const highlighted = highlight`Hello ${name}, you are ${age} years old!`;
+
+  - question: "What is the spread operator (...) in JavaScript?"
+    answer: "The spread operator expands iterables (arrays, objects, strings) into individual elements"
+    code_example: |
+      // Array spreading
+      const arr1 = [1, 2, 3];
+      const arr2 = [4, 5, 6];
+      const combined = [...arr1, ...arr2]; // [1, 2, 3, 4, 5, 6]
+      
+      // Function arguments
+      function sum(a, b, c) {
+        return a + b + c;
+      }
+      const numbers = [1, 2, 3];
+      console.log(sum(...numbers)); // 6
+      
+      // Object spreading
+      const obj1 = { a: 1, b: 2 };
+      const obj2 = { c: 3, d: 4 };
+      const merged = { ...obj1, ...obj2 }; // { a: 1, b: 2, c: 3, d: 4 }
+      
+      // Copying arrays/objects
+      const originalArray = [1, 2, 3];
+      const copiedArray = [...originalArray];
+      
+      const originalObj = { name: 'Alice', age: 30 };
+      const copiedObj = { ...originalObj };
+      
+      // String spreading
+      const str = 'hello';
+      const chars = [...str]; // ['h', 'e', 'l', 'l', 'o']
+
+  - question: "What are JavaScript classes and how do they work?"
+    answer: "Classes are templates for creating objects with shared properties and methods, providing a cleaner syntax for prototypal inheritance"
+    code_example: |
+      // Class declaration
+      class Animal {
+        constructor(name, species) {
+          this.name = name;
+          this.species = species;
+        }
+        
+        // Instance method
+        speak() {
+          console.log(`${this.name} makes a sound`);
+        }
+        
+        // Static method
+        static getKingdom() {
+          return 'Animalia';
+        }
+        
+        // Getter
+        get info() {
+          return `${this.name} is a ${this.species}`;
+        }
+        
+        // Setter
+        set nickname(nick) {
+          this.nick = nick;
+        }
+      }
+      
+      // Inheritance
+      class Dog extends Animal {
+        constructor(name, breed) {
+          super(name, 'Canine'); // Call parent constructor
+          this.breed = breed;
+        }
+        
+        speak() {
+          console.log(`${this.name} barks!`);
+        }
+        
+        wagTail() {
+          console.log(`${this.name} wags tail`);
+        }
+      }
+      
+      const myDog = new Dog('Buddy', 'Golden Retriever');
+      myDog.speak(); // "Buddy barks!"
+      console.log(myDog.info); // "Buddy is a Canine"
+
+  - question: "What is event delegation in JavaScript?"
+    answer: "Event delegation is a technique where you attach an event listener to a parent element to handle events from child elements using event bubbling"
+    code_example: |
+      // Without event delegation (inefficient for many elements)
+      const buttons = document.querySelectorAll('.button');
+      buttons.forEach(button => {
+        button.addEventListener('click', handleClick);
+      });
+      
+      // With event delegation (efficient)
+      const container = document.getElementById('button-container');
+      container.addEventListener('click', function(event) {
+        if (event.target.classList.contains('button')) {
+          handleClick(event);
+        }
+      });
+      
+      function handleClick(event) {
+        console.log(`Button ${event.target.textContent} clicked`);
+      }
+      
+      // HTML structure:
+      // <div id="button-container">
+      //   <button class="button">Button 1</button>
+      //   <button class="button">Button 2</button>
+      //   <button class="button">Button 3</button>
+      //   <!-- Dynamically added buttons will also work -->
+      // </div>
+      
+      // Benefits:
+      // 1. Better performance (one listener instead of many)
+      // 2. Works with dynamically added elements
+      // 3. Less memory usage
+
+  - question: "What are JavaScript modules and how do import/export work?"
+    answer: "Modules allow you to split code into separate files and share functionality between them using import and export statements"
+    code_example: |
+      // math.js - Named exports
+      export function add(a, b) {
+        return a + b;
+      }
+      
+      export function subtract(a, b) {
+        return a - b;
+      }
+      
+      export const PI = 3.14159;
+      
+      // Default export
+      export default function multiply(a, b) {
+        return a * b;
+      }
+      
+      // main.js - Importing
+      import multiply, { add, subtract, PI } from './math.js';
+      
+      // Import everything
+      import * as mathUtils from './math.js';
+      
+      // Usage
+      console.log(add(5, 3));        // 8
+      console.log(multiply(4, 7));   // 28
+      console.log(mathUtils.PI);     // 3.14159
+      
+      // Dynamic imports
+      async function loadMath() {
+        const mathModule = await import('./math.js');
+        console.log(mathModule.add(2, 3)); // 5
+      }
+      
+      // Re-exports
+      // utils.js
+      export { add, subtract } from './math.js';
+      export { default as multiply } from './math.js';
+
+  - question: "What is the JavaScript call stack and event loop?"
+    answer: "The call stack tracks function execution, while the event loop manages asynchronous operations by moving callbacks from queues to the stack when it's empty"
+    code_example: |
+      console.log('Start');
+      
+      // Synchronous code - goes directly to call stack
+      function syncFunction() {
+        console.log('Sync function');
+      }
+      
+      // Asynchronous code - goes to Web APIs, then callback queue
+      setTimeout(() => {
+        console.log('Timeout callback');
+      }, 0);
+      
+      // Promise - goes to microtask queue (higher priority)
+      Promise.resolve().then(() => {
+        console.log('Promise callback');
+      });
+      
+      syncFunction();
+      console.log('End');
+      
+      // Output order:
+      // Start
+      // Sync function
+      // End
+      // Promise callback (microtask queue processed first)
+      // Timeout callback (callback queue processed after microtasks)
+      
+      // Call stack visualization:
+      // 1. console.log('Start') - added to stack, executed, removed
+      // 2. setTimeout() - added to stack, handed to Web API, removed
+      // 3. Promise.resolve().then() - added to stack, microtask queued, removed
+      // 4. syncFunction() - added to stack, executed, removed
+      // 5. console.log('End') - added to stack, executed, removed
+      // 6. Event loop moves Promise callback to stack
+      // 7. Event loop moves setTimeout callback to stack
