@@ -124,16 +124,18 @@ class TestFlashcardApp:
     
     @patch('flashcards.Prompt.ask')
     def test_study_flashcards_skip(self, mock_prompt, temp_json_file):
-        app = FlashcardApp(temp_json_file)
-        app.load_flashcards()
-        
-        mock_prompt.side_effect = ["", "s", ""]
-        
-        with patch.object(app.console, 'clear'), \
-             patch.object(app.console, 'print'):
-            app.study_flashcards()
-        
-        assert app.total_attempts == 1
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as stats_file:
+            app = FlashcardApp(temp_json_file, stats_file=stats_file.name)
+            app.load_flashcards()
+            
+            mock_prompt.side_effect = ["", "s", ""]
+            
+            with patch.object(app.console, 'clear'), \
+                 patch.object(app.console, 'print'):
+                app.study_flashcards()
+            
+            assert app.total_attempts == 1
+        os.unlink(stats_file.name)
     
     @patch('flashcards.random.shuffle')
     def test_study_flashcards_randomize(self, mock_shuffle, temp_json_file):

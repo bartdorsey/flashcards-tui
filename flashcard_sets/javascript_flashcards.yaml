@@ -1,0 +1,176 @@
+flashcards:
+  - question: "What is the difference between let, const, and var in JavaScript?"
+    answer: "var is function-scoped and can be redeclared; let is block-scoped and can be reassigned; const is block-scoped and cannot be reassigned"
+    code_example: |
+      var x = 1;    // Function-scoped, can be redeclared
+      let y = 2;    // Block-scoped, can be reassigned
+      const z = 3;  // Block-scoped, cannot be reassigned
+      
+      if (true) {
+        var x = 10;   // Same variable
+        let y = 20;   // Different variable
+        const z = 30; // Different variable
+      }
+      
+      console.log(x); // 10
+      console.log(y); // 2
+      console.log(z); // 3
+
+  - question: "What is a JavaScript closure?"
+    answer: "A closure is a function that has access to variables in its outer (enclosing) scope even after the outer function has returned"
+    code_example: |
+      function outerFunction(x) {
+        // This is the outer function's scope
+        
+        function innerFunction(y) {
+          // This closure has access to 'x' from outer scope
+          return x + y;
+        }
+        
+        return innerFunction;
+      }
+      
+      const addFive = outerFunction(5);
+      console.log(addFive(10)); // 15
+      
+      // 'x' is still accessible even after outerFunction returns
+
+  - question: "What is the difference between == and === in JavaScript?"
+    answer: "== performs type coercion (converts types), while === checks for strict equality (same type and value)"
+    code_example: |
+      // Double equals (==) with type coercion
+      console.log(5 == '5');    // true (string '5' converted to number)
+      console.log(true == 1);   // true (boolean converted to number)
+      console.log(null == undefined); // true
+      
+      // Triple equals (===) strict equality
+      console.log(5 === '5');   // false (different types)
+      console.log(true === 1);  // false (different types)
+      console.log(null === undefined); // false
+
+  - question: "What is event bubbling in JavaScript?"
+    answer: "Event bubbling is when an event starts at the target element and bubbles up through its parent elements in the DOM tree"
+    code_example: |
+      <div id="outer">
+        <div id="middle">
+          <button id="inner">Click me</button>
+        </div>
+      </div>
+      
+      document.getElementById('outer').addEventListener('click', () => {
+        console.log('Outer div clicked');
+      });
+      
+      document.getElementById('middle').addEventListener('click', () => {
+        console.log('Middle div clicked');
+      });
+      
+      document.getElementById('inner').addEventListener('click', () => {
+        console.log('Button clicked');
+      });
+      
+      // Clicking button outputs:
+      // "Button clicked"
+      // "Middle div clicked"
+      // "Outer div clicked"
+
+  - question: "What is the difference between function declarations and function expressions?"
+    answer: "Function declarations are hoisted (can be called before declaration), while function expressions are not hoisted"
+    code_example: |
+      // Function Declaration - hoisted
+      console.log(declared()); // "I'm declared!" (works)
+      
+      function declared() {
+        return "I'm declared!";
+      }
+      
+      // Function Expression - not hoisted
+      console.log(expressed()); // TypeError: expressed is not a function
+      
+      const expressed = function() {
+        return "I'm expressed!";
+      };
+      
+      // Arrow Function Expression - also not hoisted
+      const arrow = () => "I'm an arrow function!";
+
+  - question: "What is the 'this' keyword in JavaScript?"
+    answer: "The 'this' keyword refers to the context in which a function is called. Its value depends on how the function is invoked"
+    code_example: |
+      const obj = {
+        name: 'Alice',
+        greet: function() {
+          return `Hello, ${this.name}!`;
+        },
+        arrowGreet: () => {
+          return `Hello, ${this.name}!`; // 'this' refers to global scope
+        }
+      };
+      
+      console.log(obj.greet());      // "Hello, Alice!"
+      console.log(obj.arrowGreet()); // "Hello, undefined!"
+      
+      // Changing context with call/apply/bind
+      const person = { name: 'Bob' };
+      console.log(obj.greet.call(person)); // "Hello, Bob!"
+
+  - question: "What is a JavaScript Promise?"
+    answer: "A Promise is an object representing the eventual completion or failure of an asynchronous operation"
+    code_example: |
+      // Creating a Promise
+      const myPromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          const success = Math.random() > 0.5;
+          if (success) {
+            resolve("Operation successful!");
+          } else {
+            reject("Operation failed!");
+          }
+        }, 1000);
+      });
+      
+      // Using the Promise
+      myPromise
+        .then(result => {
+          console.log(result); // "Operation successful!"
+        })
+        .catch(error => {
+          console.log(error); // "Operation failed!"
+        });
+      
+      // Async/await syntax
+      async function handlePromise() {
+        try {
+          const result = await myPromise;
+          console.log(result);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+  - question: "What is destructuring in JavaScript?"
+    answer: "Destructuring is a syntax that allows you to extract values from arrays or properties from objects into distinct variables"
+    code_example: |
+      // Array destructuring
+      const [first, second, ...rest] = [1, 2, 3, 4, 5];
+      console.log(first); // 1
+      console.log(second); // 2
+      console.log(rest); // [3, 4, 5]
+      
+      // Object destructuring
+      const person = { name: 'Alice', age: 30, city: 'New York' };
+      const { name, age, city = 'Unknown' } = person;
+      console.log(name); // 'Alice'
+      console.log(age); // 30
+      
+      // Nested destructuring
+      const user = {
+        id: 1,
+        profile: {
+          username: 'alice123',
+          email: 'alice@example.com'
+        }
+      };
+      
+      const { profile: { username, email } } = user;
+      console.log(username); // 'alice123'

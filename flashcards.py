@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
+import argparse
 import json
+import os
 import random
 import sys
 from dataclasses import dataclass
@@ -287,6 +289,76 @@ class FlashcardApp:
         self.console.print(table)
         Prompt.ask("\n[dim]Press Enter to return to menu[/dim]", default="")
 
+    def discover_flashcard_sets(self, directory: str = "flashcard_sets") -> list[tuple[str, str]]:
+        """Discover all flashcard files in the specified directory.
+        
+        Returns:
+            List of tuples (display_name, file_path) for each flashcard set found
+        """
+        flashcard_sets = []
+        
+        if not os.path.exists(directory):
+            return flashcard_sets
+        
+        for filename in os.listdir(directory):
+            if filename.endswith(('.yaml', '.yml', '.json')) and not filename.startswith('.'):
+                file_path = os.path.join(directory, filename)
+                
+                # Create a display name from filename
+                display_name = filename.replace('.yaml', '').replace('.yml', '').replace('.json', '')
+                display_name = display_name.replace('_', ' ').title()
+                
+                flashcard_sets.append((display_name, file_path))
+        
+        # Sort by display name
+        flashcard_sets.sort(key=lambda x: x[0])
+        return flashcard_sets
+
+    def display_flashcard_set_menu(self, flashcard_sets: list[tuple[str, str]]) -> str:
+        """Display menu to select flashcard set and return chosen file path."""
+        self.console.clear()
+        title = Text("🎓 Choose Your Flashcard Set", style="bold blue")
+        self.console.print(Align.center(title))
+        self.console.print()
+        
+        if not flashcard_sets:
+            self.console.print("[red]No flashcard sets found in flashcard_sets directory![/red]")
+            self.console.print("[yellow]Please add some .yaml or .json files to the flashcard_sets directory.[/yellow]")
+            sys.exit(1)
+        
+        # Display available sets
+        choices = []
+        for i, (display_name, file_path) in enumerate(flashcard_sets, 1):
+            choices.append(str(i))
+            
+            # Try to get card count
+            try:
+                with open(file_path, 'r') as f:
+                    if file_path.endswith(('.yaml', '.yml')):
+                        data = yaml.safe_load(f)
+                    else:
+                        data = json.load(f)
+                    card_count = len(data.get('flashcards', []))
+                    self.console.print(f"  {i}. {display_name} ([dim]{card_count} cards[/dim])")
+            except Exception:
+                self.console.print(f"  {i}. {display_name} ([dim]? cards[/dim])")
+        
+        choices.append("q")
+        self.console.print("  q. Quit")
+        self.console.print()
+        
+        choice = Prompt.ask(
+            "[yellow]Select a flashcard set[/yellow]",
+            choices=choices,
+            default="1" if flashcard_sets else "q"
+        )
+        
+        if choice == "q":
+            sys.exit(0)
+        
+        selected_index = int(choice) - 1
+        return flashcard_sets[selected_index][1]
+
     def run(self) -> None:
         self.load_flashcards()
 
@@ -311,6 +383,52 @@ class FlashcardApp:
                 break
 
 
+def main():
+    parser = argparse.ArgumentParser(
+        description="Interactive flashcard application for studying Python concepts",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python flashcards.py                                    # Show flashcard set selection menu
+  python flashcards.py flashcard_sets/math_flashcards.yaml  # Use specific flashcard set directly
+  python flashcards.py flashcard_sets/science_flashcards.json  # Use science flashcards (JSON)
+  python flashcards.py --help                             # Show this help message
+        """
+    )
+    parser.add_argument(
+        "file",
+        nargs="?",
+        default=None,
+        help="Path to the flashcard file (YAML or JSON format). If not specified, shows set selection menu."
+    )
+    parser.add_argument(
+        "--stats",
+        default="flashcard_stats.json",
+        help="Path to the statistics file (default: flashcard_stats.json)"
+    )
+    
+    args = parser.parse_args()
+    
+    # If no file specified, show set selection menu
+    if args.file is None:
+        # Create a temporary app just for set selection (no file loading)
+        temp_app = FlashcardApp(file_path="dummy.yaml", stats_file=args.stats)
+        flashcard_sets = temp_app.discover_flashcard_sets()
+        selected_file = temp_app.display_flashcard_set_menu(flashcard_sets)
+        
+        # Create the actual app with selected file
+        app = FlashcardApp(file_path=selected_file, stats_file=args.stats)
+        app.run()
+    else:
+        # Validate file exists
+        if not os.path.exists(args.file):
+            print(f"Error: Flashcard file '{args.file}' not found.")
+            print("Please make sure the file exists or use --help for usage information.")
+            sys.exit(1)
+        
+        app = FlashcardApp(file_path=args.file, stats_file=args.stats)
+        app.run()
+
+
 if __name__ == "__main__":
-    app = FlashcardApp()
-    app.run()
+    main()
