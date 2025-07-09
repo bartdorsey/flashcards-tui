@@ -5,7 +5,7 @@ import yaml
 import tempfile
 import os
 from unittest.mock import patch, MagicMock
-from flashcards import FlashcardApp, FlashCard
+from flashcards import FlashcardApp, FlashCard, FlashcardSetStats, CardStats
 
 class TestFlashcardApp:
     
@@ -101,8 +101,8 @@ class TestFlashcardApp:
                 app.study_flashcards()
             
             current_stats = app.get_current_set_stats()
-            assert current_stats["correct_answers"] == 2
-            assert current_stats["total_attempts"] == 2
+            assert current_stats.correct_answers == 2
+            assert current_stats.total_attempts == 2
         os.unlink(stats_file.name)
     
     @patch('flashcards.Prompt.ask')
@@ -118,8 +118,8 @@ class TestFlashcardApp:
                 app.study_flashcards()
             
             current_stats = app.get_current_set_stats()
-            assert current_stats["correct_answers"] == 0
-            assert current_stats["total_attempts"] == 2
+            assert current_stats.correct_answers == 0
+            assert current_stats.total_attempts == 2
         os.unlink(stats_file.name)
     
     @patch('flashcards.Prompt.ask')
@@ -135,7 +135,7 @@ class TestFlashcardApp:
                 app.study_flashcards()
             
             current_stats = app.get_current_set_stats()
-            assert current_stats["total_attempts"] == 1
+            assert current_stats.total_attempts == 1
         os.unlink(stats_file.name)
     
     @patch('flashcards.random.shuffle')
@@ -165,8 +165,8 @@ class TestFlashcardApp:
         app = FlashcardApp(temp_json_file)
         app.load_flashcards()
         current_stats = app.get_current_set_stats()
-        current_stats["total_attempts"] = 5
-        current_stats["correct_answers"] = 3
+        current_stats.total_attempts = 5
+        current_stats.correct_answers = 3
         
         with patch.object(app.console, 'clear'), \
              patch.object(app.console, 'print') as mock_print, \
