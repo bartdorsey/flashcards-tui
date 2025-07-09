@@ -5,12 +5,16 @@ Pure functions for file I/O operations.
 
 import json
 import os
-import sys
 from typing import Dict, List, Tuple, Optional
 import yaml
 from rich.console import Console
 
-from flashcard_types import FlashCard, FlashcardSet, FlashcardSetStats, CardStats
+from flashcard_types import (
+    FlashCard,
+    FlashcardSet,
+    FlashcardSetStats,
+    CardStats,
+)
 
 
 def load_flashcard_file(file_path: str) -> Optional[FlashcardSet]:
@@ -43,10 +47,7 @@ def load_flashcard_file(file_path: str) -> Optional[FlashcardSet]:
         ]
 
         return FlashcardSet(
-            cards=cards,
-            name=set_name,
-            title=title,
-            file_path=file_path
+            cards=cards, name=set_name, title=title, file_path=file_path
         )
 
     except FileNotFoundError:
@@ -89,7 +90,9 @@ def load_statistics_file(stats_file: str) -> Dict[str, FlashcardSetStats]:
 
             for set_name, set_data in flashcard_sets_data.items():
                 card_stats = {}
-                for card_key, card_data in set_data.get("card_stats", {}).items():
+                for card_key, card_data in set_data.get(
+                    "card_stats", {}
+                ).items():
                     card_stats[card_key] = CardStats(
                         correct=card_data.get("correct", 0),
                         total=card_data.get("total", 0),
@@ -111,7 +114,9 @@ def load_statistics_file(stats_file: str) -> Dict[str, FlashcardSetStats]:
         return {}
 
 
-def save_statistics_file(stats_file: str, set_stats: Dict[str, FlashcardSetStats]) -> bool:
+def save_statistics_file(
+    stats_file: str, set_stats: Dict[str, FlashcardSetStats]
+) -> bool:
     """Save statistics to JSON file."""
     # Convert dataclasses to dictionaries for JSON serialization
     flashcard_sets_dict = {}
@@ -136,11 +141,15 @@ def save_statistics_file(stats_file: str, set_stats: Dict[str, FlashcardSetStats
         return True
     except Exception as e:
         console = Console()
-        console.print(f"[yellow]Warning: Could not save statistics: {e}[/yellow]")
+        console.print(
+            f"[yellow]Warning: Could not save statistics: {e}[/yellow]"
+        )
         return False
 
 
-def discover_flashcard_sets(directory: str = "flashcard_sets") -> List[Tuple[str, str]]:
+def discover_flashcard_sets(
+    directory: str = "flashcard_sets",
+) -> List[Tuple[str, str]]:
     """Discover all flashcard files in the specified directory."""
     flashcard_sets = []
 
@@ -149,7 +158,9 @@ def discover_flashcard_sets(directory: str = "flashcard_sets") -> List[Tuple[str
 
     for filename in os.listdir(directory):
         valid_extensions = (".yaml", ".yml", ".json")
-        if filename.endswith(valid_extensions) and not filename.startswith("."):
+        if filename.endswith(valid_extensions) and not filename.startswith(
+            "."
+        ):
             file_path = os.path.join(directory, filename)
 
             # Try to read the custom title from the file
@@ -240,3 +251,4 @@ def get_set_card_count(set_name: str) -> int:
                     except Exception:
                         pass
     return 0
+

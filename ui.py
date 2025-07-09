@@ -4,7 +4,7 @@ Pure functions for UI rendering.
 """
 
 import sys
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Tuple, Any
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
@@ -15,7 +15,7 @@ from rich.syntax import Syntax
 
 from flashcard_types import FlashCard, FlashcardSet, FlashcardSetStats
 from io_operations import get_set_display_name, get_set_card_count
-from flashcard_statistics import get_most_challenging_cards, calculate_overall_accuracy
+from flashcard_statistics import get_most_challenging_cards
 
 
 def display_menu(console: Console, set_title: str) -> None:
@@ -60,7 +60,8 @@ def display_question(console: Console, card: FlashCard) -> None:
 def wait_for_user_thinking(console: Console) -> None:
     """Wait for user to think about the answer."""
     Prompt.ask(
-        "\\n[yellow]Think about it, then press Enter to reveal the answer[/yellow]",
+        "\\n[yellow]Think about it, then press Enter to reveal "
+        "the answer[/yellow]",
         default="",
     )
 
@@ -116,7 +117,9 @@ def display_user_feedback(console: Console, response: str) -> None:
         console.print("[yellow]Keep practicing! 💪[/yellow]")
 
 
-def continue_to_next_card(console: Console, current: int, total: int, response: str) -> None:
+def continue_to_next_card(
+    console: Console, current: int, total: int, response: str
+) -> None:
     """Prompt to continue to next card."""
     if current < total and response not in ["s", "q"]:
         Prompt.ask(
@@ -125,18 +128,20 @@ def continue_to_next_card(console: Console, current: int, total: int, response: 
         )
 
 
-def show_session_summary(console: Console, session_summary: Dict[str, object]) -> None:
+def show_session_summary(
+    console: Console, session_summary: Dict[str, Any]
+) -> None:
     """Display session summary."""
     if session_summary["total_attempts"] > 0:
         console.print("\\n[bold]Session Summary:[/bold]")
         console.print(f"Cards studied: {session_summary['cards_studied']}")
         console.print(f"Accuracy: {session_summary['accuracy']:.1f}%")
-        Prompt.ask(
-            "\\n[dim]Press Enter to return to menu[/dim]", default=""
-        )
+        Prompt.ask("\\n[dim]Press Enter to return to menu[/dim]", default="")
 
 
-def display_statistics_table(console: Console, flashcard_set: FlashcardSet, set_stats: FlashcardSetStats) -> None:
+def display_statistics_table(
+    console: Console, flashcard_set: FlashcardSet, set_stats: FlashcardSetStats
+) -> None:
     """Display statistics table for current set."""
     console.clear()
 
@@ -173,7 +178,9 @@ def display_statistics_table(console: Console, flashcard_set: FlashcardSet, set_
     Prompt.ask("\\n[dim]Press Enter to return to menu[/dim]", default="")
 
 
-def display_global_statistics(console: Console, set_stats: Dict[str, FlashcardSetStats]) -> None:
+def display_global_statistics(
+    console: Console, set_stats: Dict[str, FlashcardSetStats]
+) -> None:
     """Display statistics for all flashcard sets."""
     console.clear()
 
@@ -192,7 +199,9 @@ def display_global_statistics(console: Console, set_stats: Dict[str, FlashcardSe
     sets_with_data = 0
 
     for set_name_key, stats in set_stats.items():
-        if set_name_key != "legacy_data" and not set_name_key.startswith("tmp"):
+        if set_name_key != "legacy_data" and not set_name_key.startswith(
+            "tmp"
+        ):
             display_name = get_set_display_name(set_name_key)
             set_attempts = stats.total_attempts
             set_correct = stats.correct_answers
@@ -203,7 +212,7 @@ def display_global_statistics(console: Console, set_stats: Dict[str, FlashcardSe
             try:
                 card_count = get_set_card_count(set_name_key)
                 card_count_str = str(card_count) if card_count > 0 else "?"
-            except:
+            except Exception:
                 card_count_str = "?"
 
             if set_attempts > 0:
@@ -232,7 +241,8 @@ def display_global_statistics(console: Console, set_stats: Dict[str, FlashcardSe
 
     if total_attempts_all == 0:
         console.print(
-            "[yellow]No statistics available yet. Start studying some flashcards![/yellow]"
+            "[yellow]No statistics available yet. Start studying some "
+            "flashcards![/yellow]"
         )
     else:
         console.print(table)
@@ -240,8 +250,10 @@ def display_global_statistics(console: Console, set_stats: Dict[str, FlashcardSe
     Prompt.ask("\\n[dim]Press Enter to return to menu[/dim]", default="")
 
 
-def display_flashcard_set_menu(console: Console, flashcard_sets: List[Tuple[str, str]]) -> str:
-    """Display menu to select flashcard set and return chosen file path."""
+def display_flashcard_set_menu(
+    console: Console, flashcard_sets: List[Tuple[str, str]]
+) -> str:
+    """Display menu to select flashcard set and return file path."""
     console.clear()
     title = Text("🎓 Choose Your Flashcard Set", style="bold blue")
     console.print(Align.center(title))
@@ -252,7 +264,8 @@ def display_flashcard_set_menu(console: Console, flashcard_sets: List[Tuple[str,
             "[red]No flashcard sets found in flashcard_sets directory![/red]"
         )
         console.print(
-            "[yellow]Please add some .yaml or .json files to the flashcard_sets directory.[/yellow]"
+            "[yellow]Please add some .yaml or .json files to the "
+            "flashcard_sets directory.[/yellow]"
         )
         sys.exit(1)
 
@@ -263,9 +276,12 @@ def display_flashcard_set_menu(console: Console, flashcard_sets: List[Tuple[str,
 
         # Try to get card count
         try:
-            card_count = get_set_card_count(
-                file_path.replace(".yaml", "").replace(".yml", "").replace(".json", "")
+            set_name = (
+                file_path.replace(".yaml", "")
+                .replace(".yml", "")
+                .replace(".json", "")
             )
+            card_count = get_set_card_count(set_name)
             card_display = f"({card_count} cards)"
             console.print(f"  {i}. {display_name} ([dim]{card_display}[/dim])")
         except Exception:
@@ -288,7 +304,9 @@ def display_flashcard_set_menu(console: Console, flashcard_sets: List[Tuple[str,
     return flashcard_sets[selected_index][1]
 
 
-def display_flashcard_set_menu_with_stats(console: Console, flashcard_sets: List[Tuple[str, str]]) -> str:
+def display_flashcard_set_menu_with_stats(
+    console: Console, flashcard_sets: List[Tuple[str, str]]
+) -> str:
     """Display menu to select flashcard set with statistics option."""
     console.clear()
     title = Text("🎓 Choose Your Flashcard Set", style="bold blue")
@@ -300,7 +318,8 @@ def display_flashcard_set_menu_with_stats(console: Console, flashcard_sets: List
             "[red]No flashcard sets found in flashcard_sets directory![/red]"
         )
         console.print(
-            "[yellow]Please add some .yaml or .json files to the flashcard_sets directory.[/yellow]"
+            "[yellow]Please add some .yaml or .json files to the "
+            "flashcard_sets directory.[/yellow]"
         )
         sys.exit(1)
 
@@ -311,9 +330,12 @@ def display_flashcard_set_menu_with_stats(console: Console, flashcard_sets: List
 
         # Try to get card count
         try:
-            card_count = get_set_card_count(
-                file_path.replace(".yaml", "").replace(".yml", "").replace(".json", "")
+            set_name = (
+                file_path.replace(".yaml", "")
+                .replace(".yml", "")
+                .replace(".json", "")
             )
+            card_count = get_set_card_count(set_name)
             card_display = f"({card_count} cards)"
             console.print(f"  {i}. {display_name} ([dim]{card_display}[/dim])")
         except Exception:
