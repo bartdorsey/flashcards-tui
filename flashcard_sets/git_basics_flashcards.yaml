@@ -1,0 +1,251 @@
+title: "🔧 Git Basics"
+flashcards:
+  - question: "What is Git?"
+    answer: "A distributed version control system that tracks changes in source code during software development"
+    code_example: |
+      # Git allows multiple developers to work on the same project
+      # It tracks all changes and maintains a complete history
+      
+      # Check Git version
+      git --version
+      
+      # Get help
+      git help
+      git help <command>
+
+  - question: "How do you initialize a new Git repository?"
+    answer: "Use 'git init' to create a new Git repository in the current directory"
+    code_example: |
+      # Initialize a new repository
+      git init
+      
+      # Initialize with specific branch name
+      git init --initial-branch=main
+      
+      # This creates a .git folder containing repository data
+
+  - question: "How do you check the status of your repository?"
+    answer: "Use 'git status' to see which files are tracked, modified, staged, or untracked"
+    code_example: |
+      git status
+      
+      # Shows:
+      # - Untracked files (new files)
+      # - Modified files (changed but not staged)
+      # - Staged files (ready to commit)
+      # - Current branch information
+
+  - question: "How do you add files to the staging area?"
+    answer: "Use 'git add' to stage files for the next commit"
+    code_example: |
+      # Add specific file
+      git add filename.txt
+      
+      # Add all files in current directory
+      git add .
+      
+      # Add all Python files
+      git add *.py
+      
+      # Add files interactively
+      git add -i
+
+  - question: "How do you commit changes?"
+    answer: "Use 'git commit' to save staged changes to the repository with a descriptive message"
+    code_example: |
+      # Commit with message
+      git commit -m "Add user authentication feature"
+      
+      # Commit with detailed message
+      git commit -m "Fix login bug" -m "Resolved issue with password validation"
+      
+      # Stage and commit in one step
+      git commit -am "Update documentation"
+
+  - question: "How do you view commit history?"
+    answer: "Use 'git log' to see the commit history of your repository"
+    code_example: |
+      # Basic log
+      git log
+      
+      # One line per commit
+      git log --oneline
+      
+      # Show last 5 commits
+      git log -5
+      
+      # Show commits with file changes
+      git log --stat
+      
+      # Show commits in a graph
+      git log --graph --oneline --all
+
+  - question: "How do you create and switch branches?"
+    answer: "Use 'git branch' to create branches and 'git checkout' or 'git switch' to switch between them"
+    code_example: |
+      # Create new branch
+      git branch feature-login
+      
+      # Switch to branch
+      git checkout feature-login
+      git switch feature-login  # newer syntax
+      
+      # Create and switch in one command
+      git checkout -b feature-payment
+      git switch -c feature-payment  # newer syntax
+      
+      # List all branches
+      git branch
+
+  - question: "How do you merge branches?"
+    answer: "Use 'git merge' to combine changes from one branch into another"
+    code_example: |
+      # Switch to target branch (usually main/master)
+      git checkout main
+      
+      # Merge feature branch
+      git merge feature-login
+      
+      # Merge with no fast-forward (creates merge commit)
+      git merge --no-ff feature-login
+      
+      # Delete merged branch
+      git branch -d feature-login
+
+  - question: "How do you clone a remote repository?"
+    answer: "Use 'git clone' to create a local copy of a remote repository"
+    code_example: |
+      # Clone repository
+      git clone https://github.com/user/repo.git
+      
+      # Clone to specific directory
+      git clone https://github.com/user/repo.git my-project
+      
+      # Clone specific branch
+      git clone -b develop https://github.com/user/repo.git
+
+  - question: "How do you work with remote repositories?"
+    answer: "Use 'git remote', 'git push', and 'git pull' to interact with remote repositories"
+    code_example: |
+      # Add remote repository
+      git remote add origin https://github.com/user/repo.git
+      
+      # List remotes
+      git remote -v
+      
+      # Push to remote
+      git push origin main
+      
+      # Pull from remote
+      git pull origin main
+      
+      # Fetch without merging
+      git fetch origin
+
+  - question: "How do you undo changes in Git?"
+    answer: "Various commands depending on the stage: git checkout, git reset, git revert"
+    code_example: |
+      # Discard unstaged changes
+      git checkout -- filename.txt
+      git restore filename.txt  # newer syntax
+      
+      # Unstage files
+      git reset filename.txt
+      git restore --staged filename.txt  # newer syntax
+      
+      # Undo last commit (keep changes)
+      git reset --soft HEAD~1
+      
+      # Undo last commit (discard changes)
+      git reset --hard HEAD~1
+
+  - question: "What is the difference between git pull and git fetch?"
+    answer: "git fetch downloads changes without merging, git pull downloads and automatically merges changes"
+    code_example: |
+      # Fetch downloads remote changes but doesn't merge
+      git fetch origin
+      git merge origin/main  # Manual merge
+      
+      # Pull does fetch + merge automatically
+      git pull origin main
+      
+      # Equivalent to:
+      # git fetch origin main
+      # git merge origin/main
+
+  - question: "How do you view and manage differences?"
+    answer: "Use 'git diff' to see changes between files, commits, or branches"
+    code_example: |
+      # Show unstaged changes
+      git diff
+      
+      # Show staged changes
+      git diff --staged
+      git diff --cached
+      
+      # Compare branches
+      git diff main..feature-branch
+      
+      # Compare specific commits
+      git diff abc123..def456
+      
+      # Show changes in specific file
+      git diff filename.txt
+
+  - question: "How do you handle merge conflicts?"
+    answer: "Manually edit conflicted files, remove conflict markers, then add and commit the resolved files"
+    code_example: |
+      # When merge conflict occurs:
+      # 1. Git shows conflict markers in files:
+      # <<<<<<< HEAD
+      # Your changes
+      # =======
+      # Their changes
+      # >>>>>>> branch-name
+      
+      # 2. Edit file to resolve conflict
+      # 3. Remove conflict markers
+      # 4. Stage resolved file
+      git add resolved-file.txt
+      
+      # 5. Complete the merge
+      git commit
+
+  - question: "How do you create and apply tags?"
+    answer: "Use 'git tag' to mark specific commits, usually for releases"
+    code_example: |
+      # Create lightweight tag
+      git tag v1.0
+      
+      # Create annotated tag with message
+      git tag -a v1.0 -m "Version 1.0 release"
+      
+      # Tag specific commit
+      git tag v0.9 abc123
+      
+      # List tags
+      git tag
+      
+      # Push tags to remote
+      git push origin v1.0
+      git push origin --tags  # push all tags
+
+  - question: "How do you temporarily save work with git stash?"
+    answer: "Use 'git stash' to temporarily save uncommitted changes and return to a clean working directory"
+    code_example: |
+      # Stash current changes
+      git stash
+      git stash push -m "Work in progress on login"
+      
+      # List stashes
+      git stash list
+      
+      # Apply most recent stash
+      git stash apply
+      git stash pop  # apply and remove from stash
+      
+      # Apply specific stash
+      git stash apply stash@{1}
+      
+      # Delete stash
+      git stash drop stash@{0}
