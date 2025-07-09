@@ -1,0 +1,99 @@
+# YAML Schema for Flashcard Sets
+# This schema defines the structure and validation rules for flashcard YAML files
+
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "https://example.com/flashcard-schema.json"
+title: "Flashcard Set Schema"
+description: "Schema for validating flashcard YAML/JSON files"
+
+type: object
+required:
+  - flashcards
+properties:
+  title:
+    type: string
+    description: "Custom display title for the flashcard set (with optional emoji)"
+    minLength: 1
+    maxLength: 100
+    examples:
+      - "🐍 Python Basics"
+      - "🔧 Git Basics" 
+      - "📚 Programming Terminology"
+  
+  flashcards:
+    type: array
+    description: "Array of flashcard objects"
+    minItems: 1
+    items:
+      type: object
+      required:
+        - question
+        - answer
+      properties:
+        question:
+          type: string
+          description: "The question text displayed to the user"
+          minLength: 5
+          maxLength: 500
+          examples:
+            - "What is a Python list?"
+            - "How do you initialize a Git repository?"
+        
+        answer:
+          type: string
+          description: "The answer explanation"
+          minLength: 10
+          maxLength: 1000
+          examples:
+            - "A mutable sequence type that can hold multiple items"
+            - "Use 'git init' to create a new Git repository"
+        
+        code_example:
+          type: string
+          description: "Optional code example to illustrate the concept"
+          examples:
+            - |
+              # Create a list
+              my_list = [1, 2, 3, 4]
+              print(my_list[0])  # Output: 1
+            - |
+              # Initialize repository
+              git init
+              git add .
+              git commit -m "Initial commit"
+      
+      additionalProperties: false
+
+additionalProperties: false
+
+# Examples of valid flashcard sets
+examples:
+  - title: "🐍 Python Basics"
+    flashcards:
+      - question: "What is a Python list?"
+        answer: "A mutable sequence type that can hold multiple items in order"
+        code_example: |
+          # Create and use a list
+          fruits = ["apple", "banana", "orange"]
+          print(fruits[0])  # "apple"
+          fruits.append("grape")
+      
+      - question: "What is a Python dictionary?"
+        answer: "A mutable mapping type that stores key-value pairs"
+        code_example: |
+          # Create and use a dictionary
+          person = {"name": "Alice", "age": 30}
+          print(person["name"])  # "Alice"
+          person["city"] = "New York"
+  
+  - title: "🔧 Git Basics"
+    flashcards:
+      - question: "How do you check Git status?"
+        answer: "Use 'git status' to see which files are tracked, modified, or staged"
+        code_example: |
+          git status
+          # Shows untracked, modified, and staged files
+      
+      - question: "How do you commit changes?"
+        answer: "Use 'git commit' with a descriptive message"
+        # Note: code_example is optional

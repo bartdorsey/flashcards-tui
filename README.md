@@ -108,6 +108,10 @@ flashcards:
 - Add a `title` field with emoji and descriptive text
 - If no title is provided, the filename will be used (formatted)
 
+### Schema Validation
+
+A YAML schema is provided in `flashcard_schema.yaml` that defines the structure and validation rules for flashcard files. You can use tools like `yamllint` or JSON Schema validators to check your flashcard files against this schema.
+
 ## Statistics
 
 The app tracks detailed statistics including:
@@ -163,6 +167,8 @@ flashcards/
 ├── flashcards.py              # Main application
 ├── test_flashcards.py         # Unit tests
 ├── flashcard_stats.json       # Statistics storage
+├── flashcard_schema.yaml      # YAML schema for validation
+├── requirements.txt           # Python dependencies
 ├── README.md                  # This file
 └── flashcard_sets/            # Flashcard collections
     ├── python_basic_flashcards.yaml
