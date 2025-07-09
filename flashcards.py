@@ -50,7 +50,9 @@ class FlashcardApp:
             {}
         )  # Stats organized by flashcard set
         self.current_set_name: str = ""  # Name of current flashcard set
-        self.current_set_title: str = ""  # Display title of current flashcard set
+        self.current_set_title: str = (
+            ""  # Display title of current flashcard set
+        )
         self.load_statistics()
 
     def load_flashcards(self) -> None:
@@ -68,9 +70,11 @@ class FlashcardApp:
                     .replace(".yml", "")
                     .replace(".json", "")
                 )
-                
+
                 # Get custom title or use filename as fallback
-                self.current_set_title = data.get("title", self.current_set_name.replace("_", " ").title())
+                self.current_set_title = data.get(
+                    "title", self.current_set_name.replace("_", " ").title()
+                )
 
                 self.flashcards = [
                     FlashCard(
@@ -400,8 +404,10 @@ class FlashcardApp:
             total_correct_all = 0
 
             for set_name_key, stats in self.set_stats.items():
-                if (set_name_key != "legacy_data" and 
-                    not set_name_key.startswith("tmp")):  # Skip legacy data and test temp files
+                if (
+                    set_name_key != "legacy_data"
+                    and not set_name_key.startswith("tmp")
+                ):  # Skip legacy data and test temp files
                     # Try to get custom title for this set
                     display_name = self._get_set_display_name(set_name_key)
                     set_attempts = stats.total_attempts
@@ -436,7 +442,7 @@ class FlashcardApp:
         directory = "flashcard_sets"
         if os.path.exists(directory):
             for filename in os.listdir(directory):
-                if filename.endswith(('.yaml', '.yml', '.json')):
+                if filename.endswith((".yaml", ".yml", ".json")):
                     file_set_name = (
                         filename.replace(".yaml", "")
                         .replace(".yml", "")
@@ -445,17 +451,17 @@ class FlashcardApp:
                     if file_set_name == set_name:
                         try:
                             file_path = os.path.join(directory, filename)
-                            with open(file_path, 'r') as f:
-                                if filename.endswith(('.yaml', '.yml')):
+                            with open(file_path, "r") as f:
+                                if filename.endswith((".yaml", ".yml")):
                                     data = yaml.safe_load(f)
                                 else:
                                     data = json.load(f)
-                            
+
                             if data and "title" in data:
                                 return data["title"]
                         except Exception:
                             pass
-        
+
         # Fallback to formatted filename
         return set_name.replace("_", " ").title()
 
@@ -474,18 +480,19 @@ class FlashcardApp:
 
         for filename in os.listdir(directory):
             valid_extensions = (".yaml", ".yml", ".json")
-            if (filename.endswith(valid_extensions) and 
-                not filename.startswith(".")):
+            if filename.endswith(valid_extensions) and not filename.startswith(
+                "."
+            ):
                 file_path = os.path.join(directory, filename)
 
                 # Try to read the custom title from the file
                 try:
-                    with open(file_path, 'r') as f:
-                        if file_path.endswith(('.yaml', '.yml')):
+                    with open(file_path, "r") as f:
+                        if file_path.endswith((".yaml", ".yml")):
                             data = yaml.safe_load(f)
                         else:
                             data = json.load(f)
-                    
+
                     # Use custom title if available, otherwise fallback to filename
                     if data and "title" in data:
                         display_name = data["title"]
@@ -577,7 +584,7 @@ class FlashcardApp:
         title = Text("🎓 Choose Your Flashcard Set", style="bold blue")
         self.console.print(Align.center(title))
         self.console.print()
-        
+
         if not flashcard_sets:
             self.console.print(
                 "[red]No flashcard sets found in "
@@ -588,20 +595,20 @@ class FlashcardApp:
                 "flashcard_sets directory.[/yellow]"
             )
             sys.exit(1)
-        
+
         # Display available sets
         choices = []
         for i, (display_name, file_path) in enumerate(flashcard_sets, 1):
             choices.append(str(i))
-            
+
             # Try to get card count
             try:
-                with open(file_path, 'r') as f:
-                    if file_path.endswith(('.yaml', '.yml')):
+                with open(file_path, "r") as f:
+                    if file_path.endswith((".yaml", ".yml")):
                         data = yaml.safe_load(f)
                     else:
                         data = json.load(f)
-                    card_count = len(data.get('flashcards', []))
+                    card_count = len(data.get("flashcards", []))
                     card_display = f"({card_count} cards)"
                     self.console.print(
                         f"  {i}. {display_name} ([dim]{card_display}[/dim])"
@@ -610,18 +617,18 @@ class FlashcardApp:
                 self.console.print(
                     f"  {i}. {display_name} ([dim]? cards[/dim])"
                 )
-        
+
         choices.extend(["s", "q"])
         self.console.print("  s. View statistics for all sets")
         self.console.print("  q. Quit")
         self.console.print()
-        
+
         choice = Prompt.ask(
             "[yellow]Select a flashcard set[/yellow]",
             choices=choices,
-            default="1" if flashcard_sets else "q"
+            default="1" if flashcard_sets else "q",
         )
-        
+
         if choice == "q":
             return "quit"
         elif choice == "s":
@@ -649,8 +656,9 @@ class FlashcardApp:
         sets_with_data = 0
 
         for set_name_key, stats in self.set_stats.items():
-            if (set_name_key != "legacy_data" and 
-                not set_name_key.startswith("tmp")):  # Skip legacy data and test temp files
+            if set_name_key != "legacy_data" and not set_name_key.startswith(
+                "tmp"
+            ):  # Skip legacy data and test temp files
                 display_name = self._get_set_display_name(set_name_key)
                 set_attempts = stats.total_attempts
                 set_correct = stats.correct_answers
@@ -670,15 +678,12 @@ class FlashcardApp:
                         display_name,
                         card_count_str,
                         str(set_attempts),
-                        f"{set_accuracy:.1f}%"
+                        f"{set_accuracy:.1f}%",
                     )
                     sets_with_data += 1
                 elif card_count_str != "?":
                     table.add_row(
-                        display_name,
-                        card_count_str,
-                        "0",
-                        "No attempts yet"
+                        display_name, card_count_str, "0", "No attempts yet"
                     )
 
         # Add overall summary if we have data from multiple sets
@@ -688,11 +693,13 @@ class FlashcardApp:
                 "[bold]Overall Summary",
                 "-",
                 f"[bold]{total_attempts_all}",
-                f"[bold]{overall_accuracy:.1f}%"
+                f"[bold]{overall_accuracy:.1f}%",
             )
 
         if total_attempts_all == 0:
-            self.console.print("[yellow]No statistics available yet. Start studying some flashcards![/yellow]")
+            self.console.print(
+                "[yellow]No statistics available yet. Start studying some flashcards![/yellow]"
+            )
         else:
             self.console.print(table)
 
@@ -703,7 +710,7 @@ class FlashcardApp:
         directory = "flashcard_sets"
         if os.path.exists(directory):
             for filename in os.listdir(directory):
-                if filename.endswith(('.yaml', '.yml', '.json')):
+                if filename.endswith((".yaml", ".yml", ".json")):
                     file_set_name = (
                         filename.replace(".yaml", "")
                         .replace(".yml", "")
@@ -712,12 +719,12 @@ class FlashcardApp:
                     if file_set_name == set_name:
                         try:
                             file_path = os.path.join(directory, filename)
-                            with open(file_path, 'r') as f:
-                                if filename.endswith(('.yaml', '.yml')):
+                            with open(file_path, "r") as f:
+                                if filename.endswith((".yaml", ".yml")):
                                     data = yaml.safe_load(f)
                                 else:
                                     data = json.load(f)
-                            
+
                             if data and "flashcards" in data:
                                 return len(data["flashcards"])
                         except Exception:
@@ -750,8 +757,9 @@ class FlashcardApp:
 
 def main():
     parser = argparse.ArgumentParser(
-        description=("Interactive flashcard application for studying "
-                     "Python concepts"),
+        description=(
+            "Interactive flashcard application for studying " "Python concepts"
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -765,14 +773,17 @@ Examples:
         "file",
         nargs="?",
         default=None,
-        help=("Path to the flashcard file (YAML or JSON format). "
-              "If not specified, shows set selection menu."),
+        help=(
+            "Path to the flashcard file (YAML or JSON format). "
+            "If not specified, shows set selection menu."
+        ),
     )
     parser.add_argument(
         "--stats",
         default="flashcard_stats.json",
-        help=("Path to the statistics file "
-              "(default: flashcard_stats.json)"),
+        help=(
+            "Path to the statistics file " "(default: flashcard_stats.json)"
+        ),
     )
 
     args = parser.parse_args()
@@ -780,14 +791,14 @@ Examples:
     # If no file specified, show set selection menu with statistics option
     if args.file is None:
         # Create a temporary app just for set selection and statistics
-        temp_app = FlashcardApp(
-            file_path="dummy.yaml", stats_file=args.stats
-        )
-        
+        temp_app = FlashcardApp(file_path="dummy.yaml", stats_file=args.stats)
+
         while True:
             flashcard_sets = temp_app.discover_flashcard_sets()
-            choice = temp_app.display_flashcard_set_menu_with_stats(flashcard_sets)
-            
+            choice = temp_app.display_flashcard_set_menu_with_stats(
+                flashcard_sets
+            )
+
             if choice == "stats":
                 temp_app.show_global_statistics()
             elif choice == "quit":
@@ -797,13 +808,11 @@ Examples:
                 break
             else:
                 # choice is a file path, create the actual app and run
-                app = FlashcardApp(
-                    file_path=choice, stats_file=args.stats
-                )
+                app = FlashcardApp(file_path=choice, stats_file=args.stats)
                 app.run()
                 # Reload stats after study session
                 temp_app.load_statistics()
-                
+
     else:
         # Direct file specified - validate and run
         if not os.path.exists(args.file):
