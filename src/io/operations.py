@@ -9,7 +9,7 @@ from typing import Dict, List, Tuple, Optional
 import yaml
 from rich.console import Console
 
-from flashcard_types import (
+from src.core.types import (
     FlashCard,
     FlashcardSet,
     FlashcardSetStats,

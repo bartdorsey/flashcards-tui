@@ -9,20 +9,20 @@ import sys
 from rich.console import Console
 from rich.prompt import Prompt
 
-from flashcard_types import AppState, FlashcardSetStats
-from io_operations import (
+from src.core.types import AppState, FlashcardSetStats
+from src.io.operations import (
     load_flashcard_file,
     load_statistics_file,
     save_statistics_file,
     discover_flashcard_sets,
 )
-from ui import (
+from src.ui.interface import (
     display_menu,
     display_flashcard_set_menu_with_stats,
     display_global_statistics,
     display_exit_message,
 )
-from study_session import handle_menu_choice
+from src.core.session import handle_menu_choice
 
 
 def create_app_state(stats_file: str) -> AppState:

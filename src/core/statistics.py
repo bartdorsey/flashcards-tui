@@ -4,7 +4,7 @@ Pure functions for statistics calculations.
 """
 
 from typing import Dict, List, Tuple
-from flashcard_types import FlashCard, FlashcardSetStats, CardStats
+from src.core.types import FlashCard, FlashcardSetStats, CardStats
 
 
 def update_card_stats(card_stats: CardStats, is_correct: bool) -> CardStats:

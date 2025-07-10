@@ -10,27 +10,27 @@ import tempfile
 import os
 from unittest.mock import patch
 
-from flashcard_types import (
+from src.core.types import (
     FlashCard,
     FlashcardSet,
     FlashcardSetStats,
     CardStats,
     StudySession,
 )
-from io_operations import (
+from src.io.operations import (
     load_flashcard_file,
     load_statistics_file,
     save_statistics_file,
     discover_flashcard_sets,
 )
-from flashcard_statistics import (
+from src.core.statistics import (
     update_card_stats,
     update_set_stats,
     get_most_challenging_cards,
     calculate_overall_accuracy,
     calculate_session_summary,
 )
-from study_session import prepare_cards, create_study_session, advance_session
+from src.core.session import prepare_cards, create_study_session, advance_session
 
 
 class TestFlashcardTypes:

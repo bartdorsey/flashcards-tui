@@ -13,9 +13,9 @@ from rich.table import Table
 from rich.align import Align
 from rich.syntax import Syntax
 
-from flashcard_types import FlashCard, FlashcardSet, FlashcardSetStats
-from io_operations import get_set_display_name, get_set_card_count
-from flashcard_statistics import get_most_challenging_cards
+from src.core.types import FlashCard, FlashcardSet, FlashcardSetStats
+from src.io.operations import get_set_display_name, get_set_card_count
+from src.core.statistics import get_most_challenging_cards
 
 
 def display_menu(console: Console, set_title: str) -> None:

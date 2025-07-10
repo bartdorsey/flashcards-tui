@@ -7,14 +7,14 @@ import random
 from typing import Tuple, Union
 from rich.console import Console
 
-from flashcard_types import (
+from src.core.types import (
     FlashCard,
     FlashcardSet,
     FlashcardSetStats,
     StudySession,
 )
-from flashcard_statistics import update_set_stats, calculate_session_summary
-from ui import (
+from src.core.statistics import update_set_stats, calculate_session_summary
+from src.ui.interface import (
     display_progress,
     display_question,
     wait_for_user_thinking,
