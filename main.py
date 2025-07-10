@@ -53,10 +53,11 @@ def run_flashcard_app(file_path: str, stats_file: str) -> None:
     )
 
     # Main application loop
+    session_just_completed = False
     while True:
-        choice = display_menu(console, flashcard_set.title)
+        choice = display_menu(console, flashcard_set.title, clear_screen=not session_just_completed)
 
-        result = handle_menu_choice(
+        result, session_just_completed = handle_menu_choice(
             console, choice, flashcard_set, current_set_stats
         )
 

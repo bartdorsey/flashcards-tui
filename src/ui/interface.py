@@ -20,7 +20,7 @@ from src.io.operations import get_set_display_name, get_set_card_count
 from src.core.statistics import get_most_challenging_cards
 
 
-def display_menu(console: Console, set_title: str) -> str:
+def display_menu(console: Console, set_title: str, clear_screen: bool = True) -> str:
     """Display the main menu and return user choice."""
     options = [
         ("📚 Study all flashcards", "1"),
@@ -30,7 +30,7 @@ def display_menu(console: Console, set_title: str) -> str:
     ]
 
     return _show_arrow_key_menu(
-        console, f"🎓 {set_title}", options, default_index=0
+        console, f"🎓 {set_title}", options, default_index=0, clear_screen=clear_screen
     )
 
 
@@ -371,10 +371,11 @@ def show_session_summary(
 ) -> None:
     """Display session summary."""
     if session_summary["total_attempts"] > 0:
-        console.print("\n[bold]Session Summary:[/bold]")
+        console.clear()
+        console.print("[bold]Session Summary:[/bold]")
         console.print(f"Cards studied: {session_summary['cards_studied']}")
         console.print(f"Accuracy: {session_summary['accuracy']:.1f}%")
-        Prompt.ask("\n[dim]Press Enter to return to menu[/dim]", default="")
+        console.print()  # Add spacing before menu
 
 
 def display_statistics_table(

@@ -123,23 +123,27 @@ def handle_menu_choice(
     choice: str,
     flashcard_set: FlashcardSet,
     set_stats: FlashcardSetStats,
-) -> FlashcardSetStats | str | None:
-    """Handle menu choice and return updated stats if applicable."""
+) -> tuple[FlashcardSetStats | str | None, bool]:
+    """Handle menu choice and return updated stats if applicable.
+    
+    Returns:
+        tuple: (stats_or_result, session_just_completed)
+    """
     if choice == "1":
         new_stats, _ = run_study_session(
             console, flashcard_set, set_stats, randomize=False
         )
-        return new_stats
+        return new_stats, True
     elif choice == "2":
         new_stats, _ = run_study_session(
             console, flashcard_set, set_stats, randomize=True
         )
-        return new_stats
+        return new_stats, True
     elif choice == "s":
         display_statistics_table(console, flashcard_set, set_stats)
-        return None
+        return None, False
     elif choice == "q":
         display_exit_message(console)
-        return "exit"
+        return "exit", False
 
-    return None
+    return None, False
