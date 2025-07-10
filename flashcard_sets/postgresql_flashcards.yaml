@@ -604,3 +604,222 @@ flashcards:
       # No password prompt (use .pgpass or environment)
       PGPASSWORD=mypassword psql -U username -d database -c "SELECT version();"
 
+  - question: "What is a database?"
+    answer: "A database is an organized collection of structured information stored electronically, designed for efficient storage, retrieval, and management of data"
+    code_example: |
+      -- A database contains multiple tables
+      -- Each table stores related data
+      -- PostgreSQL can host multiple databases
+      
+      -- Example: A company database might contain:
+      -- - employees table
+      -- - departments table  
+      -- - projects table
+      -- - customers table
+
+  - question: "What is a table in a database?"
+    answer: "A table is a collection of related data organized in rows and columns, similar to a spreadsheet"
+    code_example: |
+      -- Table structure example:
+      -- users table
+      -- +----+----------+-------------------+-----+
+      -- | id | name     | email             | age |
+      -- +----+----------+-------------------+-----+
+      -- | 1  | John Doe | john@example.com  | 25  |
+      -- | 2  | Jane     | jane@example.com  | 30  |
+      -- +----+----------+-------------------+-----+
+      
+      -- Columns define data types and structure
+      -- Rows contain actual data records
+
+  - question: "What is a row (record) and a column (field)?"
+    answer: "A row (record) is a single entry in a table containing related data. A column (field) is a vertical element defining a specific attribute"
+    code_example: |
+      -- In a users table:
+      -- 
+      -- COLUMNS (fields):     id | name     | email            | age
+      --                      ----+----------+------------------+----
+      -- ROW 1 (record):       1  | John Doe | john@example.com | 25
+      -- ROW 2 (record):       2  | Jane     | jane@example.com | 30
+      
+      -- Each row represents one user
+      -- Each column represents one piece of information about users
+
+  - question: "What is a primary key?"
+    answer: "A primary key is a column (or combination of columns) that uniquely identifies each row in a table"
+    code_example: |
+      CREATE TABLE users (
+        id SERIAL PRIMARY KEY,     -- Primary key: unique identifier
+        email VARCHAR(255) UNIQUE, -- Also unique, but not primary key
+        name VARCHAR(100)
+      );
+      
+      -- Primary key properties:
+      -- 1. Must be unique for each row
+      -- 2. Cannot be NULL
+      -- 3. Only one primary key per table
+      -- 4. Often used for relationships between tables
+
+  - question: "What is a foreign key?"
+    answer: "A foreign key is a column that creates a link between two tables by referencing the primary key of another table"
+    code_example: |
+      -- Parent table
+      CREATE TABLE departments (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100)
+      );
+      
+      -- Child table with foreign key
+      CREATE TABLE employees (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100),
+        department_id INTEGER REFERENCES departments(id)  -- Foreign key
+      );
+      
+      -- Foreign key ensures referential integrity
+      -- department_id must exist in departments table
+
+  - question: "What is SQL and what does it stand for?"
+    answer: "SQL stands for Structured Query Language. It's the standard language for communicating with relational databases"
+    code_example: |
+      -- SQL is used for:
+      -- DDL (Data Definition Language): CREATE, ALTER, DROP
+      CREATE TABLE users (id SERIAL, name VARCHAR(100));
+      
+      -- DML (Data Manipulation Language): INSERT, UPDATE, DELETE
+      INSERT INTO users (name) VALUES ('John');
+      
+      -- DQL (Data Query Language): SELECT
+      SELECT name FROM users;
+      
+      -- DCL (Data Control Language): GRANT, REVOKE (permissions)
+
+  - question: "What is PostgreSQL and how does it differ from other databases?"
+    answer: "PostgreSQL is an open-source, object-relational database system known for its reliability, features, and standards compliance"
+    code_example: |
+      -- PostgreSQL features:
+      -- - ACID compliance (reliability)
+      -- - Advanced data types (JSON, arrays, custom types)
+      -- - Extensibility (custom functions, operators)
+      -- - Full-text search
+      -- - Spatial data support (PostGIS)
+      
+      -- Example of PostgreSQL-specific features:
+      SELECT data->'name' FROM json_table;  -- JSON operations
+      SELECT ARRAY[1,2,3];                  -- Array literals
+
+  - question: "What is a schema in PostgreSQL?"
+    answer: "A schema is a namespace that contains database objects like tables, views, and functions. It helps organize and separate objects within a database"
+    code_example: |
+      -- Create schema
+      CREATE SCHEMA sales;
+      CREATE SCHEMA accounting;
+      
+      -- Create tables in specific schemas
+      CREATE TABLE sales.customers (id SERIAL, name VARCHAR(100));
+      CREATE TABLE accounting.invoices (id SERIAL, amount DECIMAL);
+      
+      -- Reference tables with schema name
+      SELECT * FROM sales.customers;
+      SELECT * FROM accounting.invoices;
+
+  - question: "What is an index and why is it important?"
+    answer: "An index is a database object that improves query performance by creating a faster path to find data, similar to a book's index"
+    code_example: |
+      -- Create index on frequently searched column
+      CREATE INDEX idx_user_email ON users(email);
+      
+      -- Composite index on multiple columns
+      CREATE INDEX idx_user_name_age ON users(name, age);
+      
+      -- Indexes speed up SELECT queries but slow down INSERT/UPDATE
+      -- Query that benefits from index:
+      SELECT * FROM users WHERE email = 'john@example.com';
+
+  - question: "What is a constraint in database terms?"
+    answer: "A constraint is a rule applied to a column or table that restricts the type of data that can be stored"
+    code_example: |
+      CREATE TABLE products (
+        id SERIAL PRIMARY KEY,           -- PRIMARY KEY constraint
+        name VARCHAR(100) NOT NULL,      -- NOT NULL constraint
+        price DECIMAL CHECK (price > 0), -- CHECK constraint
+        category_id INTEGER REFERENCES categories(id), -- FOREIGN KEY
+        sku VARCHAR(50) UNIQUE          -- UNIQUE constraint
+      );
+      
+      -- Constraints ensure data integrity and validity
+
+  - question: "What is ACID compliance in databases?"
+    answer: "ACID stands for Atomicity, Consistency, Isolation, Durability - properties that guarantee reliable database transactions"
+    code_example: |
+      -- ACID properties:
+      -- Atomicity: All operations in transaction succeed or all fail
+      -- Consistency: Database remains in valid state
+      -- Isolation: Concurrent transactions don't interfere
+      -- Durability: Committed changes persist even after system failure
+      
+      BEGIN;                    -- Start transaction (Atomicity)
+      UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+      UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+      COMMIT;                   -- All changes saved (Durability)
+
+  - question: "What is a transaction in database terms?"
+    answer: "A transaction is a sequence of database operations that are treated as a single unit of work - they all succeed or all fail together"
+    code_example: |
+      -- Transaction example: transferring money between accounts
+      BEGIN;                    -- Start transaction
+      
+      UPDATE accounts 
+      SET balance = balance - 100 
+      WHERE account_id = 'A123';
+      
+      UPDATE accounts 
+      SET balance = balance + 100 
+      WHERE account_id = 'B456';
+      
+      COMMIT;                   -- Confirm all changes
+      -- OR ROLLBACK;           -- Cancel all changes
+
+  - question: "What is normalization in database design?"
+    answer: "Normalization is the process of organizing data to reduce redundancy and improve data integrity by dividing large tables into smaller, related tables"
+    code_example: |
+      -- BEFORE normalization (redundant data):
+      -- orders: id | customer_name | customer_email | product | price
+      --         1  | John Doe      | john@email.com | Book    | 15.99
+      --         2  | John Doe      | john@email.com | Pen     | 2.99
+      
+      -- AFTER normalization:
+      -- customers: id | name     | email
+      -- orders:    id | customer_id | product | price
+      
+      -- Reduces redundancy and maintains consistency
+
+  - question: "What is a view in PostgreSQL?"
+    answer: "A view is a virtual table based on a SQL query that provides a way to present data from one or more tables in a specific format"
+    code_example: |
+      -- Create a view
+      CREATE VIEW active_users AS
+      SELECT id, name, email 
+      FROM users 
+      WHERE status = 'active';
+      
+      -- Use view like a regular table
+      SELECT * FROM active_users;
+      
+      -- Views can simplify complex queries and provide security
+      -- by limiting access to specific columns or rows
+
+  - question: "What is the difference between DELETE, DROP, and TRUNCATE?"
+    answer: "DELETE removes rows from a table, DROP removes entire database objects, and TRUNCATE quickly removes all rows from a table"
+    code_example: |
+      -- DELETE: Remove specific rows (can use WHERE clause)
+      DELETE FROM users WHERE age < 18;
+      DELETE FROM users;  -- Removes all rows but keeps table structure
+      
+      -- TRUNCATE: Quickly remove all rows
+      TRUNCATE TABLE users;  -- Faster than DELETE, resets sequences
+      
+      -- DROP: Remove entire database object
+      DROP TABLE users;      -- Removes table and all data
+      DROP DATABASE mydb;    -- Removes entire database
+
