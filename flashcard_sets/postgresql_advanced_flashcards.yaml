@@ -1,0 +1,454 @@
+title: "PostgreSQL Advanced"
+icon: "🚀"
+flashcards:
+  - question: "What are pattern matching and logical operators in PostgreSQL WHERE clauses?"
+    answer: "LIKE for pattern matching with wildcards, IN for multiple values, and AND/OR for combining conditions"
+    code_example: |
+      -- Pattern matching with LIKE
+      SELECT * FROM users WHERE name LIKE 'John%';     -- Starts with 'John'
+      SELECT * FROM users WHERE email LIKE '%@gmail.com';  -- Ends with '@gmail.com'
+      SELECT * FROM users WHERE name ILIKE 'JOHN%';    -- Case insensitive
+
+      -- IN operator for multiple values
+      SELECT * FROM users WHERE city IN ('New York', 'Los Angeles', 'Chicago');
+
+      -- Logical operators AND/OR
+      SELECT * FROM users WHERE age > 18 AND age < 65;
+      SELECT * FROM products WHERE (price < 20 OR category = 'sale') AND in_stock = true;
+
+  - question: "How do you use LIMIT and OFFSET for pagination?"
+    answer: "LIMIT restricts the number of rows returned, OFFSET skips a specified number of rows"
+    code_example: |
+      -- Get first 10 users
+      SELECT * FROM users LIMIT 10;
+
+      -- Get users 11-20 (pagination)
+      SELECT * FROM users LIMIT 10 OFFSET 10;
+
+      -- Get top 5 oldest users
+      SELECT * FROM users ORDER BY age DESC LIMIT 5;
+
+      -- Skip first 3 users, get next 5
+      SELECT * FROM users ORDER BY name LIMIT 5 OFFSET 3;
+
+  - question: "How do you group data and use aggregate functions?"
+    answer: "Use GROUP BY to group rows and aggregate functions like COUNT, SUM, AVG, MIN, MAX"
+    code_example: |
+      -- Count users by age
+      SELECT age, COUNT(*) as user_count 
+      FROM users 
+      GROUP BY age;
+
+      -- Average age of users
+      SELECT AVG(age) as average_age FROM users;
+
+      -- Group with condition
+      SELECT age, COUNT(*) as count 
+      FROM users 
+      WHERE age > 18 
+      GROUP BY age 
+      HAVING COUNT(*) > 1;
+
+  - question: "How do you join two tables together?"
+    answer: "Use JOIN clauses (INNER JOIN, LEFT JOIN, RIGHT JOIN) to combine data from multiple tables"
+    code_example: |
+      -- Assume we have an orders table
+      CREATE TABLE orders (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id),
+        product VARCHAR(100),
+        amount DECIMAL(10,2)
+      );
+
+      -- Inner join (only matching records)
+      SELECT users.name, orders.product, orders.amount
+      FROM users
+      INNER JOIN orders ON users.id = orders.user_id;
+
+      -- Left join (all users, even without orders)
+      SELECT users.name, orders.product
+      FROM users
+      LEFT JOIN orders ON users.id = orders.user_id;
+
+  - question: "What are the advanced date and time data types in PostgreSQL?"
+    answer: "Date/time types include DATE for dates only, TIME for time only, TIMESTAMP for date+time, and TIMESTAMPTZ for timezone-aware timestamps"
+    code_example: |
+      CREATE TABLE events (
+        id SERIAL PRIMARY KEY,
+        event_name VARCHAR(100),
+        event_date DATE,                    -- Date only: 2023-12-25
+        start_time TIME,                    -- Time only: 14:30:00
+        created_at TIMESTAMP,               -- Date and time: 2023-12-25 14:30:00
+        updated_at TIMESTAMPTZ,             -- Date, time + timezone
+        duration INTERVAL                   -- Time span: 2 hours 30 minutes
+      );
+
+      -- Date/time functions
+      SELECT 
+        event_name,
+        EXTRACT(YEAR FROM event_date) as event_year,
+        AGE(event_date, CURRENT_DATE) as days_until,
+        created_at + INTERVAL '1 day' as tomorrow
+      FROM events;
+
+  - question: "What are boolean, serial, and other special data types in PostgreSQL?"
+    answer: "Boolean stores TRUE/FALSE, SERIAL creates auto-incrementing integers, and PostgreSQL also supports JSON, UUID, and array types"
+    code_example: |
+      CREATE TABLE products (
+        id SERIAL PRIMARY KEY,              -- Auto-incrementing primary key
+        uuid UUID DEFAULT gen_random_uuid(), -- Unique identifier
+        name VARCHAR(100) NOT NULL,
+        is_active BOOLEAN DEFAULT TRUE,     -- TRUE, FALSE, or NULL
+        tags TEXT[],                        -- Array of text values
+        metadata JSON,                      -- JSON data
+        config JSONB                        -- Binary JSON (faster queries)
+      );
+
+      -- Querying special types
+      SELECT name, is_active, 
+             'electronics' = ANY(tags) as is_electronic,
+             metadata->>'brand' as brand,
+             config->'warranty' as warranty_info
+      FROM products 
+      WHERE is_active = TRUE;
+
+  - question: "How do you add constraints to table columns?"
+    answer: "Use constraints like PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL, CHECK, DEFAULT"
+    code_example: |
+      CREATE TABLE employees (
+        id SERIAL PRIMARY KEY,
+        employee_id VARCHAR(10) UNIQUE NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(255) UNIQUE,
+        age INTEGER CHECK (age >= 18 AND age <= 100),
+        salary DECIMAL(10,2) DEFAULT 0.00,
+        department_id INTEGER REFERENCES departments(id)
+      );
+
+      -- Add constraint to existing table
+      ALTER TABLE employees 
+      ADD CONSTRAINT check_positive_salary 
+      CHECK (salary >= 0);
+
+  - question: "How do you use aliases in SQL queries?"
+    answer: "Use AS keyword (optional) to create aliases for tables and columns for cleaner output"
+    code_example: |
+      -- Column aliases
+      SELECT 
+        name AS full_name,
+        email AS email_address,
+        age AS years_old
+      FROM users;
+
+      -- Table aliases (useful for joins)
+      SELECT 
+        u.name,
+        o.product,
+        o.amount
+      FROM users AS u
+      INNER JOIN orders AS o ON u.id = o.user_id;
+
+  - question: "How do you use subqueries in SQL?"
+    answer: "Subqueries are queries nested inside other queries, used in WHERE, FROM, or SELECT clauses"
+    code_example: |
+      -- Subquery in WHERE clause
+      SELECT name, age 
+      FROM users 
+      WHERE age > (SELECT AVG(age) FROM users);
+
+      -- Subquery with IN
+      SELECT name 
+      FROM users 
+      WHERE id IN (SELECT user_id FROM orders WHERE amount > 100);
+
+      -- Subquery in FROM clause
+      SELECT avg_age_by_city.city, avg_age_by_city.avg_age
+      FROM (
+        SELECT city, AVG(age) as avg_age 
+        FROM users 
+        GROUP BY city
+      ) AS avg_age_by_city
+      WHERE avg_age_by_city.avg_age > 25;
+
+  - question: "What is a foreign key?"
+    answer: "A foreign key is a column that creates a link between two tables by referencing the primary key of another table"
+    code_example: |
+      -- Parent table
+      CREATE TABLE departments (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100)
+      );
+      
+      -- Child table with foreign key
+      CREATE TABLE employees (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100),
+        department_id INTEGER REFERENCES departments(id)  -- Foreign key
+      );
+      
+      -- Foreign key ensures referential integrity
+      -- department_id must exist in departments table
+
+  - question: "What is a schema in PostgreSQL?"
+    answer: "A schema is a namespace that contains database objects like tables, views, and functions. It helps organize and separate objects within a database"
+    code_example: |
+      -- Create schema
+      CREATE SCHEMA sales;
+      CREATE SCHEMA accounting;
+      
+      -- Create tables in specific schemas
+      CREATE TABLE sales.customers (id SERIAL, name VARCHAR(100));
+      CREATE TABLE accounting.invoices (id SERIAL, amount DECIMAL);
+      
+      -- Reference tables with schema name
+      SELECT * FROM sales.customers;
+      SELECT * FROM accounting.invoices;
+
+  - question: "What is an index and why is it important?"
+    answer: "An index is a database object that improves query performance by creating a faster path to find data, similar to a book's index"
+    code_example: |
+      -- Create index on frequently searched column
+      CREATE INDEX idx_user_email ON users(email);
+      
+      -- Composite index on multiple columns
+      CREATE INDEX idx_user_name_age ON users(name, age);
+      
+      -- Indexes speed up SELECT queries but slow down INSERT/UPDATE
+      -- Query that benefits from index:
+      SELECT * FROM users WHERE email = 'john@example.com';
+
+  - question: "What is a constraint in database terms?"
+    answer: "A constraint is a rule applied to a column or table that restricts the type of data that can be stored"
+    code_example: |
+      CREATE TABLE products (
+        id SERIAL PRIMARY KEY,           -- PRIMARY KEY constraint
+        name VARCHAR(100) NOT NULL,      -- NOT NULL constraint
+        price DECIMAL CHECK (price > 0), -- CHECK constraint
+        category_id INTEGER REFERENCES categories(id), -- FOREIGN KEY
+        sku VARCHAR(50) UNIQUE          -- UNIQUE constraint
+      );
+      
+      -- Constraints ensure data integrity and validity
+
+  - question: "What is ACID compliance in databases?"
+    answer: "ACID stands for Atomicity, Consistency, Isolation, Durability - properties that guarantee reliable database transactions"
+    code_example: |
+      -- ACID properties:
+      -- Atomicity: All operations in transaction succeed or all fail
+      -- Consistency: Database remains in valid state
+      -- Isolation: Concurrent transactions don't interfere
+      -- Durability: Committed changes persist even after system failure
+      
+      BEGIN;                    -- Start transaction (Atomicity)
+      UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+      UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+      COMMIT;                   -- All changes saved (Durability)
+
+  - question: "What is a transaction in database terms?"
+    answer: "A transaction is a sequence of database operations that are treated as a single unit of work - they all succeed or all fail together"
+    code_example: |
+      -- Transaction example: transferring money between accounts
+      BEGIN;                    -- Start transaction
+      
+      UPDATE accounts 
+      SET balance = balance - 100 
+      WHERE account_id = 'A123';
+      
+      UPDATE accounts 
+      SET balance = balance + 100 
+      WHERE account_id = 'B456';
+      
+      COMMIT;                   -- Confirm all changes
+      -- OR ROLLBACK;           -- Cancel all changes
+
+  - question: "What is normalization in database design?"
+    answer: "Normalization is the process of organizing data to reduce redundancy and improve data integrity by dividing large tables into smaller, related tables"
+    code_example: |
+      -- BEFORE normalization (redundant data):
+      -- orders: id | customer_name | customer_email | product | price
+      --         1  | John Doe      | john@email.com | Book    | 15.99
+      --         2  | John Doe      | john@email.com | Pen     | 2.99
+      
+      -- AFTER normalization:
+      -- customers: id | name     | email
+      -- orders:    id | customer_id | product | price
+      
+      -- Reduces redundancy and maintains consistency
+
+  - question: "What is a view in PostgreSQL?"
+    answer: "A view is a virtual table based on a SQL query that provides a way to present data from one or more tables in a specific format"
+    code_example: |
+      -- Create a view
+      CREATE VIEW active_users AS
+      SELECT id, name, email 
+      FROM users 
+      WHERE status = 'active';
+      
+      -- Use view like a regular table
+      SELECT * FROM active_users;
+      
+      -- Views can simplify complex queries and provide security
+      -- by limiting access to specific columns or rows
+
+  - question: "What is the difference between DELETE, DROP, and TRUNCATE?"
+    answer: "DELETE removes rows from a table, DROP removes entire database objects, and TRUNCATE quickly removes all rows from a table"
+    code_example: |
+      -- DELETE: Remove specific rows (can use WHERE clause)
+      DELETE FROM users WHERE age < 18;
+      DELETE FROM users;  -- Removes all rows but keeps table structure
+      
+      -- TRUNCATE: Quickly remove all rows
+      TRUNCATE TABLE users;  -- Faster than DELETE, resets sequences
+      
+      -- DROP: Remove entire database object
+      DROP TABLE users;      -- Removes table and all data
+      DROP DATABASE mydb;    -- Removes entire database
+
+  - question: "How do you create and drop a database?"
+    answer: "Use CREATE DATABASE to create and DROP DATABASE to delete a database"
+    code_example: |
+      -- Create a new database
+      CREATE DATABASE my_company;
+
+      -- Connect to database (in psql)
+      \c my_company;
+
+      -- Drop a database (be very careful!)
+      DROP DATABASE my_company;
+
+      -- Create database with specific settings
+      CREATE DATABASE my_app 
+      WITH ENCODING 'UTF8' 
+      OWNER my_user;
+
+  - question: "How do you view other database objects in psql?"
+    answer: "Use \\d commands with different letters to list views, indexes, sequences, functions, and users"
+    code_example: |
+      # List all views
+      \dv
+
+      # List all indexes
+      \di
+
+      # List all sequences
+      \ds
+
+      # List all functions
+      \df
+
+      # List all users/roles
+      \du
+
+      # Show table permissions
+      \dp table_name
+
+  - question: "How do you execute SQL files in psql?"
+    answer: "Use \\i to execute SQL files from absolute paths and \\ir for relative paths"
+    code_example: |
+      # Execute SQL file
+      \i /path/to/script.sql
+      \i ~/database/setup.sql
+
+      # Execute file relative to current directory
+      \ir relative/path/script.sql
+
+      # Include another psql script
+      \include setup_users.sql
+
+  - question: "How do you manage output and data import/export in psql?"
+    answer: "Use \\o to redirect output to files and \\copy to import/export CSV data"
+    code_example: |
+      # Redirect query output to file
+      \o output.txt
+      SELECT * FROM users;
+      \o  # Stop redirecting (back to screen)
+
+      # Copy data from CSV file to table
+      \copy users(name,email,age) FROM 'users.csv' WITH CSV HEADER
+
+      # Copy query results to CSV file
+      \copy (SELECT name, email FROM users) TO 'export.csv' WITH CSV HEADER
+
+  - question: "How do you get help for SQL commands in psql?"
+    answer: "Use \\h to get help on SQL commands and syntax"
+    code_example: |
+      # Get help on SQL commands
+      \h                    # List all SQL commands
+      \h SELECT            # Help on SELECT statement
+      \h CREATE TABLE      # Help on CREATE TABLE
+      \h UPDATE            # Help on UPDATE statement
+
+  - question: "How do you get help for psql commands and view history?"
+    answer: "Use \\? for psql meta-commands help, \\s for command history, and \\e to edit commands"
+    code_example: |
+      # Get help on psql meta-commands
+      \?                   # List all psql commands
+
+      # View command history
+      \s                   # Show session history
+      \s filename          # Save history to file
+
+      # Edit previous command in editor
+      \e                   # Open last command in editor
+      \e filename          # Edit file in editor
+
+  - question: "How do you set variables and customize psql settings?"
+    answer: "Use \\set to define variables and customize psql behavior and display"
+    code_example: |
+      # Set psql variables
+      \set user_id 123
+      \set table_name 'users'
+      SELECT * FROM :table_name WHERE id = :user_id;
+
+      # Show current settings
+      \set                 # Show all variables
+      \set PROMPT1 '%n@%m:%>%x %# '  # Customize prompt
+
+      # Environment variables
+      \set ON_ERROR_STOP on     # Stop on first error
+      \set AUTOCOMMIT off       # Manual transaction control
+      \set QUIET on             # Suppress notices
+
+  - question: "How do you manage transactions in psql?"
+    answer: "Use BEGIN/COMMIT/ROLLBACK for transaction control and test changes before committing"
+    code_example: |
+      # Transaction control
+      BEGIN;
+      INSERT INTO users (name, email) VALUES ('Test User', 'test@example.com');
+      -- Check the data
+      SELECT * FROM users WHERE email = 'test@example.com';
+      ROLLBACK;  -- or COMMIT; to save changes
+
+      # Conditional execution with variables
+      \set user_exists `SELECT COUNT(*) FROM users WHERE id = 1`
+      SELECT CASE WHEN :user_exists > 0 THEN 'User exists' ELSE 'No user' END;
+
+  - question: "How do you run psql with command-line options for single commands?"
+    answer: "Use -c to execute single commands and -f to run SQL files from the command line"
+    code_example: |
+      # Execute single command and exit
+      psql -U username -d database -c "SELECT COUNT(*) FROM users;"
+
+      # Execute SQL file
+      psql -U username -d database -f script.sql
+
+      # Run file in single transaction (all or nothing)
+      psql -U username -d database -1 -f migration.sql
+
+  - question: "How do you control psql output format and behavior?"
+    answer: "Use command-line options like --csv, --html, -q for different output formats and quiet mode"
+    code_example: |
+      # CSV output format
+      psql -U username -d database --csv -c "SELECT * FROM users;"
+
+      # HTML output format
+      psql -U username -d database --html -c "SELECT * FROM users;"
+
+      # Quiet mode (no extra output)
+      psql -U username -d database -q -c "INSERT INTO logs VALUES (NOW(), 'Script executed');"
+
+      # Set variables from command line
+      psql -U username -d database -v table_name=users -c "SELECT COUNT(*) FROM :table_name;"
+
+      # No password prompt (use .pgpass or environment)
+      PGPASSWORD=mypassword psql -U username -d database -c "SELECT version();"
