@@ -114,7 +114,7 @@ def _display_code_with_expansion(console: Console, code: str) -> None:
         syntax = Syntax(
             code,
             "python",
-            theme="monokai",
+            theme="default",
             line_numbers=True,
             background_color="default",
         )
@@ -147,7 +147,7 @@ def _show_truncated_code(
     syntax = Syntax(
         truncated_code,
         "python",
-        theme="monokai",
+        theme="default",
         line_numbers=True,
         background_color="default",
     )
@@ -179,7 +179,7 @@ def _show_full_code(console: Console, code: str) -> None:
     syntax = Syntax(
         code,
         "python",
-        theme="monokai",
+        theme="default",
         line_numbers=True,
         background_color="default",
     )
@@ -209,9 +209,10 @@ def get_user_response(console: Console) -> str:
     """Get user's response to whether they got the answer correct."""
     console.print()
     return Prompt.ask(
-        "[yellow]Did you get it right?[/yellow]",
+        "[yellow]Did you get it right?[/yellow] [dim](y)es/(n)o/(s)ummary/(q)uit[/dim]",
         choices=["y", "n", "s", "q"],
         default="y",
+        show_choices=False,
     )
 
 
