@@ -267,3 +267,578 @@ flashcards:
       // String spreading
       const str = 'hello';
       const chars = [...str]; // ['h', 'e', 'l', 'l', 'o']
+
+  - question: "What are the primitive data types in JavaScript?"
+    answer: "JavaScript has 7 primitive types: string, number, boolean, undefined, null, symbol (ES6), and bigint (ES2020)"
+    code_example: |
+      // String
+      const name = "Alice";
+      const greeting = 'Hello';
+      
+      // Number (integers and floats)
+      const age = 25;
+      const price = 19.99;
+      const infinity = Infinity;
+      const notANumber = NaN;
+      
+      // Boolean
+      const isActive = true;
+      const isCompleted = false;
+      
+      // Undefined (declared but not assigned)
+      let value;
+      console.log(value); // undefined
+      
+      // Null (intentional absence of value)
+      const data = null;
+      
+      // Symbol (unique identifier)
+      const sym1 = Symbol('id');
+      const sym2 = Symbol('id');
+      console.log(sym1 === sym2); // false
+      
+      // BigInt (large integers)
+      const bigNumber = 1234567890123456789012345678901234567890n;
+      
+      // Check types
+      console.log(typeof name);      // "string"
+      console.log(typeof age);       // "number"
+      console.log(typeof isActive);  // "boolean"
+      console.log(typeof value);     // "undefined"
+      console.log(typeof data);      // "object" (this is a known quirk!)
+      console.log(typeof sym1);      // "symbol"
+      console.log(typeof bigNumber); // "bigint"
+
+  - question: "What is hoisting in JavaScript?"
+    answer: "Hoisting is JavaScript's behavior of moving variable and function declarations to the top of their scope during compilation"
+    code_example: |
+      // Variable hoisting with var
+      console.log(x); // undefined (not ReferenceError)
+      var x = 5;
+      
+      // This is how JavaScript interprets it:
+      // var x;           // Declaration hoisted
+      // console.log(x);  // undefined
+      // x = 5;           // Assignment stays in place
+      
+      // let and const are hoisted but not initialized
+      // console.log(y); // ReferenceError: Cannot access 'y' before initialization
+      let y = 10;
+      
+      // Function declaration hoisting
+      console.log(sayHello()); // "Hello!" (works)
+      
+      function sayHello() {
+        return "Hello!";
+      }
+      
+      // Function expression hoisting
+      // console.log(sayGoodbye()); // TypeError: sayGoodbye is not a function
+      var sayGoodbye = function() {
+        return "Goodbye!";
+      };
+      
+      // Key points:
+      // - var: hoisted and initialized with undefined
+      // - let/const: hoisted but not initialized (temporal dead zone)
+      // - function declarations: fully hoisted
+      // - function expressions: only variable declaration hoisted
+
+  - question: "What is the difference between null and undefined in JavaScript?"
+    answer: "undefined means a variable has been declared but not assigned a value, while null is an intentional assignment representing 'no value'"
+    code_example: |
+      // Undefined examples
+      let a;
+      console.log(a); // undefined
+      
+      function test(param) {
+        console.log(param); // undefined if no argument passed
+      }
+      test();
+      
+      const obj = { name: 'Alice' };
+      console.log(obj.age); // undefined (property doesn't exist)
+      
+      // Null examples
+      let b = null; // Intentionally set to "no value"
+      console.log(b); // null
+      
+      // Type checking
+      console.log(typeof undefined); // "undefined"
+      console.log(typeof null);      // "object" (historical bug)
+      
+      // Equality comparisons
+      console.log(null == undefined);  // true (loose equality)
+      console.log(null === undefined); // false (strict equality)
+      
+      // Falsy values
+      console.log(Boolean(null));      // false
+      console.log(Boolean(undefined)); // false
+      
+      // JSON behavior
+      JSON.stringify({ a: undefined, b: null });
+      // Result: '{"b":null}' (undefined properties are omitted)
+
+  - question: "What are truthy and falsy values in JavaScript?"
+    answer: "Falsy values are false, 0, -0, 0n, '', null, undefined, NaN. All other values are truthy"
+    code_example: |
+      // Falsy values (8 total)
+      console.log(Boolean(false));     // false
+      console.log(Boolean(0));         // false
+      console.log(Boolean(-0));        // false
+      console.log(Boolean(0n));        // false (BigInt zero)
+      console.log(Boolean(''));        // false (empty string)
+      console.log(Boolean(null));      // false
+      console.log(Boolean(undefined)); // false
+      console.log(Boolean(NaN));       // false
+      
+      // Truthy values (everything else)
+      console.log(Boolean('hello'));   // true
+      console.log(Boolean(' '));       // true (space is not empty)
+      console.log(Boolean(1));         // true
+      console.log(Boolean(-1));        // true
+      console.log(Boolean([]));        // true (empty array)
+      console.log(Boolean({}));        // true (empty object)
+      console.log(Boolean('false'));   // true (string)
+      console.log(Boolean(Infinity));  // true
+      
+      // Common usage in conditions
+      const user = { name: 'Alice' };
+      
+      if (user) {
+        console.log('User exists'); // Will execute
+      }
+      
+      const items = [];
+      if (items.length) {
+        console.log('Has items'); // Won't execute (0 is falsy)
+      }
+      
+      // Logical operators with truthy/falsy
+      const name = user.name || 'Anonymous'; // 'Alice'
+      const count = 0 || 'No items';         // 'No items'
+
+  - question: "What are objects in JavaScript and how do you work with them?"
+    answer: "Objects are collections of key-value pairs. Keys are strings (or Symbols) and values can be any data type"
+    code_example: |
+      // Object creation
+      const person = {
+        name: 'Alice',
+        age: 30,
+        city: 'New York',
+        isEmployed: true
+      };
+      
+      // Accessing properties
+      console.log(person.name);        // 'Alice' (dot notation)
+      console.log(person['age']);      // 30 (bracket notation)
+      
+      // Dynamic property access
+      const property = 'city';
+      console.log(person[property]);   // 'New York'
+      
+      // Adding properties
+      person.email = 'alice@example.com';
+      person['phone'] = '123-456-7890';
+      
+      // Modifying properties
+      person.age = 31;
+      
+      // Deleting properties
+      delete person.isEmployed;
+      
+      // Methods in objects
+      const calculator = {
+        x: 10,
+        y: 5,
+        add: function() {
+          return this.x + this.y;
+        },
+        // ES6 method shorthand
+        multiply() {
+          return this.x * this.y;
+        },
+        // Arrow function (doesn't have its own 'this')
+        divide: () => {
+          // 'this' refers to global object, not calculator
+          return 'Arrow functions don\'t bind this';
+        }
+      };
+      
+      console.log(calculator.add());      // 15
+      console.log(calculator.multiply()); // 50
+      
+      // Object methods
+      console.log(Object.keys(person));   // Array of keys
+      console.log(Object.values(person)); // Array of values
+      console.log(Object.entries(person)); // Array of [key, value] pairs
+      
+      // Check if property exists
+      console.log('name' in person);           // true
+      console.log(person.hasOwnProperty('age')); // true
+
+  - question: "What are arrays in JavaScript and what are the key methods?"
+    answer: "Arrays are ordered lists of values. They have many built-in methods for manipulation, iteration, and transformation"
+    code_example: |
+      // Array creation
+      const fruits = ['apple', 'banana', 'orange'];
+      const numbers = new Array(1, 2, 3, 4, 5);
+      const mixed = [1, 'hello', true, null, { name: 'Alice' }];
+      
+      // Array properties
+      console.log(fruits.length); // 3
+      
+      // Adding elements
+      fruits.push('grape');        // Add to end: ['apple', 'banana', 'orange', 'grape']
+      fruits.unshift('mango');     // Add to beginning: ['mango', 'apple', 'banana', 'orange', 'grape']
+      
+      // Removing elements
+      const lastFruit = fruits.pop();     // Remove from end: 'grape'
+      const firstFruit = fruits.shift();  // Remove from beginning: 'mango'
+      
+      // Finding elements
+      const index = fruits.indexOf('banana');     // 1
+      const found = fruits.find(fruit => fruit.length > 5); // 'banana'
+      const foundIndex = fruits.findIndex(fruit => fruit === 'orange'); // 2
+      const includes = fruits.includes('apple');  // true
+      
+      // Transforming arrays
+      const lengths = fruits.map(fruit => fruit.length);     // [5, 6, 6]
+      const longFruits = fruits.filter(fruit => fruit.length > 5); // ['banana', 'orange']
+      const total = numbers.reduce((sum, num) => sum + num, 0); // 15
+      
+      // Iterating arrays
+      fruits.forEach((fruit, index) => {
+        console.log(`${index}: ${fruit}`);
+      });
+      
+      // Other useful methods
+      const sliced = fruits.slice(1, 3);      // ['banana', 'orange'] (doesn't modify original)
+      const spliced = fruits.splice(1, 1);    // Removes 'banana', returns ['banana']
+      const joined = fruits.join(', ');       // 'apple, orange'
+      const reversed = [...fruits].reverse(); // Reverse copy
+      const sorted = [...fruits].sort();      // Sorted copy
+
+  - question: "What are conditional statements in JavaScript?"
+    answer: "Conditional statements execute different code blocks based on conditions: if/else, switch, and ternary operator"
+    code_example: |
+      // if/else statements
+      const age = 20;
+      
+      if (age >= 18) {
+        console.log('You are an adult');
+      } else if (age >= 13) {
+        console.log('You are a teenager');
+      } else {
+        console.log('You are a child');
+      }
+      
+      // Ternary operator (condition ? valueIfTrue : valueIfFalse)
+      const status = age >= 18 ? 'adult' : 'minor';
+      const message = age >= 21 ? 'Can drink' : 'Cannot drink';
+      
+      // Switch statement
+      const day = 'Monday';
+      
+      switch (day) {
+        case 'Monday':
+          console.log('Start of work week');
+          break;
+        case 'Tuesday':
+        case 'Wednesday':
+        case 'Thursday':
+          console.log('Mid week');
+          break;
+        case 'Friday':
+          console.log('TGIF!');
+          break;
+        case 'Saturday':
+        case 'Sunday':
+          console.log('Weekend!');
+          break;
+        default:
+          console.log('Invalid day');
+      }
+      
+      // Logical operators in conditions
+      const user = { name: 'Alice', isAdmin: true, isActive: true };
+      
+      // AND operator
+      if (user.isAdmin && user.isActive) {
+        console.log('User has admin access');
+      }
+      
+      // OR operator
+      if (user.isAdmin || user.isActive) {
+        console.log('User has some access');
+      }
+      
+      // NOT operator
+      if (!user.isActive) {
+        console.log('User is inactive');
+      }
+      
+      // Short-circuit evaluation
+      user.name && console.log(`Hello, ${user.name}`); // Only runs if name exists
+      user.email || console.log('No email provided');   // Only runs if email is falsy
+
+  - question: "What are loops in JavaScript?"
+    answer: "Loops allow you to execute code repeatedly: for, while, do-while, for...in, for...of, and array methods like forEach"
+    code_example: |
+      // For loop
+      for (let i = 0; i < 5; i++) {
+        console.log(`Iteration ${i}`);
+      }
+      
+      // While loop
+      let count = 0;
+      while (count < 3) {
+        console.log(`Count is ${count}`);
+        count++;
+      }
+      
+      // Do-while loop (executes at least once)
+      let num = 0;
+      do {
+        console.log(`Number is ${num}`);
+        num++;
+      } while (num < 2);
+      
+      // For...in loop (iterates over object properties)
+      const person = { name: 'Alice', age: 30, city: 'NYC' };
+      for (let key in person) {
+        console.log(`${key}: ${person[key]}`);
+      }
+      
+      // For...of loop (iterates over iterable values)
+      const fruits = ['apple', 'banana', 'orange'];
+      for (let fruit of fruits) {
+        console.log(fruit);
+      }
+      
+      // Array forEach method
+      fruits.forEach((fruit, index) => {
+        console.log(`${index}: ${fruit}`);
+      });
+      
+      // Loop control statements
+      for (let i = 0; i < 10; i++) {
+        if (i === 3) continue; // Skip iteration when i is 3
+        if (i === 7) break;    // Exit loop when i is 7
+        console.log(i);        // Prints: 0, 1, 2, 4, 5, 6
+      }
+      
+      // Nested loops
+      for (let i = 1; i <= 3; i++) {
+        for (let j = 1; j <= 3; j++) {
+          console.log(`${i}, ${j}`);
+        }
+      }
+
+  - question: "What is 'this' keyword in JavaScript?"
+    answer: "'this' refers to the object that is executing the current function. Its value depends on how the function is called"
+    code_example: |
+      // Global context
+      console.log(this); // Window object (browser) or global object (Node.js)
+      
+      // Object method
+      const person = {
+        name: 'Alice',
+        greet: function() {
+          console.log(`Hello, I'm ${this.name}`); // 'this' refers to person object
+        },
+        greetArrow: () => {
+          console.log(`Hello, I'm ${this.name}`); // 'this' refers to global object
+        }
+      };
+      
+      person.greet();      // "Hello, I'm Alice"
+      person.greetArrow(); // "Hello, I'm undefined" (arrow function doesn't bind this)
+      
+      // Function call
+      function showThis() {
+        console.log(this); // global object (or undefined in strict mode)
+      }
+      showThis();
+      
+      // Constructor function
+      function Person(name) {
+        this.name = name;
+        this.greet = function() {
+          console.log(`Hello, I'm ${this.name}`);
+        };
+      }
+      
+      const alice = new Person('Alice');
+      alice.greet(); // "Hello, I'm Alice" ('this' refers to new instance)
+      
+      // Explicit binding with call, apply, bind
+      const bob = { name: 'Bob' };
+      
+      person.greet.call(bob);           // "Hello, I'm Bob"
+      person.greet.apply(bob);          // "Hello, I'm Bob"
+      const boundGreet = person.greet.bind(bob);
+      boundGreet();                     // "Hello, I'm Bob"
+      
+      // Event handler context
+      const button = document.createElement('button');
+      button.addEventListener('click', function() {
+        console.log(this); // Refers to the button element
+      });
+      
+      // Class methods
+      class Animal {
+        constructor(name) {
+          this.name = name;
+        }
+        
+        speak() {
+          console.log(`${this.name} makes a sound`);
+        }
+      }
+      
+      const dog = new Animal('Dog');
+      dog.speak(); // "Dog makes a sound"
+
+  - question: "What are arrow functions and how do they differ from regular functions?"
+    answer: "Arrow functions are a concise way to write functions. They don't have their own 'this', 'arguments', or 'super' binding"
+    code_example: |
+      // Regular function
+      function regularFunction(x, y) {
+        return x + y;
+      }
+      
+      // Arrow function equivalents
+      const arrowFunction = (x, y) => {
+        return x + y;
+      };
+      
+      // Concise arrow function (implicit return)
+      const conciseArrow = (x, y) => x + y;
+      
+      // Single parameter (parentheses optional)
+      const square = x => x * x;
+      const squareWithParens = (x) => x * x;
+      
+      // No parameters
+      const sayHello = () => 'Hello!';
+      
+      // Returning objects (wrap in parentheses)
+      const createPerson = (name, age) => ({ name, age });
+      
+      // Key differences:
+      
+      // 1. 'this' binding
+      const obj = {
+        name: 'Alice',
+        regularMethod: function() {
+          console.log(this.name); // 'Alice'
+          
+          const innerRegular = function() {
+            console.log(this.name); // undefined (or global)
+          };
+          
+          const innerArrow = () => {
+            console.log(this.name); // 'Alice' (inherits from outer scope)
+          };
+          
+          innerRegular();
+          innerArrow();
+        }
+      };
+      
+      // 2. No 'arguments' object
+      function regularWithArgs() {
+        console.log(arguments); // Arguments object
+      }
+      
+      const arrowWithArgs = () => {
+        // console.log(arguments); // ReferenceError
+        // Use rest parameters instead
+      };
+      
+      const arrowWithRest = (...args) => {
+        console.log(args); // Array of arguments
+      };
+      
+      // 3. Cannot be used as constructors
+      // const Person = (name) => { this.name = name; }; // Error
+      // const person = new Person('Alice'); // TypeError
+      
+      // 4. No hoisting (function expressions aren't hoisted anyway)
+      // console.log(notHoisted()); // ReferenceError
+      const notHoisted = () => 'This won\'t work';
+
+  - question: "What is the difference between synchronous and asynchronous JavaScript?"
+    answer: "Synchronous code executes line by line and blocks execution. Asynchronous code doesn't block and uses callbacks, promises, or async/await"
+    code_example: |
+      // Synchronous code (blocking)
+      console.log('First');
+      console.log('Second');
+      console.log('Third');
+      // Output: First, Second, Third (in order)
+      
+      // Asynchronous code with setTimeout
+      console.log('Start');
+      
+      setTimeout(() => {
+        console.log('Timeout callback');
+      }, 1000);
+      
+      console.log('End');
+      // Output: Start, End, Timeout callback (after 1 second)
+      
+      // Promises (better than callbacks)
+      const fetchData = () => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            const data = { id: 1, name: 'Alice' };
+            resolve(data); // or reject(new Error('Failed'))
+          }, 1000);
+        });
+      };
+      
+      // Using promises with .then()
+      fetchData()
+        .then(data => {
+          console.log('Data received:', data);
+          return data.id;
+        })
+        .then(id => {
+          console.log('User ID:', id);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      
+      // Async/await (modern approach)
+      async function getData() {
+        try {
+          console.log('Fetching data...');
+          const data = await fetchData();
+          console.log('Data received:', data);
+          return data;
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      }
+      
+      // Common async operations
+      // - setTimeout/setInterval
+      // - fetch() for HTTP requests
+      // - File operations
+      // - Database queries
+      // - Event handlers
+      
+      // Multiple async operations
+      async function fetchMultipleData() {
+        // Sequential (one after another)
+        const user = await fetchData();
+        const posts = await fetchData();
+        
+        // Parallel (simultaneously)
+        const [userData, postsData] = await Promise.all([
+          fetchData(),
+          fetchData()
+        ]);
+      }
