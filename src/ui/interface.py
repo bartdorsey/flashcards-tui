@@ -3,6 +3,7 @@
 Pure functions for UI rendering.
 """
 
+import os
 import sys
 from typing import Any
 from rich.console import Console
@@ -499,8 +500,10 @@ def display_flashcard_set_menu_with_stats(
     for display_name, file_path in flashcard_sets:
         # Try to get card count
         try:
+            # Extract just the filename without directory path
+            filename = os.path.basename(file_path)
             set_name = (
-                file_path.replace(".yaml", "")
+                filename.replace(".yaml", "")
                 .replace(".yml", "")
                 .replace(".json", "")
             )
