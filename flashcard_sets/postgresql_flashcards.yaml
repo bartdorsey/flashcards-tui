@@ -18,7 +18,7 @@ flashcards:
       -- Insert single row
       INSERT INTO users (name, email, age) 
       VALUES ('John Doe', 'john@example.com', 25);
-      
+
       -- Insert multiple rows
       INSERT INTO users (name, email, age) VALUES 
         ('Alice Smith', 'alice@example.com', 30),
@@ -29,13 +29,13 @@ flashcards:
     code_example: |
       -- Select all columns
       SELECT * FROM users;
-      
+
       -- Select specific columns
       SELECT name, email FROM users;
-      
+
       -- Select with condition
       SELECT name, age FROM users WHERE age > 25;
-      
+
       -- Select with sorting
       SELECT * FROM users ORDER BY name ASC;
 
@@ -44,12 +44,12 @@ flashcards:
     code_example: |
       -- Update single column
       UPDATE users SET age = 26 WHERE name = 'John Doe';
-      
+
       -- Update multiple columns
       UPDATE users 
       SET age = 31, email = 'alice.smith@example.com' 
       WHERE name = 'Alice Smith';
-      
+
       -- Update all rows (be careful!)
       UPDATE users SET created_at = CURRENT_TIMESTAMP;
 
@@ -58,10 +58,10 @@ flashcards:
     code_example: |
       -- Delete specific rows
       DELETE FROM users WHERE age < 18;
-      
+
       -- Delete single row
       DELETE FROM users WHERE email = 'john@example.com';
-      
+
       -- Delete all rows (be very careful!)
       DELETE FROM users;
 
@@ -73,17 +73,17 @@ flashcards:
       SELECT * FROM users WHERE name = 'John';
       SELECT * FROM users WHERE status != 'inactive';
       SELECT * FROM users WHERE status <> 'inactive';  -- Same as !=
-      
+
       -- Comparison operators
       SELECT * FROM users WHERE age > 21;
       SELECT * FROM users WHERE age < 65;
       SELECT * FROM users WHERE salary >= 50000;
       SELECT * FROM users WHERE score <= 100;
-      
+
       -- Date comparisons
       SELECT * FROM orders WHERE order_date > '2023-01-01';
       SELECT * FROM employees WHERE hire_date <= '2022-12-31';
-      
+
       -- Numeric comparisons with BETWEEN
       SELECT * FROM products WHERE price BETWEEN 10.00 AND 50.00;
       -- Equivalent to: price >= 10.00 AND price <= 50.00
@@ -96,18 +96,18 @@ flashcards:
       SELECT * FROM users WHERE email LIKE '%@gmail.com';  -- Ends with '@gmail.com'
       SELECT * FROM users WHERE phone LIKE '555-____';     -- 555- followed by 4 characters
       SELECT * FROM users WHERE name LIKE '%smith%';       -- Contains 'smith'
-      
+
       -- Case-insensitive pattern matching
       SELECT * FROM users WHERE name ILIKE 'JOHN%';    -- Case insensitive
-      
+
       -- IN operator for multiple values
       SELECT * FROM users WHERE city IN ('New York', 'Los Angeles', 'Chicago');
       SELECT * FROM products WHERE category_id IN (1, 3, 5, 7);
       SELECT * FROM users WHERE age IN (25, 30, 35);
-      
+
       -- NOT IN
       SELECT * FROM users WHERE status NOT IN ('deleted', 'suspended');
-      
+
       -- Logical operators AND/OR
       SELECT * FROM users WHERE age > 18 AND age < 65;
       SELECT * FROM users WHERE name = 'John' OR name = 'Jane';
@@ -120,23 +120,23 @@ flashcards:
       SELECT * FROM users WHERE email IS NULL;
       SELECT * FROM users WHERE phone IS NULL;
       SELECT * FROM orders WHERE shipped_date IS NULL;  -- Unshipped orders
-      
+
       -- Check for NOT NULL values
       SELECT * FROM users WHERE email IS NOT NULL;
       SELECT * FROM products WHERE description IS NOT NULL;
-      
+
       -- WRONG way (doesn't work with NULL)
       -- SELECT * FROM users WHERE email = NULL;     -- This won't work!
       -- SELECT * FROM users WHERE email != NULL;    -- This won't work!
-      
+
       -- Combine NULL checks with other conditions
       SELECT * FROM users WHERE email IS NOT NULL AND age > 18;
       SELECT * FROM users WHERE (phone IS NULL OR email IS NULL);
-      
+
       -- COALESCE to handle NULLs in results
       SELECT name, COALESCE(email, 'No email') as email_display 
       FROM users WHERE age > 25;
-      
+
       -- NULLIF function
       SELECT name, NULLIF(status, '') as clean_status 
       FROM users;  -- Convert empty strings to NULL
@@ -146,13 +146,13 @@ flashcards:
     code_example: |
       -- Get first 10 users
       SELECT * FROM users LIMIT 10;
-      
+
       -- Get users 11-20 (pagination)
       SELECT * FROM users LIMIT 10 OFFSET 10;
-      
+
       -- Get top 5 oldest users
       SELECT * FROM users ORDER BY age DESC LIMIT 5;
-      
+
       -- Skip first 3 users, get next 5
       SELECT * FROM users ORDER BY name LIMIT 5 OFFSET 3;
 
@@ -163,13 +163,13 @@ flashcards:
       SELECT age, COUNT(*) as user_count 
       FROM users 
       GROUP BY age;
-      
+
       -- Average age of users
       SELECT AVG(age) as average_age FROM users;
-      
+
       -- Count total users
       SELECT COUNT(*) as total_users FROM users;
-      
+
       -- Group with condition
       SELECT age, COUNT(*) as count 
       FROM users 
@@ -187,12 +187,12 @@ flashcards:
         product VARCHAR(100),
         amount DECIMAL(10,2)
       );
-      
+
       -- Inner join (only matching records)
       SELECT users.name, orders.product, orders.amount
       FROM users
       INNER JOIN orders ON users.id = orders.user_id;
-      
+
       -- Left join (all users, even without orders)
       SELECT users.name, orders.product
       FROM users
@@ -211,11 +211,11 @@ flashcards:
         avg_score REAL,                     -- 4-byte floating point (approximate)
         computed_value DOUBLE PRECISION     -- 8-byte floating point (approximate)
       );
-      
+
       -- Examples of numeric operations
       INSERT INTO financial_data (user_id, balance, interest_rate) 
       VALUES (1, 1234.56, 0.0425);
-      
+
       -- SERIAL automatically increments
       INSERT INTO financial_data (user_id, balance) 
       VALUES (2, 5000.00);  -- id will be auto-assigned
@@ -231,13 +231,13 @@ flashcards:
         country_code CHAR(2),               -- Fixed 2 characters (US, CA, etc.)
         status_code CHAR(1) DEFAULT 'A'     -- Fixed 1 character (A, I, D)
       );
-      
+
       -- TEXT vs VARCHAR examples
       INSERT INTO user_profiles (username, email, bio, country_code) 
       VALUES 
         ('alice', 'alice@example.com', 'I love programming and coffee!', 'US'),
         ('bob', 'bob@test.com', 'Software engineer with 10+ years experience building web applications...', 'CA');
-      
+
       -- CHAR pads with spaces if needed
       INSERT INTO user_profiles (username, email, country_code) 
       VALUES ('charlie', 'charlie@example.com', 'UK');  -- country_code stored as 'UK'
@@ -254,14 +254,14 @@ flashcards:
         updated_at TIMESTAMPTZ,             -- Date, time + timezone
         duration INTERVAL                   -- Time span: 2 hours 30 minutes
       );
-      
+
       -- Inserting date/time data
       INSERT INTO events (event_name, event_date, start_time, created_at, updated_at, duration)
       VALUES 
         ('Conference', '2023-12-25', '09:00:00', '2023-12-01 10:30:00', 
          '2023-12-01 10:30:00-05', '8 hours'),
         ('Meeting', CURRENT_DATE, CURRENT_TIME, NOW(), NOW(), '1 hour 30 minutes');
-      
+
       -- Date/time functions
       SELECT 
         event_name,
@@ -284,7 +284,7 @@ flashcards:
         metadata JSON,                      -- JSON data
         config JSONB                        -- Binary JSON (faster queries)
       );
-      
+
       -- Boolean examples
       INSERT INTO products (name, is_active, is_featured, tags, metadata, config)
       VALUES 
@@ -296,7 +296,7 @@ flashcards:
          '{"smartphone", "mobile"}',  -- Alternative array syntax
          '{"brand": "iPhone", "storage": "256GB"}',
          '{"carrier": "unlocked"}');
-      
+
       -- Querying special types
       SELECT name, is_active, 
              'electronics' = ANY(tags) as is_electronic,
@@ -317,7 +317,7 @@ flashcards:
         salary DECIMAL(10,2) DEFAULT 0.00,
         department_id INTEGER REFERENCES departments(id)
       );
-      
+
       -- Add constraint to existing table
       ALTER TABLE employees 
       ADD CONSTRAINT check_positive_salary 
@@ -328,13 +328,13 @@ flashcards:
     code_example: |
       -- Create a new database
       CREATE DATABASE my_company;
-      
+
       -- Connect to database (in psql)
       \c my_company;
-      
+
       -- Drop a database (be very careful!)
       DROP DATABASE my_company;
-      
+
       -- Create database with specific settings
       CREATE DATABASE my_app 
       WITH ENCODING 'UTF8' 
@@ -349,7 +349,7 @@ flashcards:
         email AS email_address,
         age AS years_old
       FROM users;
-      
+
       -- Table aliases (useful for joins)
       SELECT 
         u.name,
@@ -357,7 +357,7 @@ flashcards:
         o.amount
       FROM users AS u
       INNER JOIN orders AS o ON u.id = o.user_id;
-      
+
       -- Alias without AS keyword
       SELECT name full_name, COUNT(*) total_orders
       FROM users u
@@ -370,15 +370,15 @@ flashcards:
       -- Sort by single column
       SELECT * FROM users ORDER BY name ASC;
       SELECT * FROM users ORDER BY age DESC;
-      
+
       -- Sort by multiple columns
       SELECT * FROM users 
       ORDER BY age DESC, name ASC;
-      
+
       -- Sort with NULL values
       SELECT * FROM users 
       ORDER BY email NULLS LAST;
-      
+
       -- Sort by calculated value
       SELECT name, age, (2024 - age) as birth_year
       FROM users 
@@ -389,13 +389,13 @@ flashcards:
     code_example: |
       -- Get unique ages
       SELECT DISTINCT age FROM users;
-      
+
       -- Get unique combinations
       SELECT DISTINCT age, city FROM users;
-      
+
       -- Count unique values
       SELECT COUNT(DISTINCT age) as unique_ages FROM users;
-      
+
       -- Distinct with ORDER BY
       SELECT DISTINCT city 
       FROM users 
@@ -409,12 +409,12 @@ flashcards:
       SELECT name, age 
       FROM users 
       WHERE age > (SELECT AVG(age) FROM users);
-      
+
       -- Subquery with IN
       SELECT name 
       FROM users 
       WHERE id IN (SELECT user_id FROM orders WHERE amount > 100);
-      
+
       -- Subquery in FROM clause
       SELECT avg_age_by_city.city, avg_age_by_city.avg_age
       FROM (
@@ -429,150 +429,139 @@ flashcards:
     code_example: |
       # Connect to local database with username
       psql -U username -d database_name
-      
+
       # Connect to remote database
       psql -h hostname -p 5432 -U username -d database_name
-      
+
       # Connect with password prompt
       psql -U username -d database_name -W
-      
+
       # Connect using connection string
       psql postgresql://username:password@hostname:5432/database_name
-      
+
       # Connect to default database (same name as username)
       psql -U username
 
-  - question: "What are the essential psql meta-commands for navigation?"
-    answer: "Use backslash commands like \\l, \\c, \\dt, \\d, \\q for listing, connecting, and describing database objects"
+  - question: "How do you list databases and connect to them in psql?"
+    answer: "Use \\l to list all databases and \\c to connect to a different database"
     code_example: |
       # List all databases
       \l
-      
+
       # Connect to a different database
       \c database_name
       \c database_name username
-      
-      # List all tables in current database
-      \dt
-      
-      # Describe a specific table structure
-      \d table_name
-      
-      # List all schemas
-      \dn
-      
+
       # Show current connection info
       \conninfo
-      
+
       # Quit psql
       \q
 
-  - question: "How do you view and describe database objects in psql?"
-    answer: "Use \\d commands to describe tables, indexes, views, and other database objects with detailed information"
+  - question: "How do you list and describe tables in psql?"
+    answer: "Use \\dt to list tables and \\d to describe table structure with columns and constraints"
     code_example: |
-      # Describe table structure (columns, types, constraints)
-      \d users
-      \d+ users  # Detailed description with additional info
-      
-      # List all tables
+      # List all tables in current database
       \dt
       \dt+  # With sizes and descriptions
-      
+
+      # Describe a specific table structure
+      \d table_name
+      \d+ table_name  # Detailed description with additional info
+
+      # List all schemas
+      \dn
+
+  - question: "How do you view other database objects in psql?"
+    answer: "Use \\d commands with different letters to list views, indexes, sequences, functions, and users"
+    code_example: |
       # List all views
       \dv
-      
+
       # List all indexes
       \di
-      
+
       # List all sequences
       \ds
-      
+
       # List all functions
       \df
-      
+
       # List all users/roles
       \du
-      
+
       # Show table permissions
       \dp table_name
 
-  - question: "How do you execute SQL files and manage output in psql?"
-    answer: "Use \\i to execute SQL files, \\o to redirect output, and \\copy for data import/export"
+  - question: "How do you execute SQL files in psql?"
+    answer: "Use \\i to execute SQL files from absolute paths and \\ir for relative paths"
     code_example: |
       # Execute SQL file
       \i /path/to/script.sql
       \i ~/database/setup.sql
-      
+
       # Execute file relative to current directory
       \ir relative/path/script.sql
-      
+
+      # Include another psql script
+      \include setup_users.sql
+
+  - question: "How do you manage output and data import/export in psql?"
+    answer: "Use \\o to redirect output to files and \\copy to import/export CSV data"
+    code_example: |
       # Redirect query output to file
       \o output.txt
       SELECT * FROM users;
       \o  # Stop redirecting (back to screen)
-      
+
       # Copy data from CSV file to table
       \copy users(name,email,age) FROM 'users.csv' WITH CSV HEADER
-      
+
       # Copy query results to CSV file
       \copy (SELECT name, email FROM users) TO 'export.csv' WITH CSV HEADER
-      
-      # Include another psql script
-      \include setup_users.sql
 
-  - question: "How do you control query output formatting in psql?"
-    answer: "Use formatting commands like \\x, \\pset, and \\timing to control how query results are displayed"
-    code_example: |
-      # Toggle expanded display (vertical format)
-      \x
-      \x on   # Turn on
-      \x off  # Turn off
-      
-      # Set output format
-      \pset format unaligned  # Remove formatting
-      \pset format aligned    # Default aligned columns
-      \pset format wrapped    # Wrap long lines
-      \pset format html       # HTML table format
-      \pset format csv        # CSV format
-      
-      # Control column separators
-      \pset fieldsep ','      # Use comma as separator
-      \pset fieldsep '|'      # Use pipe as separator
-      
-      # Show/hide column headers
-      \pset tuples_only on    # Hide headers
-      \pset tuples_only off   # Show headers
-      
-      # Show query execution time
-      \timing on
-      \timing off
-
-  - question: "How do you get help and view command history in psql?"
-    answer: "Use \\h for SQL help, \\? for psql commands help, and \\s for command history"
+  - question: "How do you get help for SQL commands in psql?"
+    answer: "Use \\h to get help on SQL commands and syntax"
     code_example: |
       # Get help on SQL commands
       \h                    # List all SQL commands
       \h SELECT            # Help on SELECT statement
       \h CREATE TABLE      # Help on CREATE TABLE
       \h UPDATE            # Help on UPDATE statement
-      
+
+  - question: "How do you get help for psql commands and view history?"
+    answer: "Use \\? for psql meta-commands help, \\s for command history, and \\e to edit commands"
+    code_example: |
       # Get help on psql meta-commands
       \?                   # List all psql commands
-      
+
       # View command history
       \s                   # Show session history
       \s filename          # Save history to file
-      
+
       # Edit previous command in editor
       \e                   # Open last command in editor
       \e filename          # Edit file in editor
-      
+
+  - question: "How do you set variables and customize psql settings?"
+    answer: "Use \\set to define variables and customize psql behavior and display"
+    code_example: |
+      # Set psql variables
+      \set user_id 123
+      \set table_name 'users'
+      SELECT * FROM :table_name WHERE id = :user_id;
+
       # Show current settings
       \set                 # Show all variables
       \set PROMPT1 '%n@%m:%>%x %# '  # Customize prompt
 
-  - question: "How do you manage transactions and variables in psql?"
-    answer: "Use BEGIN/COMMIT/ROLLBACK for transactions and \\set for variables and settings"
+      # Environment variables
+      \set ON_ERROR_STOP on     # Stop on first error
+      \set AUTOCOMMIT off       # Manual transaction control
+      \set QUIET on             # Suppress notices
+
+  - question: "How do you manage transactions in psql?"
+    answer: "Use BEGIN/COMMIT/ROLLBACK for transaction control and test changes before committing"
     code_example: |
       # Transaction control
       BEGIN;
@@ -580,44 +569,38 @@ flashcards:
       -- Check the data
       SELECT * FROM users WHERE email = 'test@example.com';
       ROLLBACK;  -- or COMMIT; to save changes
-      
-      # Set psql variables
-      \set user_id 123
-      \set table_name 'users'
-      SELECT * FROM :table_name WHERE id = :user_id;
-      
-      # Environment variables
-      \set ON_ERROR_STOP on     # Stop on first error
-      \set AUTOCOMMIT off       # Manual transaction control
-      \set QUIET on             # Suppress notices
-      
-      # Conditional execution
+
+      # Conditional execution with variables
       \set user_exists `SELECT COUNT(*) FROM users WHERE id = 1`
       SELECT CASE WHEN :user_exists > 0 THEN 'User exists' ELSE 'No user' END;
 
-  - question: "How do you run psql in different modes and with useful options?"
-    answer: "Use command-line options like -c for single commands, -f for files, --csv for output format, and -1 for single transactions"
+  - question: "How do you run psql with command-line options for single commands?"
+    answer: "Use -c to execute single commands and -f to run SQL files from the command line"
     code_example: |
       # Execute single command and exit
       psql -U username -d database -c "SELECT COUNT(*) FROM users;"
-      
+
       # Execute SQL file
       psql -U username -d database -f script.sql
-      
-      # CSV output format
-      psql -U username -d database --csv -c "SELECT * FROM users;"
-      
-      # HTML output format
-      psql -U username -d database --html -c "SELECT * FROM users;"
-      
+
       # Run file in single transaction (all or nothing)
       psql -U username -d database -1 -f migration.sql
-      
+
+  - question: "How do you control psql output format and behavior?"
+    answer: "Use command-line options like --csv, --html, -q for different output formats and quiet mode"
+    code_example: |
+      # CSV output format
+      psql -U username -d database --csv -c "SELECT * FROM users;"
+
+      # HTML output format
+      psql -U username -d database --html -c "SELECT * FROM users;"
+
       # Quiet mode (no extra output)
       psql -U username -d database -q -c "INSERT INTO logs VALUES (NOW(), 'Script executed');"
-      
+
       # Set variables from command line
       psql -U username -d database -v table_name=users -c "SELECT COUNT(*) FROM :table_name;"
-      
+
       # No password prompt (use .pgpass or environment)
       PGPASSWORD=mypassword psql -U username -d database -c "SELECT version();"
+
