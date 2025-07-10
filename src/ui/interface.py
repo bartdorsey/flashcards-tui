@@ -275,9 +275,11 @@ def _show_arrow_key_menu(
     options: list[tuple[str, str]],
     default_index: int = 0,
     allow_direct_keys: bool = True,
+    clear_screen: bool = True,
 ) -> str:
     """Generic arrow key menu function."""
-    console.clear()
+    if clear_screen:
+        console.clear()
     selected_index = default_index
 
     try:
@@ -321,6 +323,8 @@ def _show_arrow_key_menu(
 
 def get_user_response(console: Console) -> str:
     """Get user's response using arrow key menu."""
+    console.print()  # Add spacing before menu
+    
     options = [
         ("✅ Yes, I got it right", "y"),
         ("❌ No, I got it wrong", "n"),
@@ -329,7 +333,7 @@ def get_user_response(console: Console) -> str:
     ]
 
     return _show_arrow_key_menu(
-        console, "Did you get it right?", options, default_index=0
+        console, "Did you get it right?", options, default_index=0, clear_screen=False
     )
 
 
