@@ -60,7 +60,7 @@ def display_question(console: Console, card: FlashCard) -> None:
 def wait_for_user_thinking(console: Console) -> None:
     """Wait for user to think about the answer."""
     Prompt.ask(
-        "\\n[yellow]Think about it, then press Enter to reveal "
+        "\n[yellow]Think about it, then press Enter to reveal "
         "the answer[/yellow]",
         default="",
     )
@@ -123,7 +123,7 @@ def continue_to_next_card(
     """Prompt to continue to next card."""
     if current < total and response not in ["s", "q"]:
         Prompt.ask(
-            "\\n[dim]Press Enter to continue to the next card[/dim]",
+            "\n[dim]Press Enter to continue to the next card[/dim]",
             default="",
         )
 
@@ -133,10 +133,10 @@ def show_session_summary(
 ) -> None:
     """Display session summary."""
     if session_summary["total_attempts"] > 0:
-        console.print("\\n[bold]Session Summary:[/bold]")
+        console.print("\n[bold]Session Summary:[/bold]")
         console.print(f"Cards studied: {session_summary['cards_studied']}")
         console.print(f"Accuracy: {session_summary['accuracy']:.1f}%")
-        Prompt.ask("\\n[dim]Press Enter to return to menu[/dim]", default="")
+        Prompt.ask("\n[dim]Press Enter to return to menu[/dim]", default="")
 
 
 def display_statistics_table(
@@ -175,7 +175,7 @@ def display_statistics_table(
             )
 
     console.print(table)
-    Prompt.ask("\\n[dim]Press Enter to return to menu[/dim]", default="")
+    Prompt.ask("\n[dim]Press Enter to return to menu[/dim]", default="")
 
 
 def display_global_statistics(
@@ -247,7 +247,7 @@ def display_global_statistics(
     else:
         console.print(table)
 
-    Prompt.ask("\\n[dim]Press Enter to return to menu[/dim]", default="")
+    Prompt.ask("\n[dim]Press Enter to return to menu[/dim]", default="")
 
 
 def display_flashcard_set_menu(

@@ -52,7 +52,9 @@ def load_flashcard_file(file_path: str) -> Optional[FlashcardSet]:
         return None
     except yaml.YAMLError as e:
         console = Console()
-        console.print(f"[red]Error: Invalid YAML format in {file_path}: {e}[/red]")
+        console.print(
+            f"[red]Error: Invalid YAML format in {file_path}: {e}[/red]"
+        )
         return None
 
 
@@ -168,16 +170,14 @@ def discover_flashcard_sets(
                 if data and "title" in data:
                     display_name = data["title"]
                 else:
-                    display_name = (
-                        filename.replace(".yaml", "")
-                        .replace(".yml", "")
+                    display_name = filename.replace(".yaml", "").replace(
+                        ".yml", ""
                     )
                     display_name = display_name.replace("_", " ").title()
             except Exception:
                 # If file can't be read, use filename as fallback
-                display_name = (
-                    filename.replace(".yaml", "")
-                    .replace(".yml", "")
+                display_name = filename.replace(".yaml", "").replace(
+                    ".yml", ""
                 )
                 display_name = display_name.replace("_", " ").title()
 
@@ -194,9 +194,8 @@ def get_set_display_name(set_name: str) -> str:
     if os.path.exists(directory):
         for filename in os.listdir(directory):
             if filename.endswith((".yaml", ".yml")):
-                file_set_name = (
-                    filename.replace(".yaml", "")
-                    .replace(".yml", "")
+                file_set_name = filename.replace(".yaml", "").replace(
+                    ".yml", ""
                 )
                 if file_set_name == set_name:
                     try:
@@ -219,9 +218,8 @@ def get_set_card_count(set_name: str) -> int:
     if os.path.exists(directory):
         for filename in os.listdir(directory):
             if filename.endswith((".yaml", ".yml")):
-                file_set_name = (
-                    filename.replace(".yaml", "")
-                    .replace(".yml", "")
+                file_set_name = filename.replace(".yaml", "").replace(
+                    ".yml", ""
                 )
                 if file_set_name == set_name:
                     try:
@@ -234,4 +232,3 @@ def get_set_card_count(set_name: str) -> int:
                     except Exception:
                         pass
     return 0
-
