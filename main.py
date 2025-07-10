@@ -7,7 +7,6 @@ import argparse
 import os
 import sys
 from rich.console import Console
-from rich.prompt import Prompt
 
 from src.core.types import AppState, FlashcardSetStats
 from src.io.operations import (
@@ -55,12 +54,7 @@ def run_flashcard_app(file_path: str, stats_file: str) -> None:
 
     # Main application loop
     while True:
-        display_menu(console, flashcard_set.title)
-        choice = Prompt.ask(
-            "[yellow]Choose an option[/yellow]",
-            choices=["1", "2", "s", "q"],
-            default="1",
-        )
+        choice = display_menu(console, flashcard_set.title)
 
         result = handle_menu_choice(
             console, choice, flashcard_set, current_set_stats
