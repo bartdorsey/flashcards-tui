@@ -38,6 +38,8 @@ from src.core.session import (
 )
 from src.ui.interface import (
     _create_scrollable_menu_display,
+    _filter_options,
+    _filter_flashcard_options,
     display_menu,
 )
 from rich.console import Console
@@ -666,6 +668,302 @@ class TestUIInterface:
         assert "🎲" in display_str
         assert "🎓" in display_str
         assert "❯ 🔙 Back to menu" in display_str
+
+    def test_scrollable_menu_display_with_search_mode(self):
+        """Test scrollable menu display with search mode enabled."""
+        options = [("Test Option", "test")]
+        
+        display = _create_scrollable_menu_display(
+            title="Test Menu",
+            visible_options=options,
+            selected_index=0,
+            scroll_offset=0,
+            total_items=1,
+            max_visible=5,
+            search_query="test",
+            search_mode=True
+        )
+        
+        display_str = str(display)
+        
+        # Should show search bar with cursor
+        assert "🔍 Search: test█" in display_str
+        assert "Test Option" in display_str
+
+    def test_scrollable_menu_display_with_search_query(self):
+        """Test scrollable menu display with search query but not in search mode."""
+        options = [("Test Option", "test")]
+        
+        display = _create_scrollable_menu_display(
+            title="Test Menu",
+            visible_options=options,
+            selected_index=0,
+            scroll_offset=0,
+            total_items=1,
+            max_visible=5,
+            search_query="test",
+            search_mode=False
+        )
+        
+        display_str = str(display)
+        
+        # Should show search bar without cursor
+        assert "🔍 Search: test" in display_str
+        assert "🔍 Search: test█" not in display_str
+        assert "Found 1 matches" in display_str
+        assert "Press ESC to clear search" in display_str
+
+    def test_filter_options_empty_query(self):
+        """Test filter options with empty query returns all options."""
+        options = [
+            ("Option 1", "1"),
+            ("Option 2", "2"),
+            ("Option 3", "3"),
+        ]
+        
+        result = _filter_options(options, "")
+        assert result == options
+
+    def test_filter_options_case_insensitive(self):
+        """Test filter options performs case-insensitive matching."""
+        options = [
+            ("Python Basics", "1"),
+            ("JavaScript Fundamentals", "2"),
+            ("Shell Commands", "3"),
+            ("PostgreSQL Advanced", "4"),
+        ]
+        
+        # Test lowercase query
+        result = _filter_options(options, "python")
+        assert len(result) == 1
+        assert result[0] == ("Python Basics", "1")
+        
+        # Test uppercase query
+        result = _filter_options(options, "JAVASCRIPT")
+        assert len(result) == 1
+        assert result[0] == ("JavaScript Fundamentals", "2")
+        
+        # Test mixed case query
+        result = _filter_options(options, "ShElL")
+        assert len(result) == 1
+        assert result[0] == ("Shell Commands", "3")
+
+    def test_filter_options_partial_matches(self):
+        """Test filter options with partial string matches."""
+        options = [
+            ("Python Basics - Variables", "1"),
+            ("Python Advanced - Classes", "2"),
+            ("JavaScript - Functions", "3"),
+            ("Shell Basics", "4"),
+        ]
+        
+        # Should match multiple items with "python"
+        result = _filter_options(options, "python")
+        assert len(result) == 2
+        assert ("Python Basics - Variables", "1") in result
+        assert ("Python Advanced - Classes", "2") in result
+        
+        # Should match single item with "advanced"
+        result = _filter_options(options, "advanced")
+        assert len(result) == 1
+        assert result[0] == ("Python Advanced - Classes", "2")
+        
+        # Should match single item with "javascript"
+        result = _filter_options(options, "javascript")
+        assert len(result) == 1
+        assert result[0] == ("JavaScript - Functions", "3")
+
+    def test_filter_options_no_matches(self):
+        """Test filter options with query that matches nothing."""
+        options = [
+            ("Python Basics", "1"),
+            ("JavaScript Fundamentals", "2"),
+            ("Shell Commands", "3"),
+        ]
+        
+        result = _filter_options(options, "nonexistent")
+        assert len(result) == 0
+        assert result == []
+
+    def test_filter_options_with_emojis_and_numbers(self):
+        """Test filter options with emojis and numbers in labels."""
+        options = [
+            ("🔙 Back to menu", "back"),
+            ("📚 Study all flashcards", "1"),
+            ("1. What is Python?", "q1"),
+            ("2. Variables in JavaScript", "q2"),
+            ("10. Advanced Shell Commands", "q10"),
+        ]
+        
+        # Should match by emoji
+        result = _filter_options(options, "🔙")
+        assert len(result) == 1
+        assert result[0] == ("🔙 Back to menu", "back")
+        
+        # Should match by number
+        result = _filter_options(options, "10")
+        assert len(result) == 1
+        assert result[0] == ("10. Advanced Shell Commands", "q10")
+        
+        # Should match by word
+        result = _filter_options(options, "python")
+        assert len(result) == 1
+        assert result[0] == ("1. What is Python?", "q1")
+
+    def test_filter_flashcard_options_empty_query(self):
+        """Test filter flashcard options with empty query returns all options."""
+        options = [
+            ("🔙 Back to menu", "back"),
+            ("1. What is Python?", "0"),
+            ("2. Variables in JS", "1"),
+        ]
+        flashcards = [
+            FlashCard(question="What is Python?", answer="A programming language"),
+            FlashCard(question="What are variables?", answer="Storage containers"),
+        ]
+        
+        result = _filter_flashcard_options(options, flashcards, "")
+        assert result == options
+
+    def test_filter_flashcard_options_by_question(self):
+        """Test filter flashcard options searches through question content."""
+        options = [
+            ("🔙 Back to menu", "back"),
+            ("1. What is Python?", "0"),
+            ("2. What are variables?", "1"),
+            ("3. How to use loops?", "2"),
+        ]
+        flashcards = [
+            FlashCard(question="What is Python?", answer="A programming language"),
+            FlashCard(question="What are variables?", answer="Storage containers for data"),
+            FlashCard(question="How to use loops?", answer="Repeat code blocks"),
+        ]
+        
+        # Search by question content
+        result = _filter_flashcard_options(options, flashcards, "python")
+        assert len(result) == 2  # Back button + matching card
+        assert ("🔙 Back to menu", "back") in result
+        assert ("1. What is Python?", "0") in result
+
+    def test_filter_flashcard_options_by_answer(self):
+        """Test filter flashcard options searches through answer content."""
+        options = [
+            ("🔙 Back to menu", "back"),
+            ("1. What is Python?", "0"),
+            ("2. What are variables?", "1"),
+        ]
+        flashcards = [
+            FlashCard(question="What is Python?", answer="A programming language"),
+            FlashCard(question="What are variables?", answer="Storage containers for data"),
+        ]
+        
+        # Search by answer content
+        result = _filter_flashcard_options(options, flashcards, "programming")
+        assert len(result) == 2  # Back button + matching card
+        assert ("🔙 Back to menu", "back") in result
+        assert ("1. What is Python?", "0") in result
+
+    def test_filter_flashcard_options_by_code_example(self):
+        """Test filter flashcard options searches through code examples."""
+        options = [
+            ("🔙 Back to menu", "back"),
+            ("1. Variables", "0"),
+            ("2. Functions", "1"),
+        ]
+        flashcards = [
+            FlashCard(
+                question="How to create variables?", 
+                answer="Use assignment operator",
+                code_example="x = 42\nname = 'Alice'"
+            ),
+            FlashCard(
+                question="How to define functions?", 
+                answer="Use def keyword",
+                code_example="def greet():\n    print('Hello')"
+            ),
+        ]
+        
+        # Search by code content
+        result = _filter_flashcard_options(options, flashcards, "alice")
+        assert len(result) == 2  # Back button + matching card
+        assert ("🔙 Back to menu", "back") in result
+        assert ("1. Variables", "0") in result
+        
+        # Search by function keyword
+        result = _filter_flashcard_options(options, flashcards, "def")
+        assert len(result) == 2  # Back button + matching card
+        assert ("🔙 Back to menu", "back") in result
+        assert ("2. Functions", "1") in result
+
+    def test_filter_flashcard_options_case_insensitive(self):
+        """Test filter flashcard options is case-insensitive."""
+        options = [
+            ("🔙 Back to menu", "back"),
+            ("1. Python Basics", "0"),
+        ]
+        flashcards = [
+            FlashCard(question="What is Python?", answer="A Programming Language"),
+        ]
+        
+        # Test various cases
+        for query in ["python", "PYTHON", "Python", "PyThOn"]:
+            result = _filter_flashcard_options(options, flashcards, query)
+            assert len(result) == 2  # Back button + matching card
+            assert ("1. Python Basics", "0") in result
+
+    def test_filter_flashcard_options_multiple_matches(self):
+        """Test filter flashcard options with multiple matching cards."""
+        options = [
+            ("🔙 Back to menu", "back"),
+            ("1. Python Variables", "0"),
+            ("2. Python Functions", "1"),
+            ("3. JavaScript Basics", "2"),
+        ]
+        flashcards = [
+            FlashCard(question="Python variables?", answer="Storage in Python"),
+            FlashCard(question="Python functions?", answer="Reusable Python code"),
+            FlashCard(question="JavaScript basics?", answer="Web programming language"),
+        ]
+        
+        # Should match both Python cards
+        result = _filter_flashcard_options(options, flashcards, "python")
+        assert len(result) == 3  # Back button + 2 matching cards
+        assert ("🔙 Back to menu", "back") in result
+        assert ("1. Python Variables", "0") in result
+        assert ("2. Python Functions", "1") in result
+        assert ("3. JavaScript Basics", "2") not in result
+
+    def test_filter_flashcard_options_no_matches(self):
+        """Test filter flashcard options with no matching content."""
+        options = [
+            ("🔙 Back to menu", "back"),
+            ("1. Python Basics", "0"),
+            ("2. JavaScript Basics", "1"),
+        ]
+        flashcards = [
+            FlashCard(question="What is Python?", answer="Programming language"),
+            FlashCard(question="What is JavaScript?", answer="Web language"),
+        ]
+        
+        # Search for something that doesn't exist
+        result = _filter_flashcard_options(options, flashcards, "nonexistent")
+        assert len(result) == 1  # Only back button
+        assert result[0] == ("🔙 Back to menu", "back")
+
+    def test_filter_flashcard_options_always_includes_back(self):
+        """Test filter flashcard options always includes the back button."""
+        options = [
+            ("🔙 Back to menu", "back"),
+            ("1. Test Card", "0"),
+        ]
+        flashcards = [
+            FlashCard(question="Test question", answer="Test answer"),
+        ]
+        
+        # Even with no matches, back button should be included
+        result = _filter_flashcard_options(options, flashcards, "nomatch")
+        assert len(result) == 1
+        assert result[0] == ("🔙 Back to menu", "back")
 
 
 if __name__ == "__main__":
