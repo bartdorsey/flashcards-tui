@@ -30,7 +30,11 @@ from src.core.statistics import (
     calculate_overall_accuracy,
     calculate_session_summary,
 )
-from src.core.session import prepare_cards, create_study_session, advance_session
+from src.core.session import (
+    prepare_cards,
+    create_study_session,
+    advance_session,
+)
 
 
 class TestFlashcardTypes:
@@ -50,8 +54,9 @@ class TestFlashcardTypes:
         card = FlashCard(question="Test", answer="Test")
         with pytest.raises(
             (AttributeError, TypeError)
-        ):  # dataclass(frozen=True) raises FrozenInstanceError or AttributeError
-            card.question = "Changed"
+        ):  # dataclass(frozen=True) raises FrozenInstanceError or
+            # AttributeError
+            card.question = "Changed"  # type: ignore
 
     def test_card_stats_accuracy(self):
         stats = CardStats(correct=8, total=10)
@@ -115,7 +120,6 @@ class TestIOOperations:
         yield temp_file
         os.unlink(temp_file)
 
-
     def test_load_flashcard_file_yaml(self, temp_yaml_file):
         flashcard_set = load_flashcard_file(temp_yaml_file)
 
@@ -126,7 +130,6 @@ class TestIOOperations:
         assert (
             flashcard_set.cards[1].question == "What is a Python dictionary?"
         )
-
 
     def test_load_flashcard_file_not_found(self):
         with patch("rich.console.Console.print") as mock_print:
