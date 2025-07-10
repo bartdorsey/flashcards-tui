@@ -423,3 +423,201 @@ flashcards:
         GROUP BY city
       ) AS avg_age_by_city
       WHERE avg_age_by_city.avg_age > 25;
+
+  - question: "How do you connect to a PostgreSQL database using psql?"
+    answer: "Use psql command with database connection parameters including host, port, database name, and username"
+    code_example: |
+      # Connect to local database with username
+      psql -U username -d database_name
+      
+      # Connect to remote database
+      psql -h hostname -p 5432 -U username -d database_name
+      
+      # Connect with password prompt
+      psql -U username -d database_name -W
+      
+      # Connect using connection string
+      psql postgresql://username:password@hostname:5432/database_name
+      
+      # Connect to default database (same name as username)
+      psql -U username
+
+  - question: "What are the essential psql meta-commands for navigation?"
+    answer: "Use backslash commands like \\l, \\c, \\dt, \\d, \\q for listing, connecting, and describing database objects"
+    code_example: |
+      # List all databases
+      \l
+      
+      # Connect to a different database
+      \c database_name
+      \c database_name username
+      
+      # List all tables in current database
+      \dt
+      
+      # Describe a specific table structure
+      \d table_name
+      
+      # List all schemas
+      \dn
+      
+      # Show current connection info
+      \conninfo
+      
+      # Quit psql
+      \q
+
+  - question: "How do you view and describe database objects in psql?"
+    answer: "Use \\d commands to describe tables, indexes, views, and other database objects with detailed information"
+    code_example: |
+      # Describe table structure (columns, types, constraints)
+      \d users
+      \d+ users  # Detailed description with additional info
+      
+      # List all tables
+      \dt
+      \dt+  # With sizes and descriptions
+      
+      # List all views
+      \dv
+      
+      # List all indexes
+      \di
+      
+      # List all sequences
+      \ds
+      
+      # List all functions
+      \df
+      
+      # List all users/roles
+      \du
+      
+      # Show table permissions
+      \dp table_name
+
+  - question: "How do you execute SQL files and manage output in psql?"
+    answer: "Use \\i to execute SQL files, \\o to redirect output, and \\copy for data import/export"
+    code_example: |
+      # Execute SQL file
+      \i /path/to/script.sql
+      \i ~/database/setup.sql
+      
+      # Execute file relative to current directory
+      \ir relative/path/script.sql
+      
+      # Redirect query output to file
+      \o output.txt
+      SELECT * FROM users;
+      \o  # Stop redirecting (back to screen)
+      
+      # Copy data from CSV file to table
+      \copy users(name,email,age) FROM 'users.csv' WITH CSV HEADER
+      
+      # Copy query results to CSV file
+      \copy (SELECT name, email FROM users) TO 'export.csv' WITH CSV HEADER
+      
+      # Include another psql script
+      \include setup_users.sql
+
+  - question: "How do you control query output formatting in psql?"
+    answer: "Use formatting commands like \\x, \\pset, and \\timing to control how query results are displayed"
+    code_example: |
+      # Toggle expanded display (vertical format)
+      \x
+      \x on   # Turn on
+      \x off  # Turn off
+      
+      # Set output format
+      \pset format unaligned  # Remove formatting
+      \pset format aligned    # Default aligned columns
+      \pset format wrapped    # Wrap long lines
+      \pset format html       # HTML table format
+      \pset format csv        # CSV format
+      
+      # Control column separators
+      \pset fieldsep ','      # Use comma as separator
+      \pset fieldsep '|'      # Use pipe as separator
+      
+      # Show/hide column headers
+      \pset tuples_only on    # Hide headers
+      \pset tuples_only off   # Show headers
+      
+      # Show query execution time
+      \timing on
+      \timing off
+
+  - question: "How do you get help and view command history in psql?"
+    answer: "Use \\h for SQL help, \\? for psql commands help, and \\s for command history"
+    code_example: |
+      # Get help on SQL commands
+      \h                    # List all SQL commands
+      \h SELECT            # Help on SELECT statement
+      \h CREATE TABLE      # Help on CREATE TABLE
+      \h UPDATE            # Help on UPDATE statement
+      
+      # Get help on psql meta-commands
+      \?                   # List all psql commands
+      
+      # View command history
+      \s                   # Show session history
+      \s filename          # Save history to file
+      
+      # Edit previous command in editor
+      \e                   # Open last command in editor
+      \e filename          # Edit file in editor
+      
+      # Show current settings
+      \set                 # Show all variables
+      \set PROMPT1 '%n@%m:%>%x %# '  # Customize prompt
+
+  - question: "How do you manage transactions and variables in psql?"
+    answer: "Use BEGIN/COMMIT/ROLLBACK for transactions and \\set for variables and settings"
+    code_example: |
+      # Transaction control
+      BEGIN;
+      INSERT INTO users (name, email) VALUES ('Test User', 'test@example.com');
+      -- Check the data
+      SELECT * FROM users WHERE email = 'test@example.com';
+      ROLLBACK;  -- or COMMIT; to save changes
+      
+      # Set psql variables
+      \set user_id 123
+      \set table_name 'users'
+      SELECT * FROM :table_name WHERE id = :user_id;
+      
+      # Environment variables
+      \set ON_ERROR_STOP on     # Stop on first error
+      \set AUTOCOMMIT off       # Manual transaction control
+      \set QUIET on             # Suppress notices
+      
+      # Conditional execution
+      \set user_exists `SELECT COUNT(*) FROM users WHERE id = 1`
+      SELECT CASE WHEN :user_exists > 0 THEN 'User exists' ELSE 'No user' END;
+
+  - question: "How do you run psql in different modes and with useful options?"
+    answer: "Use command-line options like -c for single commands, -f for files, --csv for output format, and -1 for single transactions"
+    code_example: |
+      # Execute single command and exit
+      psql -U username -d database -c "SELECT COUNT(*) FROM users;"
+      
+      # Execute SQL file
+      psql -U username -d database -f script.sql
+      
+      # CSV output format
+      psql -U username -d database --csv -c "SELECT * FROM users;"
+      
+      # HTML output format
+      psql -U username -d database --html -c "SELECT * FROM users;"
+      
+      # Run file in single transaction (all or nothing)
+      psql -U username -d database -1 -f migration.sql
+      
+      # Quiet mode (no extra output)
+      psql -U username -d database -q -c "INSERT INTO logs VALUES (NOW(), 'Script executed');"
+      
+      # Set variables from command line
+      psql -U username -d database -v table_name=users -c "SELECT COUNT(*) FROM :table_name;"
+      
+      # No password prompt (use .pgpass or environment)
+      PGPASSWORD=mypassword psql -U username -d database -c "SELECT version();"
