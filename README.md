@@ -36,6 +36,7 @@ python main.py
 ```
 
 This will show a menu where you can:
+
 - Select a flashcard set by number
 - Press `s` to view statistics for all sets
 - Press `q` to quit
@@ -52,6 +53,7 @@ python main.py flashcard_sets/git_basics_flashcards.yaml
 ### Study Modes
 
 Once you select a flashcard set, you can choose:
+
 - **Study all flashcards** - Go through cards in order
 - **Study random flashcards** - Randomized order
 - **View statistics** - See your progress on this set
@@ -91,7 +93,7 @@ flashcards:
     code_example: |
       # Optional code example
       print("Hello, World!")
-      
+
   - question: "Another question?"
     answer: "Another answer."
     # code_example is optional
@@ -159,26 +161,6 @@ python main.py flashcard_sets/git_basics_flashcards.yaml --stats git_progress.js
   - `rich` - Beautiful terminal UI
   - `PyYAML` - YAML file support
   - `pytest` - Testing framework
-
-## File Structure
-
-```
-flashcards/
-├── main.py                     # Main application
-├── test_flashcards.py         # Unit tests
-├── flashcard_stats.json       # Statistics storage
-├── flashcard_schema.yaml      # YAML schema for validation
-├── requirements.txt           # Python dependencies
-├── README.md                  # This file
-└── flashcard_sets/            # Flashcard collections
-    ├── python_basic_flashcards.yaml
-    ├── python_advanced_flashcards.yaml
-    ├── javascript_basic_flashcards.yaml
-    ├── javascript_advanced_flashcards.yaml
-    ├── postgresql_flashcards.yaml
-    ├── git_basics_flashcards.yaml
-    └── programming_terminology_flashcards.yaml
-```
 
 ## Testing
 
