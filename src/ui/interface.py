@@ -4,7 +4,7 @@ Pure functions for UI rendering.
 """
 
 import sys
-from typing import Dict, List, Tuple, Any
+from typing import Any
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
@@ -129,7 +129,7 @@ def continue_to_next_card(
 
 
 def show_session_summary(
-    console: Console, session_summary: Dict[str, Any]
+    console: Console, session_summary: dict[str, Any]
 ) -> None:
     """Display session summary."""
     if session_summary["total_attempts"] > 0:
@@ -179,7 +179,7 @@ def display_statistics_table(
 
 
 def display_global_statistics(
-    console: Console, set_stats: Dict[str, FlashcardSetStats]
+    console: Console, set_stats: dict[str, FlashcardSetStats]
 ) -> None:
     """Display statistics for all flashcard sets."""
     console.clear()
@@ -251,7 +251,7 @@ def display_global_statistics(
 
 
 def display_flashcard_set_menu(
-    console: Console, flashcard_sets: List[Tuple[str, str]]
+    console: Console, flashcard_sets: list[tuple[str, str]]
 ) -> str:
     """Display menu to select flashcard set and return file path."""
     console.clear()
@@ -305,7 +305,7 @@ def display_flashcard_set_menu(
 
 
 def display_flashcard_set_menu_with_stats(
-    console: Console, flashcard_sets: List[Tuple[str, str]]
+    console: Console, flashcard_sets: list[tuple[str, str]]
 ) -> str:
     """Display menu to select flashcard set with statistics option."""
     console.clear()
