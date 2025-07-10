@@ -26,6 +26,7 @@ from src.ui.interface import (
     display_statistics_table,
     display_exit_message,
     confirm_reset_stats,
+    display_flashcard_browser,
 )
 
 
@@ -140,6 +141,9 @@ def handle_menu_choice(
             console, flashcard_set, set_stats, randomize=True
         )
         return new_stats, True
+    elif choice == "b":
+        display_flashcard_browser(console, flashcard_set)
+        return None, False
     elif choice == "s":
         display_statistics_table(console, flashcard_set, set_stats)
         return None, False

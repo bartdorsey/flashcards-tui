@@ -34,7 +34,14 @@ from src.core.session import (
     prepare_cards,
     create_study_session,
     advance_session,
+    handle_menu_choice,
 )
+from src.ui.interface import (
+    _create_scrollable_menu_display,
+    display_menu,
+)
+from rich.console import Console
+from rich.text import Text
 
 
 class TestFlashcardTypes:
@@ -371,6 +378,294 @@ class TestStudySession:
         advanced_incorrect = advance_session(session, False)
         assert advanced_incorrect.current_index == 1
         assert advanced_incorrect.correct_count == 0
+
+    def test_handle_menu_choice_browse(self):
+        """Test handle_menu_choice with browse option."""
+        cards = [
+            FlashCard(question="Q1", answer="A1"),
+            FlashCard(question="Q2", answer="A2"),
+        ]
+        flashcard_set = FlashcardSet(
+            cards=cards, 
+            name="test_set", 
+            title="Test Set", 
+            file_path="test.yaml"
+        )
+        set_stats = FlashcardSetStats()
+        console = Console()
+        
+        # Mock the display_flashcard_browser function
+        with patch('src.core.session.display_flashcard_browser') as mock_browser:
+            result, session_completed = handle_menu_choice(
+                console, "b", flashcard_set, set_stats
+            )
+            
+            # Should call the browser function
+            assert mock_browser.called
+            mock_browser.assert_called_once_with(console, flashcard_set)
+            
+            # Should return None (no stats update) and False (no session completed)
+            assert result is None
+            assert session_completed is False
+
+    def test_handle_menu_choice_statistics(self):
+        """Test handle_menu_choice with statistics option."""
+        cards = [FlashCard(question="Q1", answer="A1")]
+        flashcard_set = FlashcardSet(
+            cards=cards,
+            name="test_set", 
+            title="Test Set",
+            file_path="test.yaml"
+        )
+        set_stats = FlashcardSetStats()
+        console = Console()
+        
+        # Mock the display_statistics_table function
+        with patch('src.core.session.display_statistics_table') as mock_stats:
+            result, session_completed = handle_menu_choice(
+                console, "s", flashcard_set, set_stats
+            )
+            
+            # Should call the statistics function
+            assert mock_stats.called
+            mock_stats.assert_called_once_with(console, flashcard_set, set_stats)
+            
+            # Should return None and False
+            assert result is None
+            assert session_completed is False
+
+    def test_handle_menu_choice_exit(self):
+        """Test handle_menu_choice with quit option."""
+        cards = [FlashCard(question="Q1", answer="A1")]
+        flashcard_set = FlashcardSet(
+            cards=cards,
+            name="test_set",
+            title="Test Set", 
+            file_path="test.yaml"
+        )
+        set_stats = FlashcardSetStats()
+        console = Console()
+        
+        # Mock the display_exit_message function
+        with patch('src.core.session.display_exit_message') as mock_exit:
+            result, session_completed = handle_menu_choice(
+                console, "q", flashcard_set, set_stats
+            )
+            
+            # Should call the exit message function
+            assert mock_exit.called
+            mock_exit.assert_called_once_with(console)
+            
+            # Should return "exit" and False
+            assert result == "exit"
+            assert session_completed is False
+
+
+class TestUIInterface:
+    """Test the UI interface functions."""
+
+    def test_create_scrollable_menu_display_no_scroll(self):
+        """Test scrollable menu display when no scrolling is needed."""
+        options = [
+            ("Option 1", "1"),
+            ("Option 2", "2"),
+            ("Option 3", "3"),
+        ]
+        
+        display = _create_scrollable_menu_display(
+            title="Test Menu",
+            visible_options=options,
+            selected_index=1,
+            scroll_offset=0,
+            total_items=3,
+            max_visible=5
+        )
+        
+        display_str = str(display)
+        
+        # Should contain title
+        assert "Test Menu" in display_str
+        # Should contain all options
+        assert "Option 1" in display_str
+        assert "Option 2" in display_str 
+        assert "Option 3" in display_str
+        # Should show selection indicator on option 2 (index 1)
+        assert "❯ Option 2" in display_str
+        # Should not show scroll indicators
+        assert "▲" not in display_str
+        assert "▼" not in display_str
+        # Should not show status line
+        assert "Showing" not in display_str
+
+    def test_create_scrollable_menu_display_with_scroll_top(self):
+        """Test scrollable menu display at top of list."""
+        visible_options = [
+            ("Option 1", "1"),
+            ("Option 2", "2"),
+            ("Option 3", "3"),
+        ]
+        
+        display = _create_scrollable_menu_display(
+            title="Test Menu",
+            visible_options=visible_options,
+            selected_index=0,
+            scroll_offset=0,
+            total_items=10,
+            max_visible=3
+        )
+        
+        display_str = str(display)
+        
+        # Should not show up arrow at top
+        assert "▲" not in display_str
+        # Should show down arrow at bottom
+        assert "▼" in display_str
+        # Should show status line
+        assert "Showing 1-3 of 10 items" in display_str
+
+    def test_create_scrollable_menu_display_with_scroll_middle(self):
+        """Test scrollable menu display in middle of list."""
+        visible_options = [
+            ("Option 4", "4"),
+            ("Option 5", "5"),
+            ("Option 6", "6"),
+        ]
+        
+        display = _create_scrollable_menu_display(
+            title="Test Menu",
+            visible_options=visible_options,
+            selected_index=1,
+            scroll_offset=3,
+            total_items=10,
+            max_visible=3
+        )
+        
+        display_str = str(display)
+        
+        # Should show both scroll arrows
+        assert "▲" in display_str
+        assert "▼" in display_str
+        # Should show correct status line
+        assert "Showing 4-6 of 10 items" in display_str
+        # Should show selection on middle item
+        assert "❯ Option 5" in display_str
+
+    def test_create_scrollable_menu_display_with_scroll_bottom(self):
+        """Test scrollable menu display at bottom of list."""
+        visible_options = [
+            ("Option 8", "8"),
+            ("Option 9", "9"),
+            ("Option 10", "10"),
+        ]
+        
+        display = _create_scrollable_menu_display(
+            title="Test Menu", 
+            visible_options=visible_options,
+            selected_index=2,
+            scroll_offset=7,
+            total_items=10,
+            max_visible=3
+        )
+        
+        display_str = str(display)
+        
+        # Should show up arrow at top
+        assert "▲" in display_str
+        # Should not show down arrow at bottom
+        assert "▼" not in display_str
+        # Should show correct status line
+        assert "Showing 8-10 of 10 items" in display_str
+
+    def test_display_menu_includes_browse_option(self):
+        """Test that display_menu includes the new browse option."""
+        console = Console()
+        
+        # Mock the _show_arrow_key_menu function to capture the options
+        with patch('src.ui.interface._show_arrow_key_menu') as mock_menu:
+            mock_menu.return_value = "b"
+            
+            result = display_menu(console, "Test Set")
+            
+            # Verify the function was called
+            assert mock_menu.called
+            call_args = mock_menu.call_args
+            
+            # Extract the options from the call
+            options = call_args[0][2]  # Third argument is options list
+            
+            # Verify browse option is present
+            option_labels = [option[0] for option in options]
+            option_values = [option[1] for option in options]
+            
+            assert "👁️ Browse all flashcards" in option_labels
+            assert "b" in option_values
+            assert result == "b"
+
+    def test_scrollable_menu_display_text_object(self):
+        """Test that scrollable menu display returns a Rich Text object."""
+        options = [("Test Option", "test")]
+        
+        display = _create_scrollable_menu_display(
+            title="Test",
+            visible_options=options,
+            selected_index=0,
+            scroll_offset=0,
+            total_items=1,
+            max_visible=5
+        )
+        
+        # Should return a Rich Text object
+        assert isinstance(display, Text)
+        
+        # Should be convertible to string
+        display_str = str(display)
+        assert isinstance(display_str, str)
+        assert len(display_str) > 0
+
+    def test_scrollable_menu_display_empty_options(self):
+        """Test scrollable menu display with empty options list."""
+        display = _create_scrollable_menu_display(
+            title="Empty Menu",
+            visible_options=[],
+            selected_index=0,
+            scroll_offset=0,
+            total_items=0,
+            max_visible=5
+        )
+        
+        display_str = str(display)
+        
+        # Should still contain title
+        assert "Empty Menu" in display_str
+        # Should not contain scroll indicators
+        assert "▲" not in display_str
+        assert "▼" not in display_str
+
+    def test_scrollable_menu_display_special_characters(self):
+        """Test scrollable menu display with special characters and emojis."""
+        options = [
+            ("🔙 Back to menu", "back"),
+            ("📚 Study all flashcards", "1"),
+            ("🎲 Random study", "2"),
+        ]
+        
+        display = _create_scrollable_menu_display(
+            title="Test Menu with Emojis 🎓",
+            visible_options=options,
+            selected_index=0,
+            scroll_offset=0,
+            total_items=3,
+            max_visible=5
+        )
+        
+        display_str = str(display)
+        
+        # Should handle emojis properly
+        assert "🔙" in display_str
+        assert "📚" in display_str
+        assert "🎲" in display_str
+        assert "🎓" in display_str
+        assert "❯ 🔙 Back to menu" in display_str
 
 
 if __name__ == "__main__":

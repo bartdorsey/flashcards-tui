@@ -25,6 +25,7 @@ def display_menu(console: Console, set_title: str, clear_screen: bool = True) ->
     options = [
         ("📚 Study all flashcards", "1"),
         ("🎲 Study random flashcards", "2"),
+        ("👁️ Browse all flashcards", "b"),
         ("📊 View statistics", "s"),
         ("🔄 Reset statistics", "r"),
         ("🚪 Exit", "q"),
@@ -232,6 +233,45 @@ def _create_menu_display(
     return menu_text
 
 
+def _create_scrollable_menu_display(
+    title: str, 
+    visible_options: list[tuple[str, str]], 
+    selected_index: int,
+    scroll_offset: int, 
+    total_items: int, 
+    max_visible: int
+) -> Text:
+    """Create menu display with scroll indicators for long lists."""
+    menu_text = Text()
+    menu_text.append(f"{title}\n\n", style="yellow bold")
+    
+    # Add scroll indicator at top
+    if scroll_offset > 0:
+        menu_text.append("   ▲ (more items above)\n", style="dim blue")
+    
+    # Add visible menu items
+    for i, (label, _) in enumerate(visible_options):
+        if i == selected_index:
+            menu_text.append(f"❯ {label}", style="bold green")
+        else:
+            menu_text.append(f"  {label}", style="dim")
+        
+        if i < len(visible_options) - 1:
+            menu_text.append("\n")
+    
+    # Add scroll indicator at bottom
+    if scroll_offset + len(visible_options) < total_items:
+        menu_text.append("\n   ▼ (more items below)", style="dim blue")
+    
+    # Add status info for long lists
+    if total_items > max_visible:
+        current_range_start = scroll_offset + 1
+        current_range_end = scroll_offset + len(visible_options)
+        menu_text.append(f"\n\n[dim]Showing {current_range_start}-{current_range_end} of {total_items} items | Use ↑↓ to scroll[/dim]")
+    
+    return menu_text
+
+
 def _get_arrow_key_input() -> str:
     """Get keyboard input and return the key pressed."""
     try:
@@ -280,6 +320,60 @@ def _get_arrow_key_input() -> str:
     return ""
 
 
+def display_flashcard_browser(console: Console, flashcard_set: FlashcardSet) -> None:
+    """Browse all flashcards with arrow key navigation."""
+    if not flashcard_set.cards:
+        console.clear()
+        console.print("[red]No flashcards available![/red]")
+        Prompt.ask("\n[dim]Press Enter to return to menu[/dim]", default="")
+        return
+        
+    options = [("🔙 Back to menu", "back")]
+    
+    for i, card in enumerate(flashcard_set.cards):
+        # Truncate question for menu display (accounting for numbering)
+        question_preview = card.question[:55] + "..." if len(card.question) > 55 else card.question
+        # Remove newlines and normalize whitespace for menu display
+        question_preview = " ".join(question_preview.split())
+        options.append((f"{i+1:2d}. {question_preview}", str(i)))
+    
+    while True:
+        choice = _show_scrollable_arrow_key_menu(
+            console,
+            f"📖 Browse: {flashcard_set.title} ({len(flashcard_set.cards)} cards)",
+            options,
+            default_index=0,
+            allow_direct_keys=False
+        )
+        
+        if choice == "back":
+            break
+        
+        # Display selected flashcard
+        card_index = int(choice)
+        _display_single_flashcard(console, flashcard_set.cards[card_index], card_index + 1, len(flashcard_set.cards))
+
+
+def _display_single_flashcard(console: Console, card: FlashCard, card_num: int, total: int) -> None:
+    """Display a single flashcard for browsing."""
+    console.clear()
+    
+    # Show progress
+    display_progress(console, card_num, total)
+    
+    # Show question
+    display_question(console, card)
+    
+    # Show answer  
+    display_answer(console, card)
+    
+    # Show code example if it exists
+    if card.code_example:
+        display_code_example(console, card)
+    
+    Prompt.ask("\n[dim]Press Enter to return to list[/dim]", default="")
+
+
 def _show_arrow_key_menu(
     console: Console,
     title: str,
@@ -324,6 +418,82 @@ def _show_arrow_key_menu(
                             return value
                     return "quit"
 
+    except KeyboardInterrupt:
+        # Return appropriate quit value
+        for _, value in options:
+            if value in ["q", "quit"]:
+                return value
+        return "quit"
+
+
+def _show_scrollable_arrow_key_menu(
+    console: Console,
+    title: str,
+    options: list[tuple[str, str]],
+    default_index: int = 0,
+    allow_direct_keys: bool = True,
+    clear_screen: bool = True,
+) -> str:
+    """Enhanced arrow key menu with scrolling for long lists."""
+    if clear_screen:
+        console.clear()
+    
+    selected_index = default_index
+    scroll_offset = 0
+    
+    # Calculate available height for menu items
+    terminal_height = console.size.height
+    reserved_lines = 8  # title, spacing, instructions, scroll indicators
+    max_visible_items = max(5, terminal_height - reserved_lines)
+    
+    try:
+        with Live(console=console, auto_refresh=False) as live:
+            while True:
+                # Calculate viewport window
+                if len(options) <= max_visible_items:
+                    # All items fit, show everything
+                    visible_options = options
+                    visible_selected = selected_index
+                    scroll_offset = 0
+                else:
+                    # Need scrolling - adjust viewport
+                    if selected_index < scroll_offset:
+                        scroll_offset = selected_index
+                    elif selected_index >= scroll_offset + max_visible_items:
+                        scroll_offset = selected_index - max_visible_items + 1
+                    
+                    visible_options = options[scroll_offset:scroll_offset + max_visible_items]
+                    visible_selected = selected_index - scroll_offset
+                
+                # Create display with scroll indicators
+                menu_display = _create_scrollable_menu_display(
+                    title, visible_options, visible_selected, 
+                    scroll_offset, len(options), max_visible_items
+                )
+                live.update(menu_display)
+                live.refresh()
+                
+                # Handle input
+                key = _get_arrow_key_input()
+                
+                if key == "up":
+                    selected_index = (selected_index - 1) % len(options)
+                elif key == "down":
+                    selected_index = (selected_index + 1) % len(options)
+                elif key == "enter":
+                    return options[selected_index][1]
+                elif allow_direct_keys:
+                    # Check if key matches any option value
+                    for _, value in options:
+                        if value == key:
+                            return value
+                elif key == "quit":
+                    # Return appropriate quit value based on options
+                    for _, value in options:
+                        if value in ["q", "quit"]:
+                            return value
+                    return "quit"
+                
     except KeyboardInterrupt:
         # Return appropriate quit value
         for _, value in options:
