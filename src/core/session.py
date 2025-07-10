@@ -4,7 +4,6 @@ Pure functions for study session logic.
 """
 
 import random
-from typing import Tuple, Union
 from rich.console import Console
 
 from src.core.types import (
@@ -64,7 +63,7 @@ def run_study_session(
     flashcard_set: FlashcardSet,
     set_stats: FlashcardSetStats,
     randomize: bool = False,
-) -> Tuple[FlashcardSetStats, int]:
+) -> tuple[FlashcardSetStats, int]:
     """Run a complete study session and return updated stats
     and cards studied."""
     if not flashcard_set.cards:
@@ -124,7 +123,7 @@ def handle_menu_choice(
     choice: str,
     flashcard_set: FlashcardSet,
     set_stats: FlashcardSetStats,
-) -> Union[FlashcardSetStats, str, None]:
+) -> FlashcardSetStats | str | None:
     """Handle menu choice and return updated stats if applicable."""
     if choice == "1":
         new_stats, _ = run_study_session(

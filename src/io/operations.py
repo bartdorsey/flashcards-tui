@@ -5,7 +5,6 @@ Pure functions for file I/O operations.
 
 import json
 import os
-from typing import Dict, List, Tuple, Optional
 import yaml
 from rich.console import Console
 
@@ -17,7 +16,7 @@ from src.core.types import (
 )
 
 
-def load_flashcard_file(file_path: str) -> Optional[FlashcardSet]:
+def load_flashcard_file(file_path: str) -> FlashcardSet | None:
     """Load flashcards from a YAML file."""
     try:
         with open(file_path, "r") as f:
@@ -58,7 +57,7 @@ def load_flashcard_file(file_path: str) -> Optional[FlashcardSet]:
         return None
 
 
-def load_statistics_file(stats_file: str) -> Dict[str, FlashcardSetStats]:
+def load_statistics_file(stats_file: str) -> dict[str, FlashcardSetStats]:
     """Load statistics from JSON file."""
     try:
         with open(stats_file, "r") as f:
@@ -113,7 +112,7 @@ def load_statistics_file(stats_file: str) -> Dict[str, FlashcardSetStats]:
 
 
 def save_statistics_file(
-    stats_file: str, set_stats: Dict[str, FlashcardSetStats]
+    stats_file: str, set_stats: dict[str, FlashcardSetStats]
 ) -> bool:
     """Save statistics to JSON file."""
     # Convert dataclasses to dictionaries for JSON serialization
@@ -147,7 +146,7 @@ def save_statistics_file(
 
 def discover_flashcard_sets(
     directory: str = "flashcard_sets",
-) -> List[Tuple[str, str]]:
+) -> list[tuple[str, str]]:
     """Discover all flashcard files in the specified directory."""
     flashcard_sets = []
 

@@ -4,7 +4,6 @@ Immutable data types for the flashcard application.
 """
 
 from dataclasses import dataclass, field
-from typing import Optional, Dict
 
 
 @dataclass(frozen=True)
@@ -13,7 +12,7 @@ class FlashCard:
 
     question: str
     answer: str
-    code_example: Optional[str] = None
+    code_example: str | None = None
 
 
 @dataclass(frozen=True)
@@ -35,7 +34,7 @@ class FlashcardSetStats:
 
     correct_answers: int = 0
     total_attempts: int = 0
-    card_stats: Dict[str, CardStats] = field(default_factory=dict)
+    card_stats: dict[str, CardStats] = field(default_factory=dict)
 
     @property
     def accuracy(self) -> float:
@@ -72,7 +71,7 @@ class StudySession:
         return self.current_index >= len(self.cards)
 
     @property
-    def current_card(self) -> Optional[FlashCard]:
+    def current_card(self) -> FlashCard | None:
         """Get current card if available."""
         if self.is_complete:
             return None
@@ -88,6 +87,5 @@ class StudySession:
 class AppState:
     """Immutable application state."""
 
-    flashcard_sets: Dict[str, FlashcardSetStats] = field(default_factory=dict)
-    current_set: Optional[FlashcardSet] = None
-
+    flashcard_sets: dict[str, FlashcardSetStats] = field(default_factory=dict)
+    current_set: FlashcardSet | None = None
