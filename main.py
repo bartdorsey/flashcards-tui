@@ -22,6 +22,7 @@ from src.ui.interface import (
     display_exit_message,
 )
 from src.core.session import handle_menu_choice
+from src.__version__ import __version__, __description__
 
 
 def create_app_state(stats_file: str) -> AppState:
@@ -102,8 +103,7 @@ def run_set_selection_menu(stats_file: str) -> None:
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="Interactive flashcard application for studying "
-        "Python concepts",
+        description=__description__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -126,6 +126,11 @@ Examples:
         "--stats",
         default="flashcard_stats.json",
         help="Path to the statistics file (default: flashcard_stats.json)",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"flashcards-tui {__version__}",
     )
 
     args = parser.parse_args()

@@ -1,2 +1,63 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flashcards-tui"
+version = "0.1.0"
+description = "Interactive terminal flashcard study application with advanced search and navigation"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Bart Dorsey", email = "bart@bartdorsey.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Education",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Education",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Terminals",
+    "Topic :: Text Processing :: Markup :: YAML"
+]
+requires-python = ">=3.7"
+dependencies = [
+    "rich>=14.0.0",
+    "PyYAML>=6.0.2",
+    "catppuccin[pygments]>=2.4.1"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4.1",
+    "black>=23.0.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/user/flashcards-tui"
+Repository = "https://github.com/user/flashcards-tui.git"
+Issues = "https://github.com/user/flashcards-tui/issues"
+
+[project.scripts]
+flashcards-tui = "main:main"
+
 [tool.black]
 line-length = 79
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
