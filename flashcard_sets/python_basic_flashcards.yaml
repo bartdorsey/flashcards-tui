@@ -1,26 +1,140 @@
 title: "Python Basics"
 icon: "🐍"
 flashcards:
-  - question: "What is the difference between mutable and immutable objects in Python?"
-    answer: "Mutable objects can be changed after creation (lists, dicts, sets), while immutable objects cannot be changed (strings, tuples, integers)"
+  - question: "What are mutable objects in Python?"
+    answer: "Mutable objects can be changed after creation. Common mutable types include lists, dictionaries, and sets. You can modify their contents without creating a new object"
     code_example: |
-      # Mutable objects
+      # Lists are mutable
       my_list = [1, 2, 3]
-      my_list.append(4)  # Modifies the original list
-      print(my_list)     # [1, 2, 3, 4]
+      print(f"Original: {my_list}")
+      my_list.append(4)           # Modifies the original list
+      print(f"After append: {my_list}")   # [1, 2, 3, 4]
       
-      my_dict = {"a": 1}
-      my_dict["b"] = 2   # Modifies the original dict
-      print(my_dict)     # {"a": 1, "b": 2}
+      my_list[0] = 99             # Change existing element
+      print(f"After change: {my_list}")   # [99, 2, 3, 4]
       
-      # Immutable objects
+      # Dictionaries are mutable
+      my_dict = {"a": 1, "b": 2}
+      print(f"Original dict: {my_dict}")
+      my_dict["c"] = 3            # Add new key-value pair
+      my_dict["a"] = 99           # Modify existing value
+      print(f"Modified dict: {my_dict}")  # {"a": 99, "b": 2, "c": 3}
+      
+      # Sets are mutable
+      my_set = {1, 2, 3}
+      print(f"Original set: {my_set}")
+      my_set.add(4)               # Add new element
+      my_set.remove(1)            # Remove element
+      print(f"Modified set: {my_set}")    # {2, 3, 4}
+      
+      # Multiple variables pointing to same mutable object
+      list1 = [1, 2, 3]
+      list2 = list1               # Both point to same list
+      list1.append(4)
+      print(f"list1: {list1}")    # [1, 2, 3, 4]
+      print(f"list2: {list2}")    # [1, 2, 3, 4] - also changed!
+      
+      # To avoid this, create a copy
+      list3 = [1, 2, 3]
+      list4 = list3.copy()        # Create separate copy
+      list3.append(4)
+      print(f"list3: {list3}")    # [1, 2, 3, 4]
+      print(f"list4: {list4}")    # [1, 2, 3] - unchanged
+
+  - question: "What are immutable objects in Python?"
+    answer: "Immutable objects cannot be changed after creation. Common immutable types include strings, tuples, integers, and floats. Operations create new objects instead of modifying existing ones"
+    code_example: |
+      # Strings are immutable
       my_string = "hello"
-      new_string = my_string + " world"  # Creates new string
-      print(my_string)    # "hello" (unchanged)
-      print(new_string)   # "hello world"
+      print(f"Original: {my_string}")
+      new_string = my_string + " world"   # Creates NEW string
+      print(f"Original after concat: {my_string}")    # "hello" (unchanged)
+      print(f"New string: {new_string}")              # "hello world"
       
+      # Cannot modify string characters directly
+      # my_string[0] = "H"          # This would raise TypeError
+      
+      # Tuples are immutable
       my_tuple = (1, 2, 3)
-      # my_tuple[0] = 5   # This would raise TypeError
+      print(f"Original tuple: {my_tuple}")
+      # my_tuple[0] = 99            # This would raise TypeError
+      
+      # But you can create new tuples
+      new_tuple = my_tuple + (4, 5)
+      print(f"Original tuple: {my_tuple}")    # (1, 2, 3) - unchanged
+      print(f"New tuple: {new_tuple}")        # (1, 2, 3, 4, 5)
+      
+      # Numbers are immutable
+      x = 10
+      y = x
+      x = x + 5                   # Creates new integer, assigns to x
+      print(f"x: {x}")            # 15
+      print(f"y: {y}")            # 10 (unchanged)
+      
+      # String methods return new strings
+      text = "Hello World"
+      upper_text = text.upper()   # Returns new string
+      print(f"Original: {text}")  # "Hello World" (unchanged)
+      print(f"Upper: {upper_text}")   # "HELLO WORLD"
+      
+      # Immutable objects are safe to share
+      tuple1 = (1, 2, 3)
+      tuple2 = tuple1             # Both point to same tuple
+      # Since tuples are immutable, we can't accidentally modify them
+      # Any "changes" would create new objects
+
+  - question: "What happens when you try to modify immutable objects?"
+    answer: "Attempting to modify immutable objects raises a TypeError. However, operations that seem to 'modify' them actually create new objects, leaving the original unchanged"
+    code_example: |
+      # Trying to modify string characters
+      text = "hello"
+      try:
+          text[0] = "H"           # Attempt to modify
+      except TypeError as e:
+          print(f"Error: {e}")    # 'str' object does not support item assignment
+      
+      # Trying to modify tuple elements
+      coordinates = (10, 20)
+      try:
+          coordinates[0] = 15     # Attempt to modify
+      except TypeError as e:
+          print(f"Error: {e}")    # 'tuple' object does not support item assignment
+      
+      # String operations create NEW objects
+      original = "python"
+      result1 = original.upper()          # Creates new string
+      result2 = original.replace("p", "P") # Creates new string
+      result3 = original + " rocks"       # Creates new string
+      
+      print(f"Original: {original}")      # "python" (unchanged)
+      print(f"Upper: {result1}")          # "PYTHON"
+      print(f"Replace: {result2}")        # "Python"
+      print(f"Concat: {result3}")         # "python rocks"
+      
+      # Demonstrating object identity
+      numbers = (1, 2, 3)
+      new_numbers = numbers + (4,)        # Creates new tuple
+      
+      print(f"Original ID: {id(numbers)}")     # Memory address
+      print(f"New ID: {id(new_numbers)}")      # Different memory address
+      print(f"Are they the same object? {numbers is new_numbers}")  # False
+      
+      # This applies to all immutable types
+      x = 42
+      y = x + 1                           # Creates new integer
+      print(f"x ID: {id(x)}")
+      print(f"y ID: {id(y)}")             # Different ID
+      
+      # Important: Even with same value, might be different objects
+      a = 1000
+      b = 1000
+      print(f"a == b: {a == b}")          # True (same value)
+      print(f"a is b: {a is b}")          # Might be False (different objects)
+      
+      # Small integers are cached (special case)
+      c = 5
+      d = 5
+      print(f"c is d: {c is d}")          # True (Python caches small integers)
 
   - question: "What is Python's self parameter in class methods?"
     answer: "A reference to the current instance of the class, allowing access to instance variables and methods"
@@ -65,61 +179,320 @@ flashcards:
       print(numbers[-3:])     # [7, 8, 9] (last 3 elements)
       print(numbers[:-2])     # [0, 1, 2, 3, 4, 5, 6, 7] (all but last 2)
 
-  - question: "What are Python sets and how do they differ from lists?"
-    answer: "Sets are unordered collections of unique elements that support mathematical set operations"
+  - question: "What are Python sets and how do you create them?"
+    answer: "Sets are unordered collections of unique elements. Create sets using curly braces {} or the set() function. Sets automatically remove duplicates and are useful for unique data"
     code_example: |
-      # Creating sets
+      # Creating sets with curly braces
       fruits = {"apple", "banana", "orange"}
-      numbers = set([1, 2, 3, 2, 1])  # {1, 2, 3} - duplicates removed
+      numbers = {1, 2, 3, 4, 5}
       
-      # Set operations
-      set1 = {1, 2, 3, 4}
-      set2 = {3, 4, 5, 6}
+      # Creating sets from lists (removes duplicates)
+      list_with_duplicates = [1, 2, 3, 2, 1, 4, 3]
+      unique_numbers = set(list_with_duplicates)
+      print(unique_numbers)           # {1, 2, 3, 4}
       
-      print(set1.union(set2))         # {1, 2, 3, 4, 5, 6}
-      print(set1.intersection(set2))  # {3, 4}
-      print(set1.difference(set2))    # {1, 2}
-      print(set1.symmetric_difference(set2))  # {1, 2, 5, 6}
+      # Creating empty set (must use set(), not {})
+      empty_set = set()               # Correct
+      # empty_dict = {}               # This creates a dictionary, not a set!
       
-      # Set methods
-      fruits.add("grape")
-      fruits.remove("banana")  # KeyError if not found
-      fruits.discard("kiwi")   # No error if not found
+      # Converting string to set
+      letters = set("hello")          # {'h', 'e', 'l', 'o'} - duplicates removed
       
-      # Membership testing (very fast)
-      print("apple" in fruits)  # True
+      # Sets vs Lists comparison
+      my_list = [1, 2, 3, 2, 1]      # [1, 2, 3, 2, 1] - keeps duplicates
+      my_set = {1, 2, 3, 2, 1}       # {1, 2, 3} - removes duplicates
+      
+      # Key differences:
+      # - Sets: unordered, unique elements, no indexing
+      # - Lists: ordered, allows duplicates, supports indexing
+      
+      # Membership testing (very fast in sets)
+      print("apple" in fruits)        # True
+      print(2 in numbers)             # True
 
-  - question: "What is exception handling in Python and how does try/except work?"
-    answer: "Exception handling allows you to catch and handle errors gracefully using try/except/finally blocks"
+  - question: "What are mathematical set operations in Python?"
+    answer: "Sets support mathematical operations like union (combine), intersection (common elements), difference (elements in first but not second), and symmetric difference (elements in either but not both)"
     code_example: |
-      # Basic exception handling
+      set1 = {1, 2, 3, 4, 5}
+      set2 = {4, 5, 6, 7, 8}
+      
+      # Union - all elements from both sets
+      union_result = set1.union(set2)
+      print(union_result)             # {1, 2, 3, 4, 5, 6, 7, 8}
+      # Alternative syntax: set1 | set2
+      
+      # Intersection - elements common to both sets
+      intersection_result = set1.intersection(set2)
+      print(intersection_result)      # {4, 5}
+      # Alternative syntax: set1 & set2
+      
+      # Difference - elements in first set but not in second
+      difference_result = set1.difference(set2)
+      print(difference_result)        # {1, 2, 3}
+      # Alternative syntax: set1 - set2
+      
+      # Symmetric difference - elements in either set but not in both
+      sym_diff_result = set1.symmetric_difference(set2)
+      print(sym_diff_result)          # {1, 2, 3, 6, 7, 8}
+      # Alternative syntax: set1 ^ set2
+      
+      # Subset and superset checks
+      small_set = {2, 3}
+      print(small_set.issubset(set1))     # True (all elements of small_set are in set1)
+      print(set1.issuperset(small_set))   # True (set1 contains all elements of small_set)
+      
+      # Disjoint sets (no common elements)
+      set3 = {10, 11, 12}
+      print(set1.isdisjoint(set3))    # True (no common elements)
+
+  - question: "What are common set methods for adding and removing elements?"
+    answer: "Use add() to add single elements, update() to add multiple elements, remove() to delete (raises error if not found), and discard() to delete safely (no error if not found)"
+    code_example: |
+      fruits = {"apple", "banana", "orange"}
+      
+      # Adding single element
+      fruits.add("grape")
+      print(fruits)                   # {"apple", "banana", "orange", "grape"}
+      
+      # Adding multiple elements
+      fruits.update(["kiwi", "mango"])
+      print(fruits)                   # Adds both kiwi and mango
+      
+      # Can also update with another set
+      tropical = {"pineapple", "coconut"}
+      fruits.update(tropical)
+      
+      # Removing elements - remove() raises KeyError if not found
+      fruits.remove("banana")
+      print(fruits)                   # banana is removed
+      
+      # Safe removal - discard() doesn't raise error if not found
+      fruits.discard("strawberry")    # No error even though strawberry isn't in set
+      fruits.discard("apple")         # Removes apple if present
+      
+      # Remove and return arbitrary element
+      if fruits:                      # Check if set is not empty
+          removed_fruit = fruits.pop()
+          print(f"Removed: {removed_fruit}")
+      
+      # Clear all elements
+      backup_fruits = fruits.copy()   # Make a copy first
+      fruits.clear()
+      print(fruits)                   # set() - empty set
+      
+      # Length and membership
+      fruits = backup_fruits
+      print(len(fruits))              # Number of elements
+      print("apple" in fruits)        # Membership test (very fast)
+
+  - question: "What is basic exception handling with try/except in Python?"
+    answer: "Exception handling lets you catch and handle errors gracefully instead of crashing. Use try to test code and except to handle specific errors that might occur"
+    code_example: |
+      # Basic try/except structure
       try:
-          result = 10 / 0
+          result = 10 / 0          # This will cause an error
+      except ZeroDivisionError:
+          print("Cannot divide by zero!")
+          result = 0               # Provide a default value
+      
+      # Catching any exception
+      try:
+          number = int("abc")      # This will cause ValueError
+      except Exception as e:
+          print(f"An error occurred: {e}")
+      
+      # Specific error handling
+      try:
+          my_list = [1, 2, 3]
+          print(my_list[10])       # IndexError: list index out of range
+      except IndexError:
+          print("List index is out of range")
+      
+      # File handling with exception
+      try:
+          with open("nonexistent.txt", "r") as file:
+              content = file.read()
+      except FileNotFoundError:
+          print("File not found!")
+          content = ""             # Default content
+      
+      # User input validation
+      try:
+          age = int(input("Enter your age: "))
+          print(f"You are {age} years old")
+      except ValueError:
+          print("Please enter a valid number")
+
+  - question: "How do you handle multiple exception types in Python?"
+    answer: "You can handle multiple exception types using multiple except blocks for different errors, or catch multiple exceptions in one block using a tuple"
+    code_example: |
+      # Multiple except blocks for different error types
+      try:
+          user_input = input("Enter a number: ")
+          number = int(user_input)
+          result = 100 / number
+          print(f"Result: {result}")
+      except ValueError:
+          print("That's not a valid number!")
       except ZeroDivisionError:
           print("Cannot divide by zero!")
       except Exception as e:
-          print(f"An error occurred: {e}")
-      else:
-          print("No exceptions occurred")
-      finally:
-          print("This always executes")
+          print(f"Unexpected error: {e}")
       
-      # Multiple exception types
+      # Catching multiple exceptions in one block
       try:
-          value = int(input("Enter a number: "))
-          result = 100 / value
+          data = input("Enter data: ")
+          value = int(data)
+          result = 10 / value
       except (ValueError, TypeError):
-          print("Invalid input type")
+          print("Invalid data type entered")
+      except ZeroDivisionError:
+          print("Division by zero not allowed")
+      
+      # More specific handling
+      def safe_division(a, b):
+          try:
+              return a / b
+          except TypeError:
+              print("Both values must be numbers")
+              return None
+          except ZeroDivisionError:
+              print("Cannot divide by zero")
+              return None
+          except Exception as e:
+              print(f"Unexpected error: {e}")
+              return None
+      
+      # Usage examples
+      print(safe_division(10, 2))    # 5.0
+      print(safe_division(10, 0))    # None (with error message)
+      print(safe_division("10", 2))  # None (with error message)
+
+  - question: "What are else and finally blocks in exception handling?"
+    answer: "The else block runs only if no exceptions occurred in the try block. The finally block always runs, regardless of whether an exception occurred or not"
+    code_example: |
+      # else block - runs only when no exceptions occur
+      try:
+          number = int(input("Enter a number: "))
+          result = 100 / number
+      except ValueError:
+          print("Invalid number format")
       except ZeroDivisionError:
           print("Cannot divide by zero")
+      else:
+          print(f"Success! Result is {result}")  # Only runs if no exceptions
       
-      # Raising custom exceptions
+      # finally block - always runs
+      try:
+          file = open("data.txt", "r")
+          data = file.read()
+      except FileNotFoundError:
+          print("File not found")
+          data = None
+      else:
+          print("File read successfully")
+      finally:
+          try:
+              file.close()         # Always try to close the file
+              print("File closed")
+          except:
+              print("File was not opened")
+      
+      # Complete example with all blocks
+      def process_file(filename):
+          file = None
+          try:
+              print("Opening file...")
+              file = open(filename, "r")
+              content = file.read()
+              print("Processing content...")
+              # Simulate processing
+              lines = content.split('\n')
+          except FileNotFoundError:
+              print("Error: File not found")
+              return None
+          except PermissionError:
+              print("Error: Permission denied")
+              return None
+          else:
+              print("File processed successfully")
+              return lines
+          finally:
+              if file:
+                  file.close()
+                  print("File closed")
+              print("Cleanup completed")
+      
+      # The finally block is especially useful for:
+      # - Closing files
+      # - Cleaning up resources
+      # - Logging operations
+      # - Database connections
+
+  - question: "How do you raise custom exceptions in Python?"
+    answer: "Use the 'raise' keyword to manually trigger exceptions. You can raise built-in exceptions with custom messages or create your own exception classes"
+    code_example: |
+      # Raising built-in exceptions with custom messages
       def validate_age(age):
+          if not isinstance(age, int):
+              raise TypeError("Age must be an integer")
           if age < 0:
               raise ValueError("Age cannot be negative")
           if age > 150:
               raise ValueError("Age seems unrealistic")
           return age
+      
+      # Using the function
+      try:
+          valid_age = validate_age(25)
+          print(f"Valid age: {valid_age}")
+      except (TypeError, ValueError) as e:
+          print(f"Invalid age: {e}")
+      
+      # Raising exceptions in different scenarios
+      def withdraw_money(balance, amount):
+          if amount <= 0:
+              raise ValueError("Amount must be positive")
+          if amount > balance:
+              raise ValueError("Insufficient funds")
+          return balance - amount
+      
+      def divide_numbers(a, b):
+          if b == 0:
+              raise ZeroDivisionError("Cannot divide by zero")
+          return a / b
+      
+      # Creating custom exception classes
+      class CustomError(Exception):
+          """Custom exception for demonstration"""
+          pass
+      
+      class InvalidPasswordError(Exception):
+          """Raised when password doesn't meet requirements"""
+          def __init__(self, message="Password does not meet requirements"):
+              self.message = message
+              super().__init__(self.message)
+      
+      def check_password(password):
+          if len(password) < 8:
+              raise InvalidPasswordError("Password must be at least 8 characters")
+          if not any(c.isdigit() for c in password):
+              raise InvalidPasswordError("Password must contain at least one digit")
+          return True
+      
+      # Using custom exceptions
+      try:
+          check_password("abc")
+      except InvalidPasswordError as e:
+          print(f"Password error: {e}")
+      
+      # Re-raising exceptions
+      def risky_operation():
+          try:
+              result = 1 / 0
+          except ZeroDivisionError:
+              print("Logging the error...")
+              raise  # Re-raise the same exception
 
   - question: "What is the difference between == and is in Python?"
     answer: "== compares values for equality, while is compares object identity (memory location)"
@@ -1338,56 +1711,161 @@ flashcards:
           items.remove(2)
       print(items)                       # [1, 3, 4, 5]
 
-  - question: "What are common list methods and operations?"
-    answer: "Common methods include len() for length, count() for occurrences, index() for position, sort() for ordering, and reverse() for reversing"
+  - question: "What are list inspection methods in Python?"
+    answer: "List inspection methods help you examine and search within lists. Use len() for length, count() for occurrences, index() for position, and 'in' operator for membership testing"
     code_example: |
       fruits = ["apple", "banana", "orange", "banana", "grape"]
       numbers = [3, 1, 4, 1, 5, 9, 2, 6]
       
       # len() - get number of items
       print(len(fruits))                 # 5
+      print(len(numbers))                # 8
       
       # count() - count occurrences of value
       banana_count = fruits.count("banana")
-      print(banana_count)                # 2
+      print(banana_count)                # 2 (banana appears twice)
+      
+      one_count = numbers.count(1)
+      print(one_count)                   # 2 (1 appears twice)
       
       # index() - find first occurrence of value
       orange_index = fruits.index("orange")
-      print(orange_index)                # 2
+      print(orange_index)                # 2 (orange is at index 2)
       
-      # in operator - check if item exists
-      if "apple" in fruits:
-          print("Apple is in the list")
+      # Safe index finding with error handling
+      try:
+          kiwi_index = fruits.index("kiwi")
+      except ValueError:
+          print("Kiwi not found in list")
       
-      # sort() - sort list in place
+      # in operator - check if item exists (returns True/False)
+      print("apple" in fruits)           # True
+      print("kiwi" in fruits)            # False
+      print(5 in numbers)                # True
+      
+      # not in operator - check if item doesn't exist
+      if "strawberry" not in fruits:
+          print("No strawberry in the list")
+      
+      # Combining inspection methods
+      def find_all_indices(lst, item):
+          indices = []
+          start = 0
+          while True:
+              try:
+                  index = lst.index(item, start)
+                  indices.append(index)
+                  start = index + 1
+              except ValueError:
+                  break
+          return indices
+      
+      # Find all positions of "banana"
+      banana_positions = find_all_indices(fruits, "banana")
+      print(banana_positions)            # [1, 3]
+
+  - question: "What are list sorting and ordering methods in Python?"
+    answer: "Use sort() to modify a list in place, sorted() to create a new sorted list, and reverse() to reverse the order. Both sort methods can be customized with reverse parameter"
+    code_example: |
+      numbers = [3, 1, 4, 1, 5, 9, 2, 6]
+      fruits = ["banana", "apple", "cherry", "date"]
+      
+      # sort() - modifies the original list
       numbers.sort()
       print(numbers)                     # [1, 1, 2, 3, 4, 5, 6, 9]
       
-      # sort() with reverse
+      # sort() with reverse (descending order)
       numbers.sort(reverse=True)
       print(numbers)                     # [9, 6, 5, 4, 3, 2, 1, 1]
       
-      # sorted() - create new sorted list
+      # sorted() - creates new sorted list, original unchanged
       original = [3, 1, 4, 1, 5]
       sorted_list = sorted(original)
       print(original)                    # [3, 1, 4, 1, 5] (unchanged)
       print(sorted_list)                 # [1, 1, 3, 4, 5]
       
-      # reverse() - reverse list in place
+      # Sorting strings (alphabetical order)
+      fruits.sort()
+      print(fruits)                      # ['apple', 'banana', 'cherry', 'date']
+      
+      # reverse() - reverses the current order
       fruits.reverse()
-      print(fruits)                      # ["grape", "banana", "orange", "banana", "apple"]
+      print(fruits)                      # ['date', 'cherry', 'banana', 'apple']
       
-      # min() and max()
+      # Sorting by custom criteria (advanced)
+      words = ["python", "java", "c", "javascript"]
+      
+      # Sort by length
+      words.sort(key=len)
+      print(words)                       # ['c', 'java', 'python', 'javascript']
+      
+      # Sort by length, longest first
+      words.sort(key=len, reverse=True)
+      print(words)                       # ['javascript', 'python', 'java', 'c']
+      
+      # Case-insensitive sorting
+      names = ["Alice", "bob", "Charlie", "diana"]
+      names.sort(key=str.lower)
+      print(names)                       # ['Alice', 'bob', 'Charlie', 'diana']
+
+  - question: "What are list aggregation functions in Python?"
+    answer: "Aggregation functions compute single values from lists. Use min() for smallest value, max() for largest value, and sum() for total of numeric lists"
+    code_example: |
+      numbers = [3, 1, 4, 1, 5, 9, 2, 6]
+      prices = [19.99, 5.50, 12.00, 8.25]
+      words = ["python", "java", "c", "javascript"]
+      
+      # min() - find smallest value
       print(min(numbers))                # 1
+      print(min(prices))                 # 5.5
+      print(min(words))                  # 'c' (alphabetically first)
+      
+      # max() - find largest value
       print(max(numbers))                # 9
+      print(max(prices))                 # 19.99
+      print(max(words))                  # 'python' (alphabetically last)
       
-      # sum() - for numeric lists
-      print(sum(numbers))                # 32
+      # sum() - add all numeric values
+      print(sum(numbers))                # 31
+      print(sum(prices))                 # 45.74
       
-      # Converting to string
-      str_numbers = [str(x) for x in numbers]
-      joined = ", ".join(str_numbers)
-      print(joined)                      # "9, 6, 5, 4, 3, 2, 1, 1"
+      # Average calculation
+      average = sum(numbers) / len(numbers)
+      print(f"Average: {average}")       # Average: 3.875
+      
+      # Min/max with custom key
+      shortest_word = min(words, key=len)
+      longest_word = max(words, key=len)
+      print(f"Shortest: {shortest_word}") # Shortest: c
+      print(f"Longest: {longest_word}")   # Longest: javascript
+      
+      # Working with empty lists (be careful!)
+      empty_list = []
+      try:
+          print(min(empty_list))
+      except ValueError:
+          print("Cannot find min of empty list")
+      
+      # Safe aggregation with default values
+      def safe_min(lst, default=None):
+          return min(lst) if lst else default
+      
+      def safe_max(lst, default=None):
+          return max(lst) if lst else default
+      
+      def safe_sum(lst):
+          return sum(lst) if lst else 0
+      
+      print(safe_min(empty_list, 0))     # 0
+      print(safe_max(empty_list, 0))     # 0
+      print(safe_sum(empty_list))        # 0
+      
+      # Statistical operations
+      grades = [85, 92, 78, 96, 88, 91]
+      print(f"Highest grade: {max(grades)}")
+      print(f"Lowest grade: {min(grades)}")
+      print(f"Total points: {sum(grades)}")
+      print(f"Average grade: {sum(grades) / len(grades):.1f}")
 
   - question: "How do you modify existing items in a list?"
     answer: "Use indexing to assign new values to specific positions, or use slicing to replace multiple items at once"
@@ -1844,36 +2322,144 @@ flashcards:
       for index, fruit in enumerate(fruits):
           print(f"{index}: {fruit}")
 
-  - question: "What are common string methods in Python?"
-    answer: "String methods include split(), join(), replace(), strip(), find(), startswith(), endswith(), upper(), lower(), and many others for text manipulation"
+  - question: "What are string case conversion methods in Python?"
+    answer: "String case methods change the capitalization of text. Use upper() for all uppercase, lower() for all lowercase, title() for title case, and capitalize() for sentence case"
     code_example: |
-      text = "  Hello, World!  "
+      text = "hello world python"
       
-      # Case methods
-      print(text.upper())           # "  HELLO, WORLD!  "
-      print(text.lower())           # "  hello, world!  "
-      print(text.title())           # "  Hello, World!  "
+      # Convert to uppercase
+      print(text.upper())           # "HELLO WORLD PYTHON"
       
-      # Whitespace methods
-      print(text.strip())           # "Hello, World!"
-      print(text.lstrip())          # "Hello, World!  "
-      print(text.rstrip())          # "  Hello, World!"
+      # Convert to lowercase
+      mixed_case = "HeLLo WoRLd"
+      print(mixed_case.lower())     # "hello world"
       
-      # Search methods
-      print(text.find("World"))     # 9 (index where found)
-      print(text.find("Python"))    # -1 (not found)
-      print(text.startswith("  H")) # True
-      print(text.endswith("!  "))   # True
+      # Title case (first letter of each word capitalized)
+      print(text.title())           # "Hello World Python"
       
-      # Replace and split
-      new_text = text.replace("World", "Python")
-      words = "apple,banana,orange".split(",")  # ['apple', 'banana', 'orange']
-      joined = "-".join(words)                  # "apple-banana-orange"
+      # Capitalize (only first letter of string)
+      print(text.capitalize())      # "Hello world python"
       
-      # Check content
-      print("123".isdigit())        # True
-      print("abc".isalpha())        # True
-      print("abc123".isalnum())     # True
+      # Case checking methods
+      print("HELLO".isupper())      # True
+      print("hello".islower())      # True
+      print("Hello World".istitle()) # True
+      
+      # Practical usage
+      name = "alice smith"
+      proper_name = name.title()    # "Alice Smith"
+      
+      # User input normalization
+      user_input = "YES"
+      if user_input.lower() == "yes":
+          print("User confirmed")
+
+  - question: "What are string whitespace methods in Python?"
+    answer: "Whitespace methods remove unwanted spaces, tabs, and newlines. Use strip() to remove from both ends, lstrip() from the left, and rstrip() from the right"
+    code_example: |
+      text = "  Hello, World!  \n"
+      
+      # Remove whitespace from both ends
+      print(repr(text.strip()))     # "'Hello, World!'"
+      
+      # Remove whitespace from left side only
+      print(repr(text.lstrip()))    # "'Hello, World!  \n'"
+      
+      # Remove whitespace from right side only
+      print(repr(text.rstrip()))    # "'  Hello, World!'"
+      
+      # Remove specific characters
+      messy_text = "...Hello World!!!"
+      print(messy_text.strip(".!"))  # "Hello World"
+      
+      # Common use case: cleaning user input
+      user_input = "  alice@email.com  "
+      clean_email = user_input.strip()  # "alice@email.com"
+      
+      # Multi-line text cleaning
+      lines = ["  line 1  ", "  line 2  ", "  line 3  "]
+      clean_lines = [line.strip() for line in lines]
+      print(clean_lines)             # ["line 1", "line 2", "line 3"]
+      
+      # Check for whitespace
+      print("   ".isspace())         # True
+      print("hello".isspace())       # False
+
+  - question: "What are string search and replace methods in Python?"
+    answer: "Search methods help find text within strings. Use find() to get index position, replace() to substitute text, startswith() and endswith() to check beginnings and endings"
+    code_example: |
+      text = "Python is awesome. Python is powerful."
+      
+      # Find index of substring
+      index = text.find("awesome")
+      print(index)                   # 10 (index where found)
+      print(text.find("Java"))       # -1 (not found)
+      
+      # Check if string starts/ends with specific text
+      print(text.startswith("Python"))  # True
+      print(text.endswith("powerful.")) # True
+      print(text.startswith("Java"))     # False
+      
+      # Replace text (returns new string)
+      new_text = text.replace("Python", "JavaScript")
+      print(new_text)                # "JavaScript is awesome. JavaScript is powerful."
+      
+      # Replace only first occurrence
+      partial_replace = text.replace("Python", "JS", 1)
+      print(partial_replace)         # "JS is awesome. Python is powerful."
+      
+      # Case-insensitive searching
+      text_lower = text.lower()
+      if "python" in text_lower:
+          print("Found Python (case-insensitive)")
+      
+      # Split strings
+      words = "apple,banana,orange".split(",")
+      print(words)                   # ['apple', 'banana', 'orange']
+      
+      sentence = "Hello world Python"
+      word_list = sentence.split()   # Splits on whitespace
+      print(word_list)               # ['Hello', 'world', 'Python']
+
+  - question: "What are string content checking methods in Python?"
+    answer: "Content checking methods test what type of characters a string contains. Use isdigit() for numbers, isalpha() for letters, isalnum() for letters and numbers"
+    code_example: |
+      # Check if string contains only digits
+      print("123".isdigit())         # True
+      print("12.3".isdigit())        # False (decimal point)
+      print("abc".isdigit())         # False
+      
+      # Check if string contains only letters
+      print("abc".isalpha())         # True
+      print("Hello".isalpha())       # True
+      print("abc123".isalpha())      # False (contains numbers)
+      print("hello world".isalpha()) # False (contains space)
+      
+      # Check if string contains only letters and numbers
+      print("abc123".isalnum())      # True
+      print("Hello123".isalnum())    # True
+      print("abc 123".isalnum())     # False (contains space)
+      
+      # Other useful checking methods
+      print("HELLO".isupper())       # True
+      print("hello".islower())       # True
+      print("Hello World".istitle()) # True
+      print("   ".isspace())         # True (only whitespace)
+      
+      # Practical usage: input validation
+      user_age = input("Enter your age: ")
+      if user_age.isdigit():
+          age = int(user_age)
+          print(f"You are {age} years old")
+      else:
+          print("Please enter a valid number")
+      
+      # Validate username (letters and numbers only)
+      username = "user123"
+      if username.isalnum():
+          print("Valid username")
+      else:
+          print("Username can only contain letters and numbers")
 
   - question: "What is string formatting in Python?"
     answer: "String formatting allows you to insert variables into strings. Use f-strings (preferred), .format() method, or % formatting"
@@ -1907,122 +2493,493 @@ flashcards:
       Score: {score:.1f}%
       """
 
-  - question: "What are essential built-in functions in Python?"
-    answer: "Essential built-ins include len(), type(), isinstance(), str(), int(), float(), bool(), input(), print(), enumerate(), zip(), and many others"
+  - question: "What are type conversion and checking functions in Python?"
+    answer: "Type functions help you work with data types. Use type() to check types, isinstance() for type validation, and str(), int(), float(), bool() to convert between types"
     code_example: |
-      # Type and conversion functions
+      # Checking types
       print(type(42))               # <class 'int'>
-      print(isinstance(42, int))    # True
-      print(str(42))                # "42"
+      print(type("hello"))          # <class 'str'>
+      print(type([1, 2, 3]))        # <class 'list'>
+      print(type(3.14))             # <class 'float'>
+      
+      # Type validation with isinstance()
+      value = 42
+      print(isinstance(value, int))     # True
+      print(isinstance(value, str))     # False
+      print(isinstance(value, (int, float)))  # True (checks multiple types)
+      
+      # Converting to string
+      number = 42
+      pi = 3.14159
+      boolean = True
+      print(str(number))            # "42"
+      print(str(pi))                # "3.14159"
+      print(str(boolean))           # "True"
+      
+      # Converting to integer
       print(int("42"))              # 42
+      print(int(3.9))               # 3 (truncates decimal)
+      print(int(True))              # 1
+      print(int(False))             # 0
+      
+      # Converting to float
       print(float("3.14"))          # 3.14
+      print(float(42))              # 42.0
+      print(float("42"))            # 42.0
+      
+      # Converting to boolean
+      print(bool(1))                # True
       print(bool(0))                # False
+      print(bool("hello"))          # True
+      print(bool(""))               # False
+      print(bool([1, 2, 3]))        # True
+      print(bool([]))               # False
       
-      # Collection functions
+      # Safe type conversion with error handling
+      def safe_int(value, default=0):
+          try:
+              return int(value)
+          except (ValueError, TypeError):
+              return default
+      
+      print(safe_int("123"))        # 123
+      print(safe_int("abc"))        # 0 (default)
+
+  - question: "What are collection functions in Python?"
+    answer: "Collection functions work with groups of data. Use len() for size, min() for smallest value, max() for largest value, and sum() for totals of numeric collections"
+    code_example: |
       numbers = [1, 2, 3, 4, 5]
+      words = ["python", "java", "javascript", "c"]
+      mixed = [10, 5, 8, 12, 3]
+      
+      # len() - get length/size of collections
       print(len(numbers))           # 5
+      print(len(words))             # 4
+      print(len("hello"))           # 5 (works with strings too)
+      print(len({"a": 1, "b": 2}))  # 2 (works with dictionaries)
+      
+      # min() - find smallest value
       print(min(numbers))           # 1
+      print(min(words))             # "c" (alphabetically first)
+      print(min("hello"))           # "e" (smallest character)
+      
+      # max() - find largest value
       print(max(numbers))           # 5
+      print(max(words))             # "python" (alphabetically last)
+      print(max("hello"))           # "o" (largest character)
+      
+      # sum() - add all numeric values
       print(sum(numbers))           # 15
+      print(sum(mixed))             # 38
       
-      # Iteration functions
-      for index, value in enumerate(numbers):
-          print(f"Index {index}: {value}")
+      # sum() with start value
+      print(sum(numbers, 10))       # 25 (15 + 10)
       
+      # Working with nested collections
+      matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+      print(len(matrix))            # 3 (number of rows)
+      print(len(matrix[0]))         # 3 (number of columns in first row)
+      
+      # Flattening and summing nested list
+      all_numbers = []
+      for row in matrix:
+          all_numbers.extend(row)
+      print(sum(all_numbers))       # 45
+      
+      # Using with custom key functions
+      students = ["Alice", "Bob", "Alexander", "Jo"]
+      shortest_name = min(students, key=len)
+      longest_name = max(students, key=len)
+      print(f"Shortest: {shortest_name}")  # "Jo"
+      print(f"Longest: {longest_name}")    # "Alexander"
+
+  - question: "What are iteration functions in Python?"
+    answer: "Iteration functions help you loop through data differently. Use enumerate() to get index and value pairs, zip() to combine multiple sequences, and range() for number sequences"
+    code_example: |
+      # enumerate() - get index and value pairs
+      fruits = ["apple", "banana", "orange"]
+      for index, fruit in enumerate(fruits):
+          print(f"Index {index}: {fruit}")
+      # Output: Index 0: apple, Index 1: banana, Index 2: orange
+      
+      # enumerate() with custom start
+      for index, fruit in enumerate(fruits, start=1):
+          print(f"Item {index}: {fruit}")
+      # Output: Item 1: apple, Item 2: banana, Item 3: orange
+      
+      # zip() - combine multiple sequences
       names = ["Alice", "Bob", "Charlie"]
       ages = [25, 30, 35]
+      cities = ["New York", "London", "Tokyo"]
+      
       for name, age in zip(names, ages):
           print(f"{name} is {age} years old")
       
-      # Math functions
-      print(abs(-5))                # 5
-      print(round(3.14159, 2))      # 3.14
-      print(pow(2, 3))              # 8
+      # zip() with three lists
+      for name, age, city in zip(names, ages, cities):
+          print(f"{name}, {age}, lives in {city}")
       
-      # Input/output
-      # name = input("Enter your name: ")
-      print("Hello, World!", end="")  # No newline
-      print("Hello", "World", sep="-")  # "Hello-World"
+      # zip() stops at shortest list
+      short_list = [1, 2]
+      long_list = [10, 20, 30, 40]
+      for a, b in zip(short_list, long_list):
+          print(f"{a} - {b}")
+      # Output: 1 - 10, 2 - 20 (stops after 2 pairs)
+      
+      # Creating dictionaries with zip()
+      keys = ["name", "age", "city"]
+      values = ["Alice", 30, "Paris"]
+      person = dict(zip(keys, values))
+      print(person)  # {'name': 'Alice', 'age': 30, 'city': 'Paris'}
+      
+      # range() - number sequences
+      for i in range(5):
+          print(i)  # 0, 1, 2, 3, 4
+      
+      for i in range(2, 8):
+          print(i)  # 2, 3, 4, 5, 6, 7
+      
+      for i in range(0, 10, 2):
+          print(i)  # 0, 2, 4, 6, 8
+      
+      # Converting to lists
+      indices = list(enumerate(fruits))
+      print(indices)  # [(0, 'apple'), (1, 'banana'), (2, 'orange')]
+      
+      pairs = list(zip(names, ages))
+      print(pairs)    # [('Alice', 25), ('Bob', 30), ('Charlie', 35)]
 
-  - question: "How do you work with files in Python?"
-    answer: "Use open() to open files, read/write methods to access content, and always close files or use 'with' statement for automatic closing"
+  - question: "How do you write to files in Python?"
+    answer: "Use open() with 'w' mode to write (overwrites) or 'a' mode to append. Always use the 'with' statement to ensure files are properly closed"
     code_example: |
-      # Writing to a file
+      # Writing to a file (overwrites existing content)
       with open("example.txt", "w") as file:
           file.write("Hello, World!\n")
           file.write("This is a second line.\n")
+          file.write("Third line here.")
       
-      # Reading entire file
+      # Appending to a file (adds to existing content)
+      with open("example.txt", "a") as file:
+          file.write("\nThis line is appended.")
+          file.write("\nAnother appended line.")
+      
+      # Writing multiple lines at once
+      lines = ["First line\n", "Second line\n", "Third line\n"]
+      with open("multiple_lines.txt", "w") as file:
+          file.writelines(lines)
+      
+      # Writing data from variables
+      name = "Alice"
+      age = 30
+      with open("person.txt", "w") as file:
+          file.write(f"Name: {name}\n")
+          file.write(f"Age: {age}\n")
+      
+      # Writing lists and data structures
+      shopping_list = ["apples", "bananas", "oranges"]
+      with open("shopping.txt", "w") as file:
+          for item in shopping_list:
+              file.write(f"- {item}\n")
+      
+      # Error handling for file writing
+      try:
+          with open("/protected/file.txt", "w") as file:
+              file.write("This might fail")
+      except PermissionError:
+          print("Permission denied - cannot write to file")
+      except FileNotFoundError:
+          print("Directory does not exist")
+      
+      # Writing with different encodings
+      with open("unicode.txt", "w", encoding="utf-8") as file:
+          file.write("Hello, 世界! 🌍\n")
+
+  - question: "How do you read from files in Python?"
+    answer: "Use open() with 'r' mode to read files. You can read the entire file with read(), line by line with a for loop, or all lines into a list with readlines()"
+    code_example: |
+      # Reading entire file as one string
       with open("example.txt", "r") as file:
           content = file.read()
           print(content)
       
-      # Reading line by line
+      # Reading line by line (memory efficient for large files)
       with open("example.txt", "r") as file:
           for line in file:
-              print(line.strip())   # Remove newline characters
+              print(line.strip())  # Remove newline characters
       
       # Reading all lines into a list
       with open("example.txt", "r") as file:
           lines = file.readlines()
+          print(lines)  # List with newline characters included
       
-      # Appending to a file
-      with open("example.txt", "a") as file:
-          file.write("This line is appended.\n")
+      # Reading first few lines only
+      with open("example.txt", "r") as file:
+          first_line = file.readline()
+          second_line = file.readline()
+          print(f"First: {first_line.strip()}")
+          print(f"Second: {second_line.strip()}")
       
-      # File modes
-      # "r" - read (default)
-      # "w" - write (overwrites existing file)
-      # "a" - append
-      # "r+" - read and write
+      # Reading and processing each line
+      total_lines = 0
+      with open("example.txt", "r") as file:
+          for line in file:
+              total_lines += 1
+              if "important" in line.lower():
+                  print(f"Found important line {total_lines}: {line.strip()}")
       
-      # Manual file handling (not recommended)
-      file = open("example.txt", "r")
-      content = file.read()
-      file.close()  # Must remember to close!
+      # Safe file reading with error handling
+      def read_file_safely(filename):
+          try:
+              with open(filename, "r") as file:
+                  return file.read()
+          except FileNotFoundError:
+              print(f"File {filename} not found")
+              return None
+          except PermissionError:
+              print(f"Permission denied to read {filename}")
+              return None
+      
+      content = read_file_safely("data.txt")
+      if content:
+          print("File contents:", content)
+      
+      # Reading with different encodings
+      with open("unicode.txt", "r", encoding="utf-8") as file:
+          content = file.read()
+          print(content)
 
-  - question: "How do you import and use modules in Python?"
-    answer: "Use 'import' to bring in modules, 'from...import' for specific items, and 'as' to create aliases. Python has many built-in modules"
+  - question: "What are file modes and the 'with' statement in Python?"
+    answer: "File modes specify how to open files: 'r' for reading, 'w' for writing, 'a' for appending. The 'with' statement automatically closes files and handles errors properly"
+    code_example: |
+      # Common file modes
+      # "r" - read only (default mode)
+      # "w" - write only (overwrites existing file)
+      # "a" - append only (adds to end of file)
+      # "r+" - read and write
+      # "x" - exclusive creation (fails if file exists)
+      
+      # Using different modes
+      with open("read_only.txt", "r") as file:
+          content = file.read()
+      
+      with open("write_only.txt", "w") as file:
+          file.write("This overwrites everything")
+      
+      with open("append_only.txt", "a") as file:
+          file.write("This gets added to the end")
+      
+      # The 'with' statement (context manager)
+      # Automatically closes file when done or if error occurs
+      with open("safe_file.txt", "w") as file:
+          file.write("This file will be closed automatically")
+          # File is automatically closed here
+      
+      # Without 'with' statement (not recommended)
+      file = open("manual.txt", "w")
+      file.write("Must remember to close")
+      file.close()  # Easy to forget!
+      
+      # 'with' handles errors automatically
+      try:
+          with open("data.txt", "r") as file:
+              data = file.read()
+              # Even if an error occurs here, file will be closed
+              result = 1 / 0  # This causes an error
+      except ZeroDivisionError:
+          print("Error occurred, but file was still closed properly")
+      
+      # Binary modes for non-text files
+      # "rb" - read binary
+      # "wb" - write binary
+      # "ab" - append binary
+      
+      # Working with binary files (images, etc.)
+      with open("image.jpg", "rb") as file:
+          binary_data = file.read()
+      
+      # Multiple files with nested 'with'
+      with open("input.txt", "r") as infile:
+          with open("output.txt", "w") as outfile:
+              for line in infile:
+                  outfile.write(line.upper())
+      
+      # File existence checking
+      import os
+      if os.path.exists("myfile.txt"):
+          with open("myfile.txt", "r") as file:
+              content = file.read()
+      else:
+          print("File does not exist")
+
+  - question: "What are the different ways to import modules in Python?"
+    answer: "You can import entire modules with 'import', specific items with 'from...import', use aliases with 'as', or import everything with '*' (not recommended)"
     code_example: |
       # Import entire module
       import math
       print(math.pi)                # 3.141592653589793
       print(math.sqrt(16))          # 4.0
+      print(math.cos(0))            # 1.0
       
-      # Import specific functions
-      from math import pi, sqrt, sin
+      # Import specific functions/variables
+      from math import pi, sqrt, sin, cos
       print(pi)                     # 3.141592653589793
       print(sqrt(16))               # 4.0
+      print(sin(pi/2))              # 1.0
       
-      # Import with alias
+      # Import with aliases (shorter names)
       import math as m
-      print(m.pi)
+      print(m.pi)                   # 3.141592653589793
+      print(m.factorial(5))         # 120
       
+      # Import specific items with aliases
       from math import sqrt as square_root
+      from math import pi as PI
       print(square_root(25))        # 5.0
+      print(PI)                     # 3.141592653589793
       
-      # Import all (not recommended)
+      # Import everything (not recommended - can cause name conflicts)
       # from math import *
+      # print(pi)  # Works but unclear where 'pi' comes from
       
-      # Common standard library modules
+      # Multiple imports on one line
+      from datetime import date, time, datetime
+      
+      # Import submodules
+      from os import path
+      print(path.exists("myfile.txt"))
+      
+      # Conditional imports (advanced)
+      try:
+          import numpy as np
+          has_numpy = True
+      except ImportError:
+          has_numpy = False
+          print("NumPy not available")
+      
+      # Import at different locations
+      def use_random():
+          import random  # Import inside function
+          return random.randint(1, 100)
+
+  - question: "What are common built-in modules in Python?"
+    answer: "Python has many useful built-in modules like math for mathematical functions, random for random numbers, datetime for dates/times, and os for operating system functions"
+    code_example: |
+      # Math module - mathematical functions
+      import math
+      print(math.sqrt(16))          # 4.0
+      print(math.pi)                # 3.141592653589793
+      print(math.factorial(5))      # 120
+      print(math.ceil(4.2))         # 5 (round up)
+      print(math.floor(4.8))        # 4 (round down)
+      
+      # Random module - random numbers and choices
       import random
-      print(random.randint(1, 10))  # Random integer between 1 and 10
+      print(random.randint(1, 10))      # Random integer 1-10
+      print(random.choice(['a', 'b', 'c']))  # Random choice from list
+      print(random.random())            # Random float 0.0-1.0
       
+      numbers = [1, 2, 3, 4, 5]
+      random.shuffle(numbers)           # Shuffle list in place
+      print(numbers)
+      
+      # Datetime module - dates and times
       import datetime
       now = datetime.datetime.now()
-      print(now)
+      print(now)                        # Current date and time
       
+      today = datetime.date.today()
+      print(today)                      # Current date
+      
+      birthday = datetime.date(1990, 5, 15)
+      age = today - birthday
+      print(f"Age: {age.days} days")
+      
+      # OS module - operating system functions
       import os
-      print(os.getcwd())            # Current working directory
+      print(os.getcwd())                # Current working directory
+      print(os.listdir('.'))            # List files in current directory
       
-      # Creating your own module
-      # Save this in a file called my_module.py:
+      # Check if file/directory exists
+      if os.path.exists('myfile.txt'):
+          print("File exists")
+      
+      # Time module - time-related functions
+      import time
+      print(time.time())                # Current timestamp
+      time.sleep(1)                     # Pause for 1 second
+      
+      # Collections module - specialized data structures
+      from collections import Counter
+      words = ['apple', 'banana', 'apple', 'orange', 'apple']
+      count = Counter(words)
+      print(count)                      # Counter({'apple': 3, 'banana': 1, 'orange': 1})
+
+  - question: "How do you create and use custom modules in Python?"
+    answer: "Create a custom module by saving Python code in a .py file, then import it like any other module. The file name becomes the module name"
+    code_example: |
+      # Create a file called 'my_utils.py' with this content:
+      # 
       # def greet(name):
+      #     """Greet a person by name"""
       #     return f"Hello, {name}!"
-      #
-      # Then import it:
-      # import my_module
-      # print(my_module.greet("Alice"))
+      # 
+      # def calculate_area(length, width):
+      #     """Calculate rectangle area"""
+      #     return length * width
+      # 
+      # PI = 3.14159
+      # 
+      # class Calculator:
+      #     def add(self, a, b):
+      #         return a + b
+      #     
+      #     def multiply(self, a, b):
+      #         return a * b
+      
+      # Then import and use your custom module:
+      import my_utils
+      
+      # Use functions from your module
+      message = my_utils.greet("Alice")
+      print(message)                    # "Hello, Alice!"
+      
+      area = my_utils.calculate_area(10, 5)
+      print(f"Area: {area}")            # "Area: 50"
+      
+      # Use variables from your module
+      print(f"PI value: {my_utils.PI}") # "PI value: 3.14159"
+      
+      # Use classes from your module
+      calc = my_utils.Calculator()
+      result = calc.add(5, 3)
+      print(f"5 + 3 = {result}")        # "5 + 3 = 8"
+      
+      # Import specific items from your module
+      from my_utils import greet, calculate_area
+      print(greet("Bob"))               # "Hello, Bob!"
+      print(calculate_area(8, 6))       # 48
+      
+      # Import with alias
+      import my_utils as utils
+      print(utils.greet("Charlie"))     # "Hello, Charlie!"
+      
+      # Module structure best practices:
+      # my_package/
+      #   __init__.py       # Makes it a package
+      #   core.py           # Core functionality
+      #   helpers.py        # Helper functions
+      #   constants.py      # Constants and configuration
+      
+      # Then import like:
+      # from my_package import core
+      # from my_package.helpers import some_function
+      
+      # Check if module is being run directly
+      # Add this to your module:
+      # if __name__ == "__main__":
+      #     # This only runs when file is executed directly
+      #     print("Testing the module...")
+      #     print(greet("Test User"))
 
   - question: "What is truthiness and falsiness in Python?"
     answer: "Truthiness refers to how Python evaluates values in boolean contexts. Some values are 'falsy' (evaluate to False) while others are 'truthy' (evaluate to True)"
@@ -2110,6 +3067,157 @@ flashcards:
       print(None == "")             # False
       print(None == 0)              # False
       print(None == [])             # False
+
+  - question: "What is string concatenation and how do you combine strings with the + operator?"
+    answer: "String concatenation is joining two or more strings together. Use the + operator to combine strings. When concatenating with numbers, convert them to strings first using str()"
+    code_example: |
+      # Basic string concatenation with +
+      first_name = "John"
+      last_name = "Smith"
+      full_name = first_name + " " + last_name
+      print(full_name)                    # "John Smith"
+      
+      # Multiple concatenations
+      greeting = "Hello, " + "my name is " + first_name
+      print(greeting)                     # "Hello, my name is John"
+      
+      # Concatenating strings with numbers (convert first)
+      age = 25
+      message = "I am " + str(age) + " years old"
+      print(message)                      # "I am 25 years old"
+      
+      # Building longer strings
+      city = "New York"
+      country = "USA"
+      location = first_name + " lives in " + city + ", " + country
+      print(location)                     # "John lives in New York, USA"
+      
+      # Adding to existing string
+      base_message = "Welcome"
+      complete_message = base_message + ", " + first_name + "!"
+      print(complete_message)             # "Welcome, John!"
+      
+      # Common mistake - can't concatenate string and number directly
+      # message = "Age: " + age           # ERROR! TypeError
+      message = "Age: " + str(age)        # CORRECT! Convert number to string
+
+  - question: "What are f-strings and how do you use them for string formatting?"
+    answer: "F-strings (formatted string literals) let you embed variables and expressions directly in strings using curly braces {}. They're the modern, preferred way to format strings in Python"
+    code_example: |
+      # Basic f-string usage
+      name = "Alice"
+      age = 30
+      message = f"Hello, {name}! You are {age} years old."
+      print(message)                      # "Hello, Alice! You are 30 years old."
+      
+      # f-strings with expressions
+      x = 10
+      y = 5
+      result = f"The sum of {x} and {y} is {x + y}"
+      print(result)                       # "The sum of 10 and 5 is 15"
+      
+      # f-strings with formatting
+      price = 19.99
+      formatted = f"Price: ${price:.2f}"
+      print(formatted)                    # "Price: $19.99"
+      
+      # Multi-line f-strings
+      student = "Bob"
+      grade = 87.5
+      report = f"""
+      Student Report:
+      Name: {student}
+      Grade: {grade}%
+      Status: {'Pass' if grade >= 70 else 'Fail'}
+      """
+      print(report)
+      
+      # f-strings vs concatenation (much cleaner!)
+      # Concatenation: "Hello, " + name + "! You scored " + str(grade) + "%"
+      # f-string: f"Hello, {name}! You scored {grade}%"
+
+  - question: "What is the .format() method and how do you use it for string formatting?"
+    answer: "The .format() method is an older way to format strings by using placeholders {} in the string and passing values as arguments. It's still widely used in existing code"
+    code_example: |
+      # Basic .format() usage
+      name = "Charlie"
+      age = 25
+      message = "Hello, {}! You are {} years old.".format(name, age)
+      print(message)                      # "Hello, Charlie! You are 25 years old."
+      
+      # Named placeholders
+      template = "Hello, {name}! You are {age} years old."
+      message = template.format(name="Diana", age=28)
+      print(message)                      # "Hello, Diana! You are 28 years old."
+      
+      # Positional arguments
+      template = "The {0} brown {1} jumps over the {2}"
+      sentence = template.format("quick", "fox", "fence")
+      print(sentence)                     # "The quick brown fox jumps over the fence"
+      
+      # Formatting numbers
+      price = 19.99
+      formatted = "Price: ${:.2f}".format(price)
+      print(formatted)                    # "Price: $19.99"
+      
+      # Multiple uses of same value
+      template = "{name} likes {food}. {name} eats {food} every day."
+      message = template.format(name="Alice", food="pizza")
+      print(message)                      # "Alice likes pizza. Alice eats pizza every day."
+      
+      # With calculations
+      x = 10
+      y = 5
+      result = "The sum of {} and {} is {}".format(x, y, x + y)
+      print(result)                       # "The sum of 10 and 5 is 15"
+
+  - question: "What is the .join() method and how do you use it to combine multiple strings?"
+    answer: "The .join() method efficiently combines a list of strings into a single string, using a specified separator. It's much more efficient than using + for multiple strings"
+    code_example: |
+      # Basic .join() usage
+      words = ["Python", "is", "awesome"]
+      sentence = " ".join(words)
+      print(sentence)                     # "Python is awesome"
+      
+      # Different separators
+      fruits = ["apple", "banana", "orange"]
+      comma_separated = ", ".join(fruits)
+      print(comma_separated)              # "apple, banana, orange"
+      
+      dash_separated = "-".join(fruits)
+      print(dash_separated)               # "apple-banana-orange"
+      
+      # No separator (empty string)
+      letters = ["H", "e", "l", "l", "o"]
+      word = "".join(letters)
+      print(word)                         # "Hello"
+      
+      # Join with newlines
+      lines = ["First line", "Second line", "Third line"]
+      text = "\n".join(lines)
+      print(text)
+      # Output:
+      # First line
+      # Second line
+      # Third line
+      
+      # Why .join() is better than + for multiple strings
+      # Inefficient way:
+      items = ["a", "b", "c", "d", "e"]
+      result = ""
+      for item in items:
+          result += item + ", "
+      result = result.rstrip(", ")        # Remove last comma
+      
+      # Efficient way:
+      result = ", ".join(items)
+      print(result)                       # "a, b, c, d, e"
+      
+      # Converting numbers to strings first
+      numbers = [1, 2, 3, 4, 5]
+      number_strings = [str(n) for n in numbers]
+      result = "-".join(number_strings)
+      print(result)                       # "1-2-3-4-5"
 
   - question: "What are type hints in Python and how do you use them for basic annotations?"
     answer: "Type hints provide optional static type information to specify what types variables and functions should use. They help with code documentation and IDE support"
