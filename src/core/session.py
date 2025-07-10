@@ -25,6 +25,7 @@ from src.ui.interface import (
     show_session_summary,
     display_statistics_table,
     display_exit_message,
+    confirm_reset_stats,
 )
 
 
@@ -142,6 +143,16 @@ def handle_menu_choice(
     elif choice == "s":
         display_statistics_table(console, flashcard_set, set_stats)
         return None, False
+    elif choice == "r":
+        if confirm_reset_stats(console, flashcard_set.title):
+            console.print("[green]✅ Statistics reset successfully![/green]")
+            from rich.prompt import Prompt
+            Prompt.ask("\n[dim]Press Enter to continue[/dim]", default="")
+            # Return a new empty stats object
+            return FlashcardSetStats(), False
+        else:
+            console.print("[dim]Reset cancelled.[/dim]")
+            return None, False
     elif choice == "q":
         display_exit_message(console)
         return "exit", False

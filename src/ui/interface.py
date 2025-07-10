@@ -26,6 +26,7 @@ def display_menu(console: Console, set_title: str, clear_screen: bool = True) ->
         ("📚 Study all flashcards", "1"),
         ("🎲 Study random flashcards", "2"),
         ("📊 View statistics", "s"),
+        ("🔄 Reset statistics", "r"),
         ("🚪 Exit", "q"),
     ]
 
@@ -541,6 +542,25 @@ def display_flashcard_set_menu_with_stats(
     )
 
     return choice
+
+
+def confirm_reset_stats(console: Console, set_title: str) -> bool:
+    """Confirm reset statistics action."""
+    console.print()
+    console.print(f"[yellow]⚠️  Are you sure you want to reset all statistics for '{set_title}'?[/yellow]")
+    console.print("[dim]This action cannot be undone.[/dim]")
+    console.print()
+    
+    options = [
+        ("❌ No, keep my stats", "n"),
+        ("✅ Yes, reset stats", "y"),
+    ]
+    
+    choice = _show_arrow_key_menu(
+        console, "Confirm Reset", options, default_index=0, clear_screen=False
+    )
+    
+    return choice == "y"
 
 
 def display_exit_message(console: Console) -> None:
