@@ -1,0 +1,407 @@
+title: "Data Structures & Algorithms Basics"
+icon: "📊"
+flashcards:
+  - question: "What is a data structure?"
+    answer: "A data structure is a way of organizing and storing data in a computer so that it can be accessed and modified efficiently"
+    code_example: |
+      # Examples of data structures:
+      # - Array: [1, 2, 3, 4]
+      # - Linked List: 1 -> 2 -> 3 -> 4
+      # - Stack: [1, 2, 3] (LIFO - Last In, First Out)
+      # - Queue: [1, 2, 3] (FIFO - First In, First Out)
+      
+      # Different data structures are suited for different operations
+      # Arrays: Fast random access
+      # Linked Lists: Fast insertion/deletion
+      # Stacks: Function calls, undo operations
+      # Queues: Task scheduling, breadth-first search
+
+  - question: "What is an algorithm?"
+    answer: "An algorithm is a step-by-step procedure or set of rules for solving a specific problem or performing a computation"
+    code_example: |
+      # Algorithm example: Finding maximum in array
+      def find_max(arr):
+          max_val = arr[0]        # Step 1: Initialize
+          for i in range(1, len(arr)):  # Step 2: Iterate
+              if arr[i] > max_val:      # Step 3: Compare
+                  max_val = arr[i]      # Step 4: Update
+          return max_val              # Step 5: Return result
+      
+      # Algorithm properties:
+      # - Clear and unambiguous steps
+      # - Finite number of steps
+      # - Takes input and produces output
+      # - Effectiveness (each step is doable)
+
+  - question: "What is an array and what are its characteristics?"
+    answer: "An array is a collection of elements stored in contiguous memory locations, accessible by index"
+    code_example: |
+      # Array characteristics:
+      # - Fixed size (in most languages)
+      # - Elements of same type
+      # - Random access by index: O(1)
+      # - Sequential memory layout
+      
+      # Python list (dynamic array)
+      arr = [10, 20, 30, 40, 50]
+      
+      # Access by index: O(1)
+      first_element = arr[0]    # 10
+      last_element = arr[4]     # 50
+      
+      # Insertion at end: O(1) amortized
+      arr.append(60)
+      
+      # Insertion at beginning: O(n)
+      arr.insert(0, 5)
+
+  - question: "What is a linked list and how does it differ from an array?"
+    answer: "A linked list is a linear data structure where elements are stored in nodes, each containing data and a reference to the next node"
+    code_example: |
+      class ListNode:
+          def __init__(self, val=0):
+              self.val = val
+              self.next = None
+      
+      # Creating a linked list: 1 -> 2 -> 3
+      head = ListNode(1)
+      head.next = ListNode(2)
+      head.next.next = ListNode(3)
+      
+      # Differences from array:
+      # - Dynamic size vs fixed size
+      # - Non-contiguous memory vs contiguous
+      # - O(n) access vs O(1) access
+      # - O(1) insertion/deletion vs O(n)
+      # - Extra memory for pointers
+
+  - question: "What is a stack and what are its main operations?"
+    answer: "A stack is a LIFO (Last In, First Out) data structure with push and pop operations at the top"
+    code_example: |
+      # Stack implementation using list
+      stack = []
+      
+      # Push (add to top): O(1)
+      stack.append(10)  # [10]
+      stack.append(20)  # [10, 20]
+      stack.append(30)  # [10, 20, 30]
+      
+      # Pop (remove from top): O(1)
+      top = stack.pop()  # Returns 30, stack: [10, 20]
+      
+      # Peek/Top (view top without removing): O(1)
+      if stack:
+          top_element = stack[-1]  # 20
+      
+      # Common uses:
+      # - Function calls (call stack)
+      # - Undo operations
+      # - Expression evaluation
+      # - Backtracking algorithms
+
+  - question: "What is a queue and what are its main operations?"
+    answer: "A queue is a FIFO (First In, First Out) data structure with enqueue and dequeue operations"
+    code_example: |
+      from collections import deque
+      
+      # Queue implementation
+      queue = deque()
+      
+      # Enqueue (add to rear): O(1)
+      queue.append(10)    # [10]
+      queue.append(20)    # [10, 20]
+      queue.append(30)    # [10, 20, 30]
+      
+      # Dequeue (remove from front): O(1)
+      front = queue.popleft()  # Returns 10, queue: [20, 30]
+      
+      # Front (peek at front): O(1)
+      if queue:
+          front_element = queue[0]  # 20
+      
+      # Common uses:
+      # - Task scheduling
+      # - Breadth-first search
+      # - Print queues
+      # - Buffer for data streams
+
+  - question: "What is Big O notation and why is it important?"
+    answer: "Big O notation describes the upper bound of an algorithm's time or space complexity as input size grows"
+    code_example: |
+      # Common Big O complexities (from best to worst):
+      
+      # O(1) - Constant time
+      def get_first(arr):
+          return arr[0]  # Always takes same time
+      
+      # O(log n) - Logarithmic time
+      def binary_search(arr, target):
+          # Divides search space in half each time
+          pass
+      
+      # O(n) - Linear time
+      def find_max(arr):
+          # Checks each element once
+          pass
+      
+      # O(n²) - Quadratic time
+      def bubble_sort(arr):
+          # Nested loops over array
+          pass
+      
+      # Important for comparing algorithm efficiency
+
+  - question: "What is linear search and what is its time complexity?"
+    answer: "Linear search checks each element sequentially until the target is found or the end is reached"
+    code_example: |
+      def linear_search(arr, target):
+          for i in range(len(arr)):
+              if arr[i] == target:
+                  return i  # Return index if found
+          return -1  # Return -1 if not found
+      
+      # Example usage
+      numbers = [64, 34, 25, 12, 22, 11, 90]
+      index = linear_search(numbers, 22)  # Returns 4
+      
+      # Time Complexity: O(n) - worst case checks all elements
+      # Space Complexity: O(1) - uses constant extra space
+      # Best case: O(1) - target is first element
+      # Worst case: O(n) - target is last or not present
+
+  - question: "What is binary search and what are its requirements?"
+    answer: "Binary search finds a target in a sorted array by repeatedly dividing the search space in half"
+    code_example: |
+      def binary_search(arr, target):
+          left, right = 0, len(arr) - 1
+          
+          while left <= right:
+              mid = (left + right) // 2
+              
+              if arr[mid] == target:
+                  return mid
+              elif arr[mid] < target:
+                  left = mid + 1    # Search right half
+              else:
+                  right = mid - 1   # Search left half
+          
+          return -1  # Not found
+      
+      # Requirements: Array must be SORTED
+      # Time Complexity: O(log n)
+      # Space Complexity: O(1)
+      # Much faster than linear search for large datasets
+
+  - question: "What is bubble sort and how does it work?"
+    answer: "Bubble sort repeatedly steps through the list, compares adjacent elements, and swaps them if they're in wrong order"
+    code_example: |
+      def bubble_sort(arr):
+          n = len(arr)
+          
+          # Traverse through all elements
+          for i in range(n):
+              # Flag to optimize - stop if no swaps made
+              swapped = False
+              
+              # Last i elements already sorted
+              for j in range(0, n - i - 1):
+                  # Swap if elements in wrong order
+                  if arr[j] > arr[j + 1]:
+                      arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                      swapped = True
+              
+              # If no swaps made, array is sorted
+              if not swapped:
+                  break
+      
+      # Time Complexity: O(n²) average/worst, O(n) best
+      # Space Complexity: O(1)
+
+  - question: "What is selection sort and how does it work?"
+    answer: "Selection sort finds the minimum element and moves it to the beginning, then repeats for the rest"
+    code_example: |
+      def selection_sort(arr):
+          n = len(arr)
+          
+          # Traverse through all elements
+          for i in range(n):
+              # Find minimum element in remaining array
+              min_idx = i
+              for j in range(i + 1, n):
+                  if arr[j] < arr[min_idx]:
+                      min_idx = j
+              
+              # Swap found minimum with first element
+              arr[i], arr[min_idx] = arr[min_idx], arr[i]
+      
+      # Example: [64, 25, 12, 22, 11]
+      # Step 1: Find min (11), swap: [11, 25, 12, 22, 64]
+      # Step 2: Find min (12), swap: [11, 12, 25, 22, 64]
+      # Continue...
+      
+      # Time Complexity: O(n²) - always
+      # Space Complexity: O(1)
+
+  - question: "What is insertion sort and how does it work?"
+    answer: "Insertion sort builds the sorted array one element at a time by inserting each element into its correct position"
+    code_example: |
+      def insertion_sort(arr):
+          # Start from second element (index 1)
+          for i in range(1, len(arr)):
+              key = arr[i]  # Current element to insert
+              j = i - 1     # Index of last element in sorted portion
+              
+              # Move elements greater than key one position ahead
+              while j >= 0 and arr[j] > key:
+                  arr[j + 1] = arr[j]
+                  j -= 1
+              
+              # Insert key at correct position
+              arr[j + 1] = key
+      
+      # Example: [5, 2, 4, 6, 1, 3]
+      # Like sorting playing cards in your hand
+      # Very efficient for small datasets
+      
+      # Time Complexity: O(n²) worst, O(n) best
+      # Space Complexity: O(1)
+
+  - question: "What is recursion and what are its components?"
+    answer: "Recursion is when a function calls itself to solve a smaller version of the same problem"
+    code_example: |
+      # Factorial example: n! = n × (n-1)!
+      def factorial(n):
+          # Base case - stops recursion
+          if n <= 1:
+              return 1
+          
+          # Recursive case - function calls itself
+          return n * factorial(n - 1)
+      
+      # Call stack for factorial(4):
+      # factorial(4) = 4 * factorial(3)
+      # factorial(3) = 3 * factorial(2)  
+      # factorial(2) = 2 * factorial(1)
+      # factorial(1) = 1 (base case)
+      # Returns: 1 → 2 → 6 → 24
+      
+      # Required components:
+      # 1. Base case (termination condition)
+      # 2. Recursive case (calls itself)
+      # 3. Progress toward base case
+
+  - question: "What is the difference between depth-first and breadth-first traversal?"
+    answer: "DFS explores as far as possible down each branch before backtracking. BFS explores all neighbors at current depth before going deeper"
+    code_example: |
+      # Tree example:      A
+      #                   / \
+      #                  B   C
+      #                 / \   \
+      #                D   E   F
+      
+      # Depth-First Search (DFS):
+      # Order: A → B → D → E → C → F
+      # Uses Stack (or recursion)
+      # Goes deep first
+      
+      def dfs(node):
+          if node:
+              print(node.val)      # Process current
+              dfs(node.left)       # Go left
+              dfs(node.right)      # Go right
+      
+      # Breadth-First Search (BFS):
+      # Order: A → B → C → D → E → F
+      # Uses Queue
+      # Explores level by level
+      
+      from collections import deque
+      def bfs(root):
+          queue = deque([root])
+          while queue:
+              node = queue.popleft()
+              print(node.val)
+              if node.left: queue.append(node.left)
+              if node.right: queue.append(node.right)
+
+  - question: "What is a binary tree and what are its properties?"
+    answer: "A binary tree is a tree data structure where each node has at most two children, called left and right child"
+    code_example: |
+      class TreeNode:
+          def __init__(self, val=0):
+              self.val = val
+              self.left = None
+              self.right = None
+      
+      # Binary tree example:
+      #       1
+      #      / \
+      #     2   3
+      #    / \
+      #   4   5
+      
+      root = TreeNode(1)
+      root.left = TreeNode(2)
+      root.right = TreeNode(3)
+      root.left.left = TreeNode(4)
+      root.left.right = TreeNode(5)
+      
+      # Properties:
+      # - Maximum 2 children per node
+      # - Height: longest path from root to leaf
+      # - Complete: all levels filled except possibly last
+      # - Perfect: all internal nodes have 2 children
+      # - Balanced: height difference between subtrees ≤ 1
+
+  - question: "What is a hash table and how does it work?"
+    answer: "A hash table uses a hash function to map keys to array indices for fast insertion, deletion, and lookup"
+    code_example: |
+      # Simple hash function example
+      def simple_hash(key, table_size):
+          return hash(key) % table_size
+      
+      # Python dictionary is a hash table
+      hash_table = {}
+      
+      # Insert: O(1) average
+      hash_table["apple"] = 5
+      hash_table["banana"] = 3
+      hash_table["orange"] = 8
+      
+      # Lookup: O(1) average
+      value = hash_table.get("apple")  # Returns 5
+      
+      # Delete: O(1) average
+      del hash_table["banana"]
+      
+      # Hash collisions handled by:
+      # - Chaining (linked lists)
+      # - Open addressing (linear probing)
+      
+      # Load factor = items / table_size
+      # Keep load factor < 0.75 for good performance
+
+  - question: "What are the basic operations and their complexities for common data structures?"
+    answer: "Different data structures have different time complexities for access, search, insertion, and deletion operations"
+    code_example: |
+      # Time Complexities Summary:
+      
+      # Array:
+      # Access: O(1), Search: O(n), Insert: O(n), Delete: O(n)
+      
+      # Linked List:
+      # Access: O(n), Search: O(n), Insert: O(1), Delete: O(1)
+      
+      # Stack:
+      # Access: O(n), Search: O(n), Insert: O(1), Delete: O(1)
+      
+      # Queue:
+      # Access: O(n), Search: O(n), Insert: O(1), Delete: O(1)
+      
+      # Hash Table:
+      # Access: N/A, Search: O(1), Insert: O(1), Delete: O(1)
+      
+      # Binary Search Tree (balanced):
+      # Access: O(log n), Search: O(log n), Insert: O(log n), Delete: O(log n)
+      
+      # Choose data structure based on most frequent operations
