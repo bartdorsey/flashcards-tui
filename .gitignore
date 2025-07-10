@@ -59,6 +59,7 @@ venv.bak/
 
 # Claude AI
 .claude/
+CLAUDE.md
 
 # OS
 .DS_Store
