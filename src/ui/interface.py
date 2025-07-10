@@ -157,14 +157,10 @@ def _show_truncated_code(
     console.print(code_panel)
 
     # Ask user if they want to expand
-    choice = Prompt.ask(
-        "[dim]Press 'e' to expand full code, or Enter to continue[/dim]",
-        choices=["e", ""],
-        default="",
-        show_choices=False,
-    )
-
-    if choice.lower() == "e":
+    console.print("[dim]Press 'e' to expand full code, or any other key to continue[/dim]")
+    key = _get_arrow_key_input()
+    
+    if key.lower() == "e":
         _show_full_code(console, full_code)
 
 
@@ -188,14 +184,10 @@ def _show_full_code(console: Console, code: str) -> None:
     )
     console.print(code_panel)
 
-    choice = Prompt.ask(
-        "[dim]Press 'c' to collapse, or Enter to continue[/dim]",
-        choices=["c", ""],
-        default="",
-        show_choices=False,
-    )
+    console.print("[dim]Press 'c' to collapse, or any other key to continue[/dim]")
+    key = _get_arrow_key_input()
 
-    if choice.lower() == "c":
+    if key.lower() == "c":
         console.clear()
         # Note: In practice, we'd need to re-display the question/answer context
         # For now, just continue - the main flow will handle redisplay
