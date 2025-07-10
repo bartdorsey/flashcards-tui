@@ -2981,6 +2981,415 @@ flashcards:
       #     print("Testing the module...")
       #     print(greet("Test User"))
 
+  - question: "What is JSON and what is it used for?"
+    answer: "JSON (JavaScript Object Notation) is a lightweight, text-based data format for storing and exchanging data. It's language-independent and commonly used for APIs, configuration files, and data storage"
+    code_example: |
+      # JSON is a text format that looks like this:
+      # {
+      #   "name": "Alice",
+      #   "age": 30,
+      #   "city": "New York",
+      #   "hobbies": ["reading", "coding", "hiking"],
+      #   "is_student": false,
+      #   "address": {
+      #     "street": "123 Main St",
+      #     "zipcode": "10001"
+      #   }
+      # }
+      
+      # JSON supports these data types:
+      # - Strings (must use double quotes)
+      # - Numbers (integers and floats)
+      # - Booleans (true/false, lowercase)
+      # - null (equivalent to Python's None)
+      # - Arrays (like Python lists)
+      # - Objects (like Python dictionaries)
+      
+      # Common uses of JSON:
+      # 1. Web APIs - sending data between client and server
+      # 2. Configuration files - storing app settings
+      # 3. Data storage - lightweight alternative to databases
+      # 4. Data exchange - between different programming languages
+      # 5. NoSQL databases - MongoDB stores data in JSON-like format
+      
+      # JSON vs Python comparison:
+      # JSON           Python
+      # true/false  -> True/False
+      # null        -> None
+      # "string"    -> "string" or 'string'
+      # [1,2,3]     -> [1, 2, 3]
+      # {"key":val} -> {"key": val}
+      
+      # Example: API response
+      api_response = """
+      {
+        "status": "success",
+        "data": {
+          "users": [
+            {"id": 1, "name": "Alice"},
+            {"id": 2, "name": "Bob"}
+          ]
+        },
+        "message": "Users retrieved successfully"
+      }
+      """
+
+  - question: "What is json.loads() and how do you use it?"
+    answer: "json.loads() converts a JSON string into a Python object (dictionary, list, etc.). The 's' stands for 'string' - it loads JSON from a string"
+    code_example: |
+      import json
+      
+      # Convert JSON string to Python object
+      json_string = '{"name": "Alice", "age": 30, "city": "New York"}'
+      python_dict = json.loads(json_string)
+      print(python_dict)          # {'name': 'Alice', 'age': 30, 'city': 'New York'}
+      print(type(python_dict))    # <class 'dict'>
+      
+      # Access the data like a normal Python dictionary
+      print(python_dict["name"])  # Alice
+      print(python_dict["age"])   # 30
+      
+      # JSON array becomes Python list
+      json_array = '["apple", "banana", "orange"]'
+      python_list = json.loads(json_array)
+      print(python_list)          # ['apple', 'banana', 'orange']
+      print(type(python_list))    # <class 'list'>
+      
+      # Complex nested JSON
+      complex_json = '''
+      {
+        "user": {
+          "name": "Bob",
+          "preferences": {
+            "theme": "dark",
+            "notifications": true
+          },
+          "scores": [85, 92, 78]
+        }
+      }
+      '''
+      data = json.loads(complex_json)
+      print(data["user"]["name"])                    # Bob
+      print(data["user"]["preferences"]["theme"])    # dark
+      print(data["user"]["scores"][0])               # 85
+      
+      # Error handling for invalid JSON
+      invalid_json = '{"name": "Alice", "age":}'  # Missing value
+      try:
+          result = json.loads(invalid_json)
+      except json.JSONDecodeError as e:
+          print(f"Invalid JSON: {e}")
+      
+      # Boolean and null conversion
+      json_data = '{"active": true, "deleted": false, "data": null}'
+      parsed = json.loads(json_data)
+      print(parsed["active"])     # True (Python boolean)
+      print(parsed["deleted"])    # False (Python boolean)
+      print(parsed["data"])       # None (Python None)
+
+  - question: "What is json.dumps() and how do you use it?"
+    answer: "json.dumps() converts a Python object into a JSON string. The 's' stands for 'string' - it dumps Python data to a string format"
+    code_example: |
+      import json
+      
+      # Convert Python dictionary to JSON string
+      python_dict = {"name": "Alice", "age": 30, "city": "New York"}
+      json_string = json.dumps(python_dict)
+      print(json_string)          # {"name": "Alice", "age": 30, "city": "New York"}
+      print(type(json_string))    # <class 'str'>
+      
+      # Convert Python list to JSON string
+      python_list = ["apple", "banana", "orange"]
+      json_array = json.dumps(python_list)
+      print(json_array)           # ["apple", "banana", "orange"]
+      
+      # Complex nested data
+      user_data = {
+          "user": {
+              "name": "Bob",
+              "preferences": {
+                  "theme": "dark",
+                  "notifications": True
+              },
+              "scores": [85, 92, 78],
+              "active": True,
+              "notes": None
+          }
+      }
+      json_output = json.dumps(user_data)
+      print(json_output)  # All Python values converted to JSON equivalents
+      
+      # Pretty printing with indentation
+      pretty_json = json.dumps(user_data, indent=2)
+      print(pretty_json)
+      # Output:
+      # {
+      #   "user": {
+      #     "name": "Bob",
+      #     "preferences": {
+      #       "theme": "dark",
+      #       "notifications": true
+      #     },
+      #     "scores": [85, 92, 78],
+      #     "active": true,
+      #     "notes": null
+      #   }
+      # }
+      
+      # Other useful options
+      compact_json = json.dumps(user_data, separators=(',', ':'))  # No spaces
+      sorted_json = json.dumps(user_data, sort_keys=True)          # Sort keys alphabetically
+      
+      # Python to JSON type conversion:
+      # dict -> object {}
+      # list/tuple -> array []
+      # str -> string ""
+      # int/float -> number
+      # True/False -> true/false
+      # None -> null
+
+  - question: "What is json.load() and how do you use it?"
+    answer: "json.load() reads JSON data directly from a file object and converts it to Python objects. It's used for loading JSON from files"
+    code_example: |
+      import json
+      
+      # First, let's create a JSON file to read from
+      data_to_save = {
+          "users": [
+              {"id": 1, "name": "Alice", "email": "alice@example.com"},
+              {"id": 2, "name": "Bob", "email": "bob@example.com"}
+          ],
+          "settings": {
+              "version": "1.0",
+              "debug": False
+          }
+      }
+      
+      # Save data to file first (we'll learn json.dump() next)
+      with open("data.json", "w") as file:
+          json.dump(data_to_save, file)
+      
+      # Now read JSON data from file using json.load()
+      with open("data.json", "r") as file:
+          loaded_data = json.load(file)
+      
+      print(type(loaded_data))    # <class 'dict'>
+      print(loaded_data["users"][0]["name"])    # Alice
+      print(loaded_data["settings"]["version"]) # 1.0
+      
+      # Reading configuration files
+      # config.json might contain:
+      # {
+      #   "database": {
+      #     "host": "localhost",
+      #     "port": 5432,
+      #     "name": "myapp"
+      #   },
+      #   "api_keys": {
+      #     "stripe": "sk_test_...",
+      #     "sendgrid": "SG...."
+      #   }
+      # }
+      
+      try:
+          with open("config.json", "r") as config_file:
+              config = json.load(config_file)
+              db_host = config["database"]["host"]
+              db_port = config["database"]["port"]
+              print(f"Connecting to {db_host}:{db_port}")
+      except FileNotFoundError:
+          print("Config file not found")
+      except json.JSONDecodeError as e:
+          print(f"Invalid JSON in config file: {e}")
+      
+      # Reading API responses saved to files
+      with open("api_response.json", "r") as api_file:
+          try:
+              response_data = json.load(api_file)
+              if response_data["status"] == "success":
+                  users = response_data["data"]["users"]
+                  for user in users:
+                      print(f"User: {user['name']}")
+          except KeyError as e:
+              print(f"Missing key in response: {e}")
+      
+      # Remember: json.load() is for FILES, json.loads() is for STRINGS
+
+  - question: "What is json.dump() and how do you use it?"
+    answer: "json.dump() writes Python objects directly to a file as JSON. It's used for saving Python data to JSON files"
+    code_example: |
+      import json
+      
+      # Python data to save
+      student_data = {
+          "students": [
+              {
+                  "id": 1,
+                  "name": "Alice Johnson",
+                  "grades": [85, 92, 78, 96],
+                  "active": True,
+                  "graduation_date": None
+              },
+              {
+                  "id": 2,
+                  "name": "Bob Smith",
+                  "grades": [79, 88, 91, 85],
+                  "active": True,
+                  "graduation_date": "2024-06-15"
+              }
+          ],
+          "course": "Python Programming",
+          "semester": "Fall 2023"
+      }
+      
+      # Save data to JSON file using json.dump()
+      with open("students.json", "w") as file:
+          json.dump(student_data, file)
+      
+      # Save with pretty formatting (indented)
+      with open("students_pretty.json", "w") as file:
+          json.dump(student_data, file, indent=2)
+      
+      # Save with sorted keys
+      with open("students_sorted.json", "w") as file:
+          json.dump(student_data, file, indent=2, sort_keys=True)
+      
+      # Saving configuration files
+      app_config = {
+          "app_name": "My Web App",
+          "version": "2.1.0",
+          "database": {
+              "host": "localhost",
+              "port": 5432,
+              "name": "webapp_db"
+          },
+          "features": {
+              "user_registration": True,
+              "email_notifications": True,
+              "analytics": False
+          },
+          "supported_languages": ["en", "es", "fr"]
+      }
+      
+      with open("app_config.json", "w") as config_file:
+          json.dump(app_config, config_file, indent=4)
+      
+      # Appending to existing JSON (requires reading first)
+      # Read existing data
+      try:
+          with open("students.json", "r") as file:
+              existing_data = json.load(file)
+      except FileNotFoundError:
+          existing_data = {"students": []}
+      
+      # Add new student
+      new_student = {
+          "id": 3,
+          "name": "Charlie Brown",
+          "grades": [91, 87, 94],
+          "active": True,
+          "graduation_date": None
+      }
+      existing_data["students"].append(new_student)
+      
+      # Save updated data
+      with open("students.json", "w") as file:
+          json.dump(existing_data, file, indent=2)
+      
+      # Error handling for non-serializable objects
+      import datetime
+      
+      problematic_data = {
+          "name": "Test",
+          "date": datetime.datetime.now()  # This can't be serialized to JSON!
+      }
+      
+      try:
+          with open("problem.json", "w") as file:
+              json.dump(problematic_data, file)
+      except TypeError as e:
+          print(f"Cannot serialize to JSON: {e}")
+
+  - question: "What's the difference between json.load/json.loads and json.dump/json.dumps?"
+    answer: "The difference is the source/destination: load/dump work with FILES, while loads/dumps work with STRINGS. The 's' suffix means 'string'"
+    code_example: |
+      import json
+      
+      # Sample data for examples
+      data = {"name": "Alice", "age": 30, "hobbies": ["reading", "coding"]}
+      
+      # ============================================
+      # WRITING/SERIALIZING (Python -> JSON)
+      # ============================================
+      
+      # json.dumps() - Dump to String
+      json_string = json.dumps(data)
+      print(f"json.dumps() result: {json_string}")
+      print(f"Type: {type(json_string)}")  # <class 'str'>
+      
+      # json.dump() - Dump to File
+      with open("output.json", "w") as file:
+          json.dump(data, file)
+      print("json.dump() saved data to output.json")
+      
+      # ============================================
+      # READING/DESERIALIZING (JSON -> Python)
+      # ============================================
+      
+      # json.loads() - Load from String
+      json_text = '{"name": "Bob", "age": 25}'
+      parsed_data = json.loads(json_text)
+      print(f"json.loads() result: {parsed_data}")
+      print(f"Type: {type(parsed_data)}")  # <class 'dict'>
+      
+      # json.load() - Load from File
+      with open("output.json", "r") as file:
+          file_data = json.load(file)
+      print(f"json.load() result: {file_data}")
+      
+      # ============================================
+      # MEMORY: String vs File operations
+      # ============================================
+      
+      # When you have JSON as a string (from API, user input, etc.)
+      api_response = '{"status": "success", "users": [{"id": 1, "name": "Alice"}]}'
+      users = json.loads(api_response)  # Use loads() for strings
+      
+      # When you want to save to file
+      with open("users.json", "w") as f:
+          json.dump(users, f)  # Use dump() for files
+      
+      # When you want to read from file
+      with open("users.json", "r") as f:
+          loaded_users = json.load(f)  # Use load() for files
+      
+      # When you want to convert to string (for sending over network)
+      users_string = json.dumps(loaded_users)  # Use dumps() for strings
+      
+      # ============================================
+      # Common use cases
+      # ============================================
+      
+      # 1. API communication (strings)
+      def send_api_request(data):
+          json_payload = json.dumps(data)  # Convert to JSON string
+          # send json_payload to API...
+          return json_payload
+      
+      def process_api_response(response_text):
+          return json.loads(response_text)  # Parse JSON string
+      
+      # 2. File storage (files)
+      def save_settings(settings):
+          with open("settings.json", "w") as f:
+              json.dump(settings, f)  # Save to file
+      
+      def load_settings():
+          with open("settings.json", "r") as f:
+              return json.load(f)  # Load from file
+      
+      # Remember: 's' = string, no 's' = file
+
   - question: "What is truthiness and falsiness in Python?"
     answer: "Truthiness refers to how Python evaluates values in boolean contexts. Some values are 'falsy' (evaluate to False) while others are 'truthy' (evaluate to True)"
     code_example: |
