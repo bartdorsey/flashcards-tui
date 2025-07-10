@@ -1,8 +1,9 @@
 title: "🚀 Python Advanced"
 flashcards:
-  - question: "What is a Python list comprehension?"
-    answer: "A concise way to create lists using a single line of code with optional filtering"
+  - question: "What are Python comprehensions and how do you use them?"
+    answer: "Comprehensions provide concise syntax for creating lists, dictionaries, and sets. They combine iteration, optional filtering, and transformation into a single readable expression"
     code_example: |
+      # LIST COMPREHENSIONS
       # Traditional approach
       squares = []
       for x in range(10):
@@ -12,13 +13,41 @@ flashcards:
       # List comprehension
       squares = [x**2 for x in range(10) if x % 2 == 0]
       
-      # More examples
+      # More list comprehension examples
       words = ["hello", "world", "python"]
       lengths = [len(word) for word in words]  # [5, 5, 6]
+      uppercase = [word.upper() for word in words if len(word) > 4]
       
       # Nested list comprehension
       matrix = [[i*j for j in range(3)] for i in range(3)]
       # [[0, 0, 0], [0, 1, 2], [0, 2, 4]]
+      
+      # DICTIONARY COMPREHENSIONS
+      # Basic dictionary comprehension
+      numbers = [1, 2, 3, 4, 5]
+      num_squares = {x: x**2 for x in numbers}
+      # {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
+      
+      # From two lists
+      names = ["Alice", "Bob", "Charlie"]
+      ages = [30, 25, 35]
+      people = {name: age for name, age in zip(names, ages)}
+      
+      # With filtering
+      grades = {"Alice": 85, "Bob": 92, "Charlie": 78, "Diana": 96}
+      high_grades = {name: grade for name, grade in grades.items() if grade >= 90}
+      
+      # Transform keys and values
+      celsius_temps = {"Mon": 20, "Tue": 25, "Wed": 18}
+      fahrenheit = {day: (temp * 9/5) + 32 for day, temp in celsius_temps.items()}
+      
+      # SET COMPREHENSIONS
+      unique_lengths = {len(word) for word in words}  # {5, 6}
+      even_squares = {x**2 for x in range(10) if x % 2 == 0}
+      
+      # GENERATOR EXPRESSIONS (not stored in memory)
+      large_squares = (x**2 for x in range(1000000) if x % 2 == 0)
+      first_ten = [next(large_squares) for _ in range(10)]
 
   - question: "What is a Python decorator?"
     answer: "A function that wraps another function to extend or modify its behavior without permanently modifying it"
@@ -222,3 +251,428 @@ flashcards:
           def __init__(self, *args, **kwargs):
               super().__init__(*args, **kwargs)
               self.is_child = True
+
+  - question: "What are TypeVar and Generic types in Python type hints?"
+    answer: "TypeVar creates type variables for generic programming, and Generic allows creating classes that work with any type while maintaining type safety"
+    code_example: |
+      # TypeVar and Generic types
+      from typing import TypeVar, Generic
+      
+      T = TypeVar('T')  # Type variable
+      
+      class Stack(Generic[T]):
+          def __init__(self) -> None:
+              self._items: list[T] = []
+          
+          def push(self, item: T) -> None:
+              self._items.append(item)
+          
+          def pop(self) -> T:
+              return self._items.pop()
+          
+          def peek(self) -> T:
+              return self._items[-1]
+          
+          def is_empty(self) -> bool:
+              return len(self._items) == 0
+      
+      # Using the generic class with different types
+      int_stack: Stack[int] = Stack()
+      int_stack.push(1)
+      int_stack.push(2)
+      print(int_stack.pop())  # 2 (type checker knows this is int)
+      
+      str_stack: Stack[str] = Stack()
+      str_stack.push("hello")
+      str_stack.push("world")
+      print(str_stack.pop())  # "world" (type checker knows this is str)
+      
+      # Multiple type variables
+      K = TypeVar('K')
+      V = TypeVar('V')
+      
+      class Pair(Generic[K, V]):
+          def __init__(self, key: K, value: V) -> None:
+              self.key = key
+              self.value = value
+      
+      # Usage
+      pair: Pair[str, int] = Pair("age", 25)
+
+  - question: "What are Protocol types in Python for structural typing?"
+    answer: "Protocol types enable structural typing (duck typing with type checking) - objects that have the required methods are automatically compatible"
+    code_example: |
+      # Protocol for structural typing
+      from typing import Protocol
+      
+      class Drawable(Protocol):
+          def draw(self) -> None: ...
+          def get_area(self) -> float: ...
+      
+      # Any class with draw() and get_area() methods is compatible
+      class Circle:
+          def __init__(self, radius: float) -> None:
+              self.radius = radius
+          
+          def draw(self) -> None:
+              print(f"Drawing circle with radius {self.radius}")
+          
+          def get_area(self) -> float:
+              return 3.14159 * self.radius ** 2
+      
+      class Rectangle:
+          def __init__(self, width: float, height: float) -> None:
+              self.width = width
+              self.height = height
+          
+          def draw(self) -> None:
+              print(f"Drawing {self.width}x{self.height} rectangle")
+          
+          def get_area(self) -> float:
+              return self.width * self.height
+      
+      # Function that accepts any Drawable
+      def render_shape(shape: Drawable) -> None:
+          shape.draw()
+          print(f"Area: {shape.get_area()}")
+      
+      # Both work without explicit inheritance
+      circle = Circle(5.0)
+      rectangle = Rectangle(10.0, 20.0)
+      
+      render_shape(circle)     # Works!
+      render_shape(rectangle)  # Works!
+
+  - question: "What are Callable and Literal types in Python type hints?"
+    answer: "Callable types specify function signatures for parameters, while Literal types restrict values to specific literal constants"
+    code_example: |
+      # Callable type hints
+      from typing import Callable, Literal
+      
+      # Basic callable
+      def apply_operation(func: Callable[[int, int], int], a: int, b: int) -> int:
+          return func(a, b)
+      
+      def add(x: int, y: int) -> int:
+          return x + y
+      
+      def multiply(x: int, y: int) -> int:
+          return x * y
+      
+      result1 = apply_operation(add, 5, 3)      # 8
+      result2 = apply_operation(multiply, 4, 6) # 24
+      
+      # More complex callable
+      def process_data(
+          data: list[int], 
+          processor: Callable[[list[int]], list[int]]
+      ) -> list[int]:
+          return processor(data)
+      
+      def double_all(numbers: list[int]) -> list[int]:
+          return [x * 2 for x in numbers]
+      
+      result = process_data([1, 2, 3], double_all)  # [2, 4, 6]
+      
+      # Literal types for specific values
+      def set_log_level(level: Literal["DEBUG", "INFO", "WARNING", "ERROR"]) -> None:
+          print(f"Log level set to {level}")
+      
+      set_log_level("INFO")     # Valid
+      # set_log_level("TRACE")  # Type error!
+      
+      # Literal with different types
+      def configure_mode(mode: Literal[1, 2, 3, "auto"]) -> None:
+          print(f"Mode: {mode}")
+      
+      configure_mode(1)        # Valid
+      configure_mode("auto")   # Valid
+      # configure_mode(4)      # Type error!
+
+  - question: "What are TypedDict types in Python?"
+    answer: "TypedDict creates dictionary types with specific required keys and value types, providing structure for dictionary data while maintaining runtime dict behavior"
+    code_example: |
+      # TypedDict for structured dictionaries
+      from typing import TypedDict, NotRequired, Required
+      
+      class PersonDict(TypedDict):
+          name: str
+          age: int
+          email: str
+      
+      # Function expecting structured dict
+      def create_user_profile(person: PersonDict) -> str:
+          return f"{person['name']} ({person['age']}) - {person['email']}"
+      
+      # Valid usage
+      user: PersonDict = {
+          "name": "Alice",
+          "age": 30,
+          "email": "alice@example.com"
+      }
+      
+      profile = create_user_profile(user)
+      
+      # Advanced TypedDict with optional keys
+      class ConfigDict(TypedDict):
+          host: str
+          port: int
+          debug: NotRequired[bool]        # Optional key
+          timeout: NotRequired[int]       # Optional key
+      
+      # Both are valid
+      config1: ConfigDict = {"host": "localhost", "port": 8080}
+      config2: ConfigDict = {
+          "host": "server.com", 
+          "port": 443, 
+          "debug": True,
+          "timeout": 30
+      }
+      
+      # Inheritance with TypedDict
+      class BaseConfig(TypedDict):
+          name: str
+          version: str
+      
+      class DatabaseConfig(BaseConfig):
+          host: str
+          port: int
+          database: str
+      
+      db_config: DatabaseConfig = {
+          "name": "MyApp",
+          "version": "1.0",
+          "host": "db.example.com",
+          "port": 5432,
+          "database": "myapp_db"
+      }
+
+  - question: "What are type aliases and NewType in Python type hints?"
+    answer: "Type aliases create readable names for complex types using TypeAlias, while NewType creates distinct types for type safety even when the underlying type is the same"
+    code_example: |
+      # Type aliases for complex types
+      from typing import TypeAlias, NewType
+      
+      # Type aliases - just alternative names
+      UserData: TypeAlias = dict[str, str | int | bool]
+      Matrix: TypeAlias = list[list[int]]
+      JsonResponse: TypeAlias = dict[str, str | int | list[dict[str, str]]]
+      
+      def process_user_data(data: UserData) -> str:
+          return f"User: {data['name']}, Age: {data['age']}"
+      
+      def multiply_matrices(a: Matrix, b: Matrix) -> Matrix:
+          # Matrix multiplication logic here
+          return [[0, 0], [0, 0]]
+      
+      # NewType - creates distinct types for safety
+      UserId = NewType('UserId', int)
+      ProductId = NewType('ProductId', int)
+      Price = NewType('Price', float)
+      
+      def get_user(user_id: UserId) -> UserData:
+          return {"name": "Alice", "age": 30, "active": True}
+      
+      def get_product_price(product_id: ProductId) -> Price:
+          return Price(29.99)
+      
+      # Must explicitly create NewType instances
+      user_id = UserId(123)
+      product_id = ProductId(456)
+      
+      # These would be type errors:
+      # get_user(product_id)     # Wrong! ProductId ≠ UserId
+      # get_user(123)            # Wrong! int ≠ UserId
+      
+      # Correct usage
+      user = get_user(user_id)
+      price = get_product_price(product_id)
+      
+      # Complex type aliases with generics
+      from typing import TypeVar
+      T = TypeVar('T')
+      ApiResponse: TypeAlias = dict[str, T | None]
+      
+      def fetch_data(endpoint: str) -> ApiResponse[list[dict[str, str]]]:
+          return {"data": [{"name": "Alice"}], "error": None}
+
+  - question: "How do you create generic functions with multiple type variables?"
+    answer: "Use multiple TypeVar declarations to create functions that work with several related but distinct types while maintaining type relationships"
+    code_example: |
+      # Generic functions with multiple type variables
+      from typing import TypeVar, Callable
+      
+      K = TypeVar('K')  # Key type
+      V = TypeVar('V')  # Value type
+      T = TypeVar('T')  # General type
+      U = TypeVar('U')  # Another general type
+      
+      # Function that swaps dict keys and values
+      def swap_dict_kv(d: dict[K, V]) -> dict[V, K]:
+          return {v: k for k, v in d.items()}
+      
+      # Usage
+      original: dict[str, int] = {"a": 1, "b": 2}
+      swapped: dict[int, str] = swap_dict_kv(original)  # {1: "a", 2: "b"}
+      
+      # Function that transforms values while preserving keys
+      def transform_dict_values(
+          d: dict[K, V], 
+          transform: Callable[[V], U]
+      ) -> dict[K, U]:
+          return {k: transform(v) for k, v in d.items()}
+      
+      # Usage
+      numbers: dict[str, int] = {"a": 1, "b": 2, "c": 3}
+      strings: dict[str, str] = transform_dict_values(numbers, str)
+      doubled: dict[str, int] = transform_dict_values(numbers, lambda x: x * 2)
+      
+      # Generic class with methods using multiple types
+      from typing import Generic
+      
+      class DataProcessor(Generic[T]):
+          def __init__(self, data: list[T]) -> None:
+              self.data = data
+          
+          def map_to_type(self, func: Callable[[T], U]) -> list[U]:
+              return [func(item) for item in self.data]
+          
+          def group_by(self, key_func: Callable[[T], K]) -> dict[K, list[T]]:
+              result: dict[K, list[T]] = {}
+              for item in self.data:
+                  key = key_func(item)
+                  if key not in result:
+                      result[key] = []
+                  result[key].append(item)
+              return result
+      
+      # Usage
+      processor: DataProcessor[int] = DataProcessor([1, 2, 3, 4, 5])
+      strings: list[str] = processor.map_to_type(str)
+      grouped: dict[bool, list[int]] = processor.group_by(lambda x: x % 2 == 0)
+
+  - question: "What are Final and ClassVar type hints in Python?"
+    answer: "Final indicates values that cannot be reassigned, while ClassVar specifies class variables that are shared across all instances"
+    code_example: |
+      # Final and ClassVar type hints
+      from typing import Final, ClassVar
+      
+      # Final values - cannot be reassigned
+      API_VERSION: Final[str] = "v1.0"
+      MAX_RETRIES: Final[int] = 3
+      DEFAULT_CONFIG: Final[dict[str, str]] = {"host": "localhost", "port": "8080"}
+      
+      # These would be type errors:
+      # API_VERSION = "v2.0"      # Error: cannot reassign Final
+      # MAX_RETRIES += 1          # Error: cannot modify Final
+      
+      class DatabaseConfig:
+          # Class variables shared by all instances
+          DEFAULT_HOST: ClassVar[str] = "localhost"
+          DEFAULT_PORT: ClassVar[int] = 5432
+          SUPPORTED_DRIVERS: ClassVar[list[str]] = ["postgresql", "mysql", "sqlite"]
+          
+          # Instance variables
+          def __init__(self, host: str, port: int) -> None:
+              self.host: str = host
+              self.port: int = port
+              self.connection_count: int = 0  # Instance variable
+      
+      # Class variables accessed via class
+      print(DatabaseConfig.DEFAULT_HOST)     # "localhost"
+      print(DatabaseConfig.SUPPORTED_DRIVERS)  # ["postgresql", "mysql", "sqlite"]
+      
+      # Instances share class variables
+      db1 = DatabaseConfig("server1.com", 5432)
+      db2 = DatabaseConfig("server2.com", 3306)
+      
+      print(db1.DEFAULT_HOST)    # "localhost" (same for all instances)
+      print(db2.DEFAULT_HOST)    # "localhost" (same for all instances)
+      
+      # But instance variables are separate
+      db1.connection_count = 5
+      db2.connection_count = 3
+      print(db1.connection_count)  # 5
+      print(db2.connection_count)  # 3
+      
+      # Final in classes
+      class Constants:
+          PI: Final[float] = 3.14159
+          VERSION: Final[str] = "1.0.0"
+          
+          def __init__(self) -> None:
+              self.instance_id: Final[str] = "unique_id"  # Final per instance
+      
+      # Class-level constants
+      print(Constants.PI)         # 3.14159
+      
+      # Instance-level finals
+      const = Constants()
+      print(const.instance_id)    # "unique_id"
+
+  - question: "How do you use overload decorators in Python type hints?"
+    answer: "The @overload decorator allows you to specify multiple type signatures for a single function, providing better type checking for functions that behave differently based on argument types"
+    code_example: |
+      # Function overloads with @overload
+      from typing import overload, Union
+      
+      # Multiple signatures for the same function
+      @overload
+      def process_data(data: int) -> str: ...
+      
+      @overload
+      def process_data(data: str) -> int: ...
+      
+      @overload
+      def process_data(data: list[int]) -> list[str]: ...
+      
+      # Actual implementation
+      def process_data(data: Union[int, str, list[int]]) -> Union[str, int, list[str]]:
+          if isinstance(data, int):
+              return f"Number: {data}"
+          elif isinstance(data, str):
+              return len(data)
+          elif isinstance(data, list):
+              return [str(x) for x in data]
+          else:
+              raise TypeError("Unsupported type")
+      
+      # Type checker knows the return types
+      result1: str = process_data(42)           # Returns str
+      result2: int = process_data("hello")      # Returns int  
+      result3: list[str] = process_data([1, 2, 3])  # Returns list[str]
+      
+      # More complex overload example
+      @overload
+      def get_config(key: str) -> str: ...
+      
+      @overload  
+      def get_config(key: str, default: int) -> Union[str, int]: ...
+      
+      @overload
+      def get_config(key: str, default: str) -> str: ...
+      
+      def get_config(key: str, default=None):
+          config = {"host": "localhost", "debug": "true"}
+          value = config.get(key)
+          if value is None:
+              return default
+          return value
+      
+      # Usage with proper typing
+      host: str = get_config("host")                    # Always str
+      port: Union[str, int] = get_config("port", 8080)  # str or int
+      timeout: str = get_config("timeout", "30")        # Always str
+      
+      # Overload with generic types
+      from typing import TypeVar
+      T = TypeVar('T')
+      
+      @overload
+      def safe_get(data: dict[str, T], key: str) -> T | None: ...
+      
+      @overload
+      def safe_get(data: dict[str, T], key: str, default: T) -> T: ...
+      
+      def safe_get(data: dict[str, T], key: str, default=None):
+          return data.get(key, default)

@@ -181,72 +181,241 @@ flashcards:
       # Multiple assignment
       x, y = 10, 20           # x gets 10, y gets 20
 
-  - question: "What are the basic arithmetic operators in Python?"
-    answer: "The basic arithmetic operators are: + (addition), - (subtraction), * (multiplication), / (division), // (floor division), % (modulo), ** (exponentiation)"
+  - question: "What are the basic arithmetic operators for addition, subtraction, and multiplication in Python?"
+    answer: "The basic operators are: + (addition), - (subtraction), and * (multiplication). These work with numbers and follow standard mathematical rules"
     code_example: |
-      # Basic arithmetic
+      # Basic arithmetic operations
       a = 10
       b = 3
       
       addition = a + b         # 13
       subtraction = a - b      # 7
       multiplication = a * b   # 30
-      division = a / b         # 3.333...
-      floor_division = a // b  # 3 (rounds down)
-      modulo = a % b          # 1 (remainder)
-      exponentiation = a ** b  # 1000 (10 to the power of 3)
       
-      # Order of operations (PEMDAS)
-      result = 2 + 3 * 4       # 14, not 20 (multiplication first)
+      # Works with different number types
+      x = 5.5
+      y = 2
+      
+      float_add = x + y        # 7.5
+      float_sub = x - y        # 3.5
+      float_mult = x * y       # 11.0
+      
+      # Order of operations applies
+      result = 2 + 3 * 4       # 14 (multiplication first)
       result = (2 + 3) * 4     # 20 (parentheses first)
 
-  - question: "What are comparison operators and what do they return?"
-    answer: "Comparison operators compare two values and return True or False. They include: == (equal), != (not equal), < (less than), > (greater than), <= (less or equal), >= (greater or equal)"
+  - question: "What are the division operators in Python and how do they differ?"
+    answer: "Python has two division operators: / (regular division) always returns a float, while // (floor division) rounds down to the nearest integer"
     code_example: |
-      # Comparison operators
+      a = 10
+      b = 3
+      
+      # Regular division (/) - always returns float
+      regular_div = a / b      # 3.3333333333333335
+      even_div = 10 / 5        # 2.0 (still a float)
+      
+      # Floor division (//) - rounds down to integer
+      floor_div = a // b       # 3 (rounds down)
+      negative_floor = -10 // 3  # -4 (rounds down, not towards zero)
+      
+      # With floats
+      float_regular = 10.7 / 3   # 3.566666666666667
+      float_floor = 10.7 // 3    # 3.0 (still rounds down)
+      
+      # Common use case: getting whole number of groups
+      items = 23
+      per_group = 5
+      groups = items // per_group  # 4 complete groups
+
+  - question: "What are the modulo and exponentiation operators in Python?"
+    answer: "The modulo operator % gives the remainder after division, and ** is exponentiation (raising to a power)"
+    code_example: |
+      # Modulo operator (%) - remainder after division
+      a = 10
+      b = 3
+      
+      remainder = a % b        # 1 (10 divided by 3 = 3 remainder 1)
+      
+      # Common uses for modulo
+      # Check if number is even or odd
+      number = 7
+      if number % 2 == 0:
+          print("Even")
+      else:
+          print("Odd")        # This will print
+      
+      # Cycle through values
+      for i in range(10):
+          day = i % 7          # Cycles: 0,1,2,3,4,5,6,0,1,2...
+      
+      # Exponentiation operator (**)
+      base = 2
+      power = 3
+      result = base ** power   # 8 (2 to the power of 3)
+      
+      # More examples
+      square = 5 ** 2          # 25
+      cube = 4 ** 3            # 64
+      sqrt = 9 ** 0.5          # 3.0 (square root)
+
+  - question: "What are the equality comparison operators in Python?"
+    answer: "The equality operators are == (equal to) and != (not equal to). They compare values and return True or False"
+    code_example: |
+      # Equality operators
       x = 5
       y = 10
+      z = 5
       
-      # Equality
-      x == y          # False (5 is not equal to 10)
-      x != y          # True (5 is not equal to 10)
+      # Equal to (==)
+      print(x == y)          # False (5 is not equal to 10)
+      print(x == z)          # True (5 equals 5)
       
-      # Magnitude comparisons
-      x < y           # True (5 is less than 10)
-      x > y           # False (5 is not greater than 10)
-      x <= y          # True (5 is less than or equal to 10)
-      x >= y          # False (5 is not greater than or equal to 10)
+      # Not equal to (!=)
+      print(x != y)          # True (5 is not equal to 10)
+      print(x != z)          # False (5 equals 5)
       
-      # Can compare different types
-      age = 18
-      is_adult = age >= 18     # True
-      
-      # String comparison
+      # Works with different data types
       name1 = "Alice"
-      name2 = "Bob"
-      name1 == name2          # False
+      name2 = "Alice"
+      name3 = "Bob"
+      
+      print(name1 == name2)   # True
+      print(name1 != name3)   # True
+      
+      # Common use in conditions
+      password = "secret"
+      if password == "secret":
+          print("Access granted")
 
-  - question: "What are logical operators and how do they work?"
-    answer: "Logical operators combine boolean values: 'and' returns True only if both conditions are True, 'or' returns True if at least one condition is True, 'not' reverses the boolean value"
+  - question: "What are the magnitude comparison operators in Python?"
+    answer: "The magnitude operators are < (less than), > (greater than), <= (less than or equal), and >= (greater than or equal). They compare the size or order of values"
     code_example: |
-      # Logical operators
+      # Magnitude comparison operators
+      x = 5
+      y = 10
+      z = 5
+      
+      # Less than (<)
+      print(x < y)           # True (5 is less than 10)
+      print(y < x)           # False (10 is not less than 5)
+      
+      # Greater than (>)
+      print(y > x)           # True (10 is greater than 5)
+      print(x > y)           # False (5 is not greater than 10)
+      
+      # Less than or equal (<=)
+      print(x <= y)          # True (5 is less than 10)
+      print(x <= z)          # True (5 equals 5)
+      
+      # Greater than or equal (>=)
+      print(y >= x)          # True (10 is greater than 5)
+      print(x >= z)          # True (5 equals 5)
+      
+      # Common use cases
+      age = 18
+      if age >= 18:
+          print("Can vote")
+      
+      score = 85
+      if score >= 90:
+          print("A grade")
+      elif score >= 80:
+          print("B grade")
+
+  - question: "How does the 'and' logical operator work in Python?"
+    answer: "The 'and' operator returns True only if both conditions are True. If either condition is False, the result is False"
+    code_example: |
+      # AND operator - both conditions must be True
       age = 25
       has_license = True
       has_car = False
       
-      # AND operator (both must be True)
-      can_drive = age >= 18 and has_license    # True
-      can_drive_own_car = has_license and has_car  # False
+      # Both conditions True
+      can_drive = age >= 18 and has_license    # True (25 >= 18 is True AND has_license is True)
       
-      # OR operator (at least one must be True)
-      can_travel = has_car or age >= 18        # True
+      # One condition False
+      can_drive_own_car = has_license and has_car  # False (has_license is True AND has_car is False)
       
-      # NOT operator (reverses the boolean)
-      is_minor = not (age >= 18)              # False
-      needs_license = not has_license         # False
+      # Both conditions False
+      is_young_and_unlicensed = age < 18 and not has_license  # False
       
-      # Combining operators
-      can_rent_car = age >= 21 and has_license and not has_car
+      # Common use cases
+      username = "admin"
+      password = "secret"
+      if username == "admin" and password == "secret":
+          print("Login successful")
+      
+      # Multiple conditions
+      score = 85
+      attendance = 95
+      if score >= 80 and attendance >= 90:
+          print("Student passes with honors")
+
+  - question: "How does the 'or' logical operator work in Python?"
+    answer: "The 'or' operator returns True if at least one condition is True. It only returns False if both conditions are False"
+    code_example: |
+      # OR operator - at least one condition must be True
+      age = 16
+      has_permit = True
+      has_license = False
+      
+      # One condition True
+      can_practice_drive = has_permit or has_license  # True (has_permit is True)
+      
+      # Both conditions True
+      age = 25
+      has_license = True
+      can_drive = age >= 18 or has_license  # True (both are True)
+      
+      # Both conditions False
+      age = 15
+      has_license = False
+      can_drive_alone = age >= 18 or has_license  # False (both are False)
+      
+      # Common use cases
+      day = "Saturday"
+      if day == "Saturday" or day == "Sunday":
+          print("It's weekend!")
+      
+      # Alternative conditions
+      payment_method = "credit"
+      if payment_method == "cash" or payment_method == "credit":
+          print("Payment accepted")
+
+  - question: "How does the 'not' logical operator work in Python?"
+    answer: "The 'not' operator reverses a boolean value: 'not True' becomes False, and 'not False' becomes True"
+    code_example: |
+      # NOT operator - reverses boolean values
+      is_logged_in = True
+      is_guest = not is_logged_in        # False
+      
+      has_permission = False
+      access_denied = not has_permission  # True
+      
+      # Common use with conditions
+      age = 15
+      is_adult = age >= 18               # False
+      is_minor = not is_adult            # True
+      
+      # Use with if statements
+      username = ""
+      if not username:                   # True if username is empty
+          print("Please enter a username")
+      
+      # Checking for empty collections
+      items = []
+      if not items:                      # True if list is empty
+          print("No items found")
+      
+      # Double negative (not recommended but valid)
+      is_valid = True
+      is_invalid = not is_valid          # False
+      is_valid_again = not is_invalid    # True
+      
+      # Combining with other operators
+      has_account = True
+      is_banned = False
+      can_login = has_account and not is_banned  # True
 
   - question: "What is the difference between = and == in Python?"
     answer: "= is the assignment operator that stores a value in a variable, while == is the equality operator that compares two values and returns True or False"
@@ -1252,9 +1421,11 @@ flashcards:
           words[i] = word.upper()
       print(words)                       # ["HELLO", "WORLD", "PYTHON"]
       
-      # List comprehension for modification (creates new list)
+      # Creating new list with modifications
       original = [1, 2, 3, 4, 5]
-      doubled = [x * 2 for x in original]
+      doubled = []
+      for x in original:
+          doubled.append(x * 2)
       print(doubled)                     # [2, 4, 6, 8, 10]
       
       # Conditional modification
@@ -1500,51 +1671,6 @@ flashcards:
       inventory.clear()
       print(inventory)                   # {}
 
-  - question: "What are dictionary comprehensions and how do you use them?"
-    answer: "Dictionary comprehensions create dictionaries using concise syntax: {key_expr: value_expr for item in iterable}. They're useful for transforming data or filtering"
-    code_example: |
-      # Basic dictionary comprehension
-      numbers = [1, 2, 3, 4, 5]
-      squares = {x: x**2 for x in numbers}
-      print(squares)                     # {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
-      
-      # From two lists
-      names = ["Alice", "Bob", "Charlie"]
-      ages = [30, 25, 35]
-      people = {name: age for name, age in zip(names, ages)}
-      print(people)                      # {"Alice": 30, "Bob": 25, "Charlie": 35}
-      
-      # With condition (filtering)
-      grades = {"Alice": 85, "Bob": 92, "Charlie": 78, "Diana": 96}
-      high_grades = {name: grade for name, grade in grades.items() if grade >= 90}
-      print(high_grades)                 # {"Bob": 92, "Diana": 96}
-      
-      # Transform values
-      celsius = {"Monday": 20, "Tuesday": 25, "Wednesday": 18}
-      fahrenheit = {day: (temp * 9/5) + 32 for day, temp in celsius.items()}
-      print(fahrenheit)                  # {"Monday": 68.0, "Tuesday": 77.0, "Wednesday": 64.4}
-      
-      # Transform keys
-      original = {1: "one", 2: "two", 3: "three"}
-      string_keys = {str(key): value for key, value in original.items()}
-      print(string_keys)                 # {"1": "one", "2": "two", "3": "three"}
-      
-      # With string methods
-      words = ["hello", "world", "python"]
-      word_lengths = {word: len(word) for word in words}
-      print(word_lengths)                # {"hello": 5, "world": 5, "python": 6}
-      
-      # Nested dictionary comprehension
-      students = ["Alice", "Bob", "Charlie"]
-      subjects = ["Math", "Science", "English"]
-      gradebook = {student: {subject: 0 for subject in subjects} for student in students}
-      print(gradebook)
-      
-      # From existing dictionary
-      inventory = {"apples": 50, "bananas": 30, "oranges": 25}
-      low_stock = {item: count for item, count in inventory.items() if count < 40}
-      print(low_stock)                   # {"bananas": 30, "oranges": 25}
-
   - question: "When should you use lists vs dictionaries?"
     answer: "Use lists for ordered collections accessed by position/index. Use dictionaries for key-value relationships where you need fast lookups by unique identifiers"
     code_example: |
@@ -1660,3 +1786,373 @@ flashcards:
       # Dictionary syntax
       person = {"name": "Alice", "age": 30}  # Correct: curly braces, colons
       # person = {name: "Alice", age: 30}     # ERROR: keys need quotes
+
+  - question: "What is a tuple in Python and how do you create one?"
+    answer: "A tuple is an immutable ordered collection of items. Create tuples using parentheses () with items separated by commas"
+    code_example: |
+      # Basic tuple creation
+      coordinates = (10, 20)
+      colors = ("red", "green", "blue")
+      
+      # Single item tuple (comma required)
+      single_item = (42,)           # Tuple with one item
+      not_tuple = (42)              # This is just parentheses around an int
+      
+      # Tuple without parentheses (valid but less clear)
+      point = 5, 10                 # Creates tuple (5, 10)
+      
+      # Empty tuple
+      empty = ()
+      
+      # Mixed data types
+      mixed = ("Alice", 25, True, 3.14)
+      
+      # Converting to tuple
+      list_to_tuple = tuple([1, 2, 3])  # (1, 2, 3)
+      string_to_tuple = tuple("hello")   # ('h', 'e', 'l', 'l', 'o')
+
+  - question: "How do you access and unpack tuples?"
+    answer: "Access tuple items using indexing like lists. Unpack tuples by assigning to multiple variables simultaneously"
+    code_example: |
+      coordinates = (10, 20, 30)
+      
+      # Access by index (like lists)
+      x = coordinates[0]            # 10
+      y = coordinates[1]            # 20
+      z = coordinates[-1]           # 30 (last item)
+      
+      # Tuple unpacking (multiple assignment)
+      x, y, z = coordinates         # x=10, y=20, z=30
+      
+      # Partial unpacking with underscore
+      x, y, _ = coordinates         # Ignore the third value
+      
+      # Swapping variables using tuples
+      a = 5
+      b = 10
+      a, b = b, a                   # Now a=10, b=5
+      
+      # Function returning multiple values
+      def get_name_age():
+          return "Alice", 25        # Returns a tuple
+      
+      name, age = get_name_age()    # Unpack the returned tuple
+      
+      # Enumerate returns tuples
+      fruits = ["apple", "banana", "orange"]
+      for index, fruit in enumerate(fruits):
+          print(f"{index}: {fruit}")
+
+  - question: "What are common string methods in Python?"
+    answer: "String methods include split(), join(), replace(), strip(), find(), startswith(), endswith(), upper(), lower(), and many others for text manipulation"
+    code_example: |
+      text = "  Hello, World!  "
+      
+      # Case methods
+      print(text.upper())           # "  HELLO, WORLD!  "
+      print(text.lower())           # "  hello, world!  "
+      print(text.title())           # "  Hello, World!  "
+      
+      # Whitespace methods
+      print(text.strip())           # "Hello, World!"
+      print(text.lstrip())          # "Hello, World!  "
+      print(text.rstrip())          # "  Hello, World!"
+      
+      # Search methods
+      print(text.find("World"))     # 9 (index where found)
+      print(text.find("Python"))    # -1 (not found)
+      print(text.startswith("  H")) # True
+      print(text.endswith("!  "))   # True
+      
+      # Replace and split
+      new_text = text.replace("World", "Python")
+      words = "apple,banana,orange".split(",")  # ['apple', 'banana', 'orange']
+      joined = "-".join(words)                  # "apple-banana-orange"
+      
+      # Check content
+      print("123".isdigit())        # True
+      print("abc".isalpha())        # True
+      print("abc123".isalnum())     # True
+
+  - question: "What is string formatting in Python?"
+    answer: "String formatting allows you to insert variables into strings. Use f-strings (preferred), .format() method, or % formatting"
+    code_example: |
+      name = "Alice"
+      age = 25
+      score = 87.5
+      
+      # f-strings (Python 3.6+, preferred method)
+      message = f"Hello, {name}! You are {age} years old."
+      formatted = f"Score: {score:.1f}%"        # One decimal place
+      expression = f"Next year: {age + 1}"      # Can include expressions
+      
+      # .format() method
+      message = "Hello, {}! You are {} years old.".format(name, age)
+      message = "Hello, {name}! You are {age} years old.".format(name=name, age=age)
+      
+      # % formatting (older style)
+      message = "Hello, %s! You are %d years old." % (name, age)
+      
+      # f-string formatting options
+      pi = 3.14159
+      print(f"Pi: {pi:.2f}")        # "Pi: 3.14"
+      print(f"Pi: {pi:>10.2f}")     # "Pi:       3.14" (right-aligned)
+      print(f"Number: {42:04d}")    # "Number: 0042" (zero-padded)
+      
+      # Multi-line f-strings
+      report = f"""
+      Student: {name}
+      Age: {age}
+      Score: {score:.1f}%
+      """
+
+  - question: "What are essential built-in functions in Python?"
+    answer: "Essential built-ins include len(), type(), isinstance(), str(), int(), float(), bool(), input(), print(), enumerate(), zip(), and many others"
+    code_example: |
+      # Type and conversion functions
+      print(type(42))               # <class 'int'>
+      print(isinstance(42, int))    # True
+      print(str(42))                # "42"
+      print(int("42"))              # 42
+      print(float("3.14"))          # 3.14
+      print(bool(0))                # False
+      
+      # Collection functions
+      numbers = [1, 2, 3, 4, 5]
+      print(len(numbers))           # 5
+      print(min(numbers))           # 1
+      print(max(numbers))           # 5
+      print(sum(numbers))           # 15
+      
+      # Iteration functions
+      for index, value in enumerate(numbers):
+          print(f"Index {index}: {value}")
+      
+      names = ["Alice", "Bob", "Charlie"]
+      ages = [25, 30, 35]
+      for name, age in zip(names, ages):
+          print(f"{name} is {age} years old")
+      
+      # Math functions
+      print(abs(-5))                # 5
+      print(round(3.14159, 2))      # 3.14
+      print(pow(2, 3))              # 8
+      
+      # Input/output
+      # name = input("Enter your name: ")
+      print("Hello, World!", end="")  # No newline
+      print("Hello", "World", sep="-")  # "Hello-World"
+
+  - question: "How do you work with files in Python?"
+    answer: "Use open() to open files, read/write methods to access content, and always close files or use 'with' statement for automatic closing"
+    code_example: |
+      # Writing to a file
+      with open("example.txt", "w") as file:
+          file.write("Hello, World!\n")
+          file.write("This is a second line.\n")
+      
+      # Reading entire file
+      with open("example.txt", "r") as file:
+          content = file.read()
+          print(content)
+      
+      # Reading line by line
+      with open("example.txt", "r") as file:
+          for line in file:
+              print(line.strip())   # Remove newline characters
+      
+      # Reading all lines into a list
+      with open("example.txt", "r") as file:
+          lines = file.readlines()
+      
+      # Appending to a file
+      with open("example.txt", "a") as file:
+          file.write("This line is appended.\n")
+      
+      # File modes
+      # "r" - read (default)
+      # "w" - write (overwrites existing file)
+      # "a" - append
+      # "r+" - read and write
+      
+      # Manual file handling (not recommended)
+      file = open("example.txt", "r")
+      content = file.read()
+      file.close()  # Must remember to close!
+
+  - question: "How do you import and use modules in Python?"
+    answer: "Use 'import' to bring in modules, 'from...import' for specific items, and 'as' to create aliases. Python has many built-in modules"
+    code_example: |
+      # Import entire module
+      import math
+      print(math.pi)                # 3.141592653589793
+      print(math.sqrt(16))          # 4.0
+      
+      # Import specific functions
+      from math import pi, sqrt, sin
+      print(pi)                     # 3.141592653589793
+      print(sqrt(16))               # 4.0
+      
+      # Import with alias
+      import math as m
+      print(m.pi)
+      
+      from math import sqrt as square_root
+      print(square_root(25))        # 5.0
+      
+      # Import all (not recommended)
+      # from math import *
+      
+      # Common standard library modules
+      import random
+      print(random.randint(1, 10))  # Random integer between 1 and 10
+      
+      import datetime
+      now = datetime.datetime.now()
+      print(now)
+      
+      import os
+      print(os.getcwd())            # Current working directory
+      
+      # Creating your own module
+      # Save this in a file called my_module.py:
+      # def greet(name):
+      #     return f"Hello, {name}!"
+      #
+      # Then import it:
+      # import my_module
+      # print(my_module.greet("Alice"))
+
+  - question: "What is truthiness and falsiness in Python?"
+    answer: "Truthiness refers to how Python evaluates values in boolean contexts. Some values are 'falsy' (evaluate to False) while others are 'truthy' (evaluate to True)"
+    code_example: |
+      # Falsy values (evaluate to False)
+      print(bool(False))            # False
+      print(bool(None))             # False
+      print(bool(0))                # False
+      print(bool(0.0))              # False
+      print(bool(""))               # False (empty string)
+      print(bool([]))               # False (empty list)
+      print(bool({}))               # False (empty dict)
+      print(bool(()))               # False (empty tuple)
+      print(bool(set()))            # False (empty set)
+      
+      # Truthy values (evaluate to True)
+      print(bool(True))             # True
+      print(bool(1))                # True
+      print(bool(-1))               # True (any non-zero number)
+      print(bool("hello"))          # True (non-empty string)
+      print(bool([1, 2, 3]))        # True (non-empty list)
+      print(bool({"a": 1}))         # True (non-empty dict)
+      
+      # Using in conditions
+      items = []
+      if items:                     # False because list is empty
+          print("Has items")
+      else:
+          print("No items")         # This will print
+      
+      name = ""
+      if name:                      # False because string is empty
+          print(f"Hello, {name}")
+      else:
+          print("Please enter a name")
+      
+      # Practical usage
+      def process_data(data):
+          if not data:              # Check if data is falsy
+              return "No data provided"
+          return f"Processing {len(data)} items"
+
+  - question: "What is None in Python and how do you use it?"
+    answer: "None is Python's null value, representing the absence of a value. It's commonly used as a default value or to indicate 'no result'"
+    code_example: |
+      # None is a special constant
+      result = None
+      print(type(None))             # <class 'NoneType'>
+      
+      # Functions return None by default
+      def no_return():
+          print("This function doesn't return anything")
+      
+      result = no_return()
+      print(result)                 # None
+      
+      # Checking for None
+      if result is None:
+          print("Result is None")
+      
+      # Don't use == with None, use 'is'
+      if result == None:            # Works but not recommended
+          print("Result is None")
+      
+      if result is None:            # Correct way
+          print("Result is None")
+      
+      # None as default parameter
+      def greet(name=None):
+          if name is None:
+              return "Hello, stranger!"
+          return f"Hello, {name}!"
+      
+      print(greet())                # "Hello, stranger!"
+      print(greet("Alice"))         # "Hello, Alice!"
+      
+      # None in data structures
+      data = [1, 2, None, 4, 5]
+      
+      # Filter out None values
+      clean_data = [x for x in data if x is not None]
+      print(clean_data)             # [1, 2, 4, 5]
+      
+      # None vs empty values
+      print(None == "")             # False
+      print(None == 0)              # False
+      print(None == [])             # False
+
+  - question: "What are type hints in Python and how do you use them for basic annotations?"
+    answer: "Type hints provide optional static type information to specify what types variables and functions should use. They help with code documentation and IDE support"
+    code_example: |
+      # Basic variable type hints
+      name: str = "Alice"
+      age: int = 30
+      height: float = 5.6
+      is_student: bool = True
+      
+      # Function type hints
+      def greet(name: str, age: int) -> str:
+          return f"Hello {name}, you are {age} years old"
+      
+      def add_numbers(a: int, b: int) -> int:
+          return a + b
+      
+      def calculate_area(length: float, width: float) -> float:
+          return length * width
+      
+      # List and dictionary type hints (Python 3.9+)
+      numbers: list[int] = [1, 2, 3, 4, 5]
+      grades: dict[str, int] = {"Alice": 85, "Bob": 90}
+      coordinates: tuple[int, int] = (10, 20)
+      
+      # Function with no return value
+      def print_message(message: str) -> None:
+          print(message)
+      
+      # Optional values (can be None)
+      def find_student(student_id: int) -> str | None:
+          if student_id > 0:
+              return f"Student {student_id}"
+          return None
+      
+      # Multiple possible types
+      def process_input(data: int | str) -> str:
+          return str(data)
+      
+      # Class with type hints
+      class Student:
+          def __init__(self, name: str, age: int) -> None:
+              self.name: str = name
+              self.age: int = age
+          
+          def get_info(self) -> str:
+              return f"{self.name} is {self.age} years old"

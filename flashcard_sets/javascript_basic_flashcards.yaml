@@ -95,29 +95,119 @@ flashcards:
       const welcome = `${getGreeting('Bob')} How are you today?`;
       console.log(welcome); // "Welcome, Bob! How are you today?"
 
-  - question: "What are JavaScript array methods map(), filter(), and reduce()?"
-    answer: "map() transforms elements, filter() selects elements, reduce() accumulates elements into a single value"
+  - question: "What is the map() method in JavaScript and how does it work?"
+    answer: "The map() method creates a new array by transforming each element using a provided function. It doesn't modify the original array"
     code_example: |
       const numbers = [1, 2, 3, 4, 5];
       
-      // map() - transform each element
+      // Basic map usage - transform each element
       const doubled = numbers.map(num => num * 2);
       console.log(doubled); // [2, 4, 6, 8, 10]
+      console.log(numbers); // [1, 2, 3, 4, 5] (original unchanged)
       
-      // filter() - select elements that pass a test
+      // Map with different transformations
+      const squares = numbers.map(num => num ** 2);
+      console.log(squares); // [1, 4, 9, 16, 25]
+      
+      // Map with strings
+      const words = ['hello', 'world', 'javascript'];
+      const capitalized = words.map(word => word.toUpperCase());
+      console.log(capitalized); // ['HELLO', 'WORLD', 'JAVASCRIPT']
+      
+      // Map with objects
+      const users = [
+        { name: 'Alice', age: 25 },
+        { name: 'Bob', age: 30 }
+      ];
+      const names = users.map(user => user.name);
+      console.log(names); // ['Alice', 'Bob']
+      
+      // Map with index parameter
+      const withIndex = numbers.map((num, index) => `${index}: ${num}`);
+      console.log(withIndex); // ['0: 1', '1: 2', '2: 3', '3: 4', '4: 5']
+
+  - question: "What is the filter() method in JavaScript and how does it work?"
+    answer: "The filter() method creates a new array containing only elements that pass a test function. It returns a boolean for each element"
+    code_example: |
+      const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      
+      // Filter even numbers
       const evens = numbers.filter(num => num % 2 === 0);
-      console.log(evens); // [2, 4]
+      console.log(evens); // [2, 4, 6, 8, 10]
       
-      // reduce() - accumulate to single value
-      const sum = numbers.reduce((acc, num) => acc + num, 0);
+      // Filter numbers greater than 5
+      const greaterThanFive = numbers.filter(num => num > 5);
+      console.log(greaterThanFive); // [6, 7, 8, 9, 10]
+      
+      // Filter with strings
+      const words = ['apple', 'banana', 'cherry', 'date'];
+      const longWords = words.filter(word => word.length > 5);
+      console.log(longWords); // ['banana', 'cherry']
+      
+      // Filter with objects
+      const products = [
+        { name: 'Laptop', price: 999, inStock: true },
+        { name: 'Phone', price: 599, inStock: false },
+        { name: 'Tablet', price: 399, inStock: true }
+      ];
+      
+      const availableProducts = products.filter(product => product.inStock);
+      console.log(availableProducts); // [Laptop, Tablet objects]
+      
+      const affordableProducts = products.filter(product => product.price < 500);
+      console.log(affordableProducts); // [Phone, Tablet objects]
+      
+      // Filter with index
+      const firstHalf = numbers.filter((num, index) => index < numbers.length / 2);
+      console.log(firstHalf); // [1, 2, 3, 4, 5]
+
+  - question: "What is the reduce() method in JavaScript and how does it work?"
+    answer: "The reduce() method executes a function on each array element to reduce the array to a single value. It takes an accumulator and current value as parameters"
+    code_example: |
+      const numbers = [1, 2, 3, 4, 5];
+      
+      // Basic reduce - sum all numbers
+      const sum = numbers.reduce((accumulator, current) => {
+        console.log(`acc: ${accumulator}, current: ${current}`);
+        return accumulator + current;
+      }, 0); // 0 is the initial value
       console.log(sum); // 15
       
-      // Chaining methods
-      const result = numbers
-        .filter(num => num > 2)
-        .map(num => num * 2)
-        .reduce((acc, num) => acc + num, 0);
-      console.log(result); // 24 (3*2 + 4*2 + 5*2)
+      // Find maximum value
+      const max = numbers.reduce((acc, current) => {
+        return current > acc ? current : acc;
+      });
+      console.log(max); // 5
+      
+      // Count occurrences
+      const letters = ['a', 'b', 'a', 'c', 'b', 'a'];
+      const counts = letters.reduce((acc, letter) => {
+        acc[letter] = (acc[letter] || 0) + 1;
+        return acc;
+      }, {});
+      console.log(counts); // { a: 3, b: 2, c: 1 }
+      
+      // Flatten array
+      const nested = [[1, 2], [3, 4], [5, 6]];
+      const flattened = nested.reduce((acc, current) => {
+        return acc.concat(current);
+      }, []);
+      console.log(flattened); // [1, 2, 3, 4, 5, 6]
+      
+      // Group objects by property
+      const people = [
+        { name: 'Alice', age: 25, city: 'NYC' },
+        { name: 'Bob', age: 30, city: 'LA' },
+        { name: 'Charlie', age: 25, city: 'NYC' }
+      ];
+      
+      const groupedByAge = people.reduce((acc, person) => {
+        const age = person.age;
+        if (!acc[age]) acc[age] = [];
+        acc[age].push(person);
+        return acc;
+      }, {});
+      console.log(groupedByAge); // { 25: [Alice, Charlie], 30: [Bob] }
 
   - question: "What is destructuring in JavaScript?"
     answer: "Destructuring is a syntax that allows you to extract values from arrays or properties from objects into distinct variables"

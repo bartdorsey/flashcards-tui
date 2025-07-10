@@ -124,23 +124,137 @@ flashcards:
       # Clone specific branch
       git clone -b develop https://github.com/user/repo.git
 
-  - question: "How do you work with remote repositories?"
-    answer: "Use 'git remote', 'git push', and 'git pull' to interact with remote repositories"
+  - question: "How do you add and manage remote repositories in Git?"
+    answer: "Use 'git remote' commands to add, list, rename, and remove remote repository connections"
     code_example: |
-      # Add remote repository
+      # Add a remote repository (typically called 'origin')
       git remote add origin https://github.com/user/repo.git
       
-      # List remotes
-      git remote -v
+      # Add additional remotes
+      git remote add upstream https://github.com/original/repo.git
+      git remote add backup https://gitlab.com/user/repo.git
       
-      # Push to remote
+      # List all remotes
+      git remote -v
+      # Output shows:
+      # origin    https://github.com/user/repo.git (fetch)
+      # origin    https://github.com/user/repo.git (push)
+      # upstream  https://github.com/original/repo.git (fetch)
+      
+      # Get detailed info about a remote
+      git remote show origin
+      
+      # Rename a remote
+      git remote rename origin github
+      
+      # Remove a remote
+      git remote remove backup
+      
+      # Change remote URL
+      git remote set-url origin https://github.com/newuser/repo.git
+
+  - question: "How do you push changes to a remote repository?"
+    answer: "Use 'git push' to upload your local commits to a remote repository. Specify the remote name and branch"
+    code_example: |
+      # Basic push to main branch
       git push origin main
       
-      # Pull from remote
+      # Push to a specific branch
+      git push origin feature-branch
+      
+      # Push and set upstream tracking (first time)
+      git push -u origin main
+      # After this, you can just use: git push
+      
+      # Push all branches
+      git push origin --all
+      
+      # Push tags
+      git push origin --tags
+      git push origin v1.0.0  # Push specific tag
+      
+      # Force push (dangerous - overwrites remote history)
+      git push --force origin main
+      git push --force-with-lease origin main  # Safer force push
+      
+      # Push new branch to remote
+      git checkout -b new-feature
+      git push -u origin new-feature
+      
+      # Delete remote branch
+      git push origin --delete old-feature
+
+  - question: "How do you pull changes from a remote repository?"
+    answer: "Use 'git pull' to download and merge changes from a remote repository into your current branch"
+    code_example: |
+      # Basic pull from main branch
       git pull origin main
       
-      # Fetch without merging
+      # Pull from current branch's upstream
+      git pull  # If upstream is set
+      
+      # Pull with rebase instead of merge
+      git pull --rebase origin main
+      
+      # Pull from specific remote and branch
+      git pull upstream main
+      
+      # Pull all branches (fetch + merge for current branch)
+      git pull --all
+      
+      # Example workflow
+      # 1. Check current branch
+      git branch
+      
+      # 2. Pull latest changes
+      git pull origin main
+      
+      # 3. If conflicts occur, resolve them
+      # Edit conflicted files, then:
+      git add .
+      git commit -m "Resolve merge conflicts"
+      
+      # 4. Continue working
+      # Make changes, commit, then push
+      git push origin main
+
+  - question: "What is git fetch and how does it work?"
+    answer: "git fetch downloads changes from remote repository without merging them. It updates your local tracking branches but doesn't modify your working files"
+    code_example: |
+      # Fetch all changes from origin
       git fetch origin
+      
+      # Fetch specific branch
+      git fetch origin main
+      
+      # Fetch from all remotes
+      git fetch --all
+      
+      # See what was fetched
+      git log HEAD..origin/main  # Shows commits that are in origin/main but not in your current branch
+      
+      # After fetch, you can review changes before merging
+      git diff HEAD origin/main  # See differences
+      git show origin/main       # See latest commit from remote
+      
+      # Manually merge after fetch
+      git fetch origin
+      git merge origin/main
+      # This is equivalent to: git pull origin main
+      
+      # Fetch and prune deleted remote branches
+      git fetch --prune origin
+      
+      # Example workflow with fetch
+      # 1. Fetch latest changes
+      git fetch origin
+      
+      # 2. Check what changed
+      git log --oneline HEAD..origin/main
+      
+      # 3. Decide whether to merge or rebase
+      git merge origin/main     # or
+      git rebase origin/main
 
   - question: "How do you undo changes in Git?"
     answer: "Various commands depending on the stage: git checkout, git reset, git revert"

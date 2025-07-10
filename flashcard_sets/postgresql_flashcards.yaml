@@ -64,24 +64,81 @@ flashcards:
       -- Delete all rows (be very careful!)
       DELETE FROM users;
 
-  - question: "What are the basic WHERE clause operators?"
-    answer: "Common operators include =, !=, <, >, <=, >=, LIKE, IN, IS NULL, AND, OR"
+  - question: "What are the basic comparison operators in PostgreSQL WHERE clauses?"
+    answer: "Basic comparison operators are = (equal), != or <> (not equal), < (less than), > (greater than), <= (less or equal), >= (greater or equal)"
     code_example: |
-      -- Equality and comparison
+      -- Equality operators
       SELECT * FROM users WHERE age = 25;
+      SELECT * FROM users WHERE name = 'John';
+      SELECT * FROM users WHERE status != 'inactive';
+      SELECT * FROM users WHERE status <> 'inactive';  -- Same as !=
+      
+      -- Comparison operators
       SELECT * FROM users WHERE age > 21;
+      SELECT * FROM users WHERE age < 65;
+      SELECT * FROM users WHERE salary >= 50000;
+      SELECT * FROM users WHERE score <= 100;
       
-      -- Pattern matching
-      SELECT * FROM users WHERE name LIKE 'John%';
-      SELECT * FROM users WHERE email LIKE '%@gmail.com';
+      -- Date comparisons
+      SELECT * FROM orders WHERE order_date > '2023-01-01';
+      SELECT * FROM employees WHERE hire_date <= '2022-12-31';
       
-      -- Multiple conditions
+      -- Numeric comparisons with BETWEEN
+      SELECT * FROM products WHERE price BETWEEN 10.00 AND 50.00;
+      -- Equivalent to: price >= 10.00 AND price <= 50.00
+
+  - question: "What are pattern matching and logical operators in PostgreSQL WHERE clauses?"
+    answer: "LIKE for pattern matching with wildcards, IN for multiple values, and AND/OR for combining conditions"
+    code_example: |
+      -- Pattern matching with LIKE
+      SELECT * FROM users WHERE name LIKE 'John%';     -- Starts with 'John'
+      SELECT * FROM users WHERE email LIKE '%@gmail.com';  -- Ends with '@gmail.com'
+      SELECT * FROM users WHERE phone LIKE '555-____';     -- 555- followed by 4 characters
+      SELECT * FROM users WHERE name LIKE '%smith%';       -- Contains 'smith'
+      
+      -- Case-insensitive pattern matching
+      SELECT * FROM users WHERE name ILIKE 'JOHN%';    -- Case insensitive
+      
+      -- IN operator for multiple values
+      SELECT * FROM users WHERE city IN ('New York', 'Los Angeles', 'Chicago');
+      SELECT * FROM products WHERE category_id IN (1, 3, 5, 7);
+      SELECT * FROM users WHERE age IN (25, 30, 35);
+      
+      -- NOT IN
+      SELECT * FROM users WHERE status NOT IN ('deleted', 'suspended');
+      
+      -- Logical operators AND/OR
       SELECT * FROM users WHERE age > 18 AND age < 65;
       SELECT * FROM users WHERE name = 'John' OR name = 'Jane';
-      
+      SELECT * FROM products WHERE (price < 20 OR category = 'sale') AND in_stock = true;
+
+  - question: "How do you check for NULL values in PostgreSQL WHERE clauses?"
+    answer: "Use IS NULL to check for null values and IS NOT NULL to check for non-null values. Never use = or != with NULL"
+    code_example: |
       -- Check for NULL values
       SELECT * FROM users WHERE email IS NULL;
+      SELECT * FROM users WHERE phone IS NULL;
+      SELECT * FROM orders WHERE shipped_date IS NULL;  -- Unshipped orders
+      
+      -- Check for NOT NULL values
       SELECT * FROM users WHERE email IS NOT NULL;
+      SELECT * FROM products WHERE description IS NOT NULL;
+      
+      -- WRONG way (doesn't work with NULL)
+      -- SELECT * FROM users WHERE email = NULL;     -- This won't work!
+      -- SELECT * FROM users WHERE email != NULL;    -- This won't work!
+      
+      -- Combine NULL checks with other conditions
+      SELECT * FROM users WHERE email IS NOT NULL AND age > 18;
+      SELECT * FROM users WHERE (phone IS NULL OR email IS NULL);
+      
+      -- COALESCE to handle NULLs in results
+      SELECT name, COALESCE(email, 'No email') as email_display 
+      FROM users WHERE age > 25;
+      
+      -- NULLIF function
+      SELECT name, NULLIF(status, '') as clean_status 
+      FROM users;  -- Convert empty strings to NULL
 
   - question: "How do you use LIMIT and OFFSET for pagination?"
     answer: "LIMIT restricts the number of rows returned, OFFSET skips a specified number of rows"
@@ -140,18 +197,112 @@ flashcards:
       FROM users
       LEFT JOIN orders ON users.id = orders.user_id;
 
-  - question: "What are common data types in PostgreSQL?"
-    answer: "Common types include INTEGER, VARCHAR, TEXT, BOOLEAN, DATE, TIMESTAMP, DECIMAL, SERIAL"
+  - question: "What are the numeric data types in PostgreSQL?"
+    answer: "Numeric types include INTEGER, BIGINT, SMALLINT, DECIMAL/NUMERIC, REAL, and SERIAL for auto-incrementing values"
+    code_example: |
+      CREATE TABLE financial_data (
+        id SERIAL PRIMARY KEY,              -- Auto-incrementing integer (1, 2, 3...)
+        user_id INTEGER NOT NULL,           -- Standard 4-byte integer (-2B to +2B)
+        account_id BIGINT,                  -- 8-byte integer for very large numbers
+        score SMALLINT,                     -- 2-byte integer (-32K to +32K)
+        balance DECIMAL(15,2),              -- Exact decimal: 15 digits, 2 after decimal
+        interest_rate NUMERIC(5,4),         -- Exact: 5 digits total, 4 after decimal
+        avg_score REAL,                     -- 4-byte floating point (approximate)
+        computed_value DOUBLE PRECISION     -- 8-byte floating point (approximate)
+      );
+      
+      -- Examples of numeric operations
+      INSERT INTO financial_data (user_id, balance, interest_rate) 
+      VALUES (1, 1234.56, 0.0425);
+      
+      -- SERIAL automatically increments
+      INSERT INTO financial_data (user_id, balance) 
+      VALUES (2, 5000.00);  -- id will be auto-assigned
+
+  - question: "What are the text data types in PostgreSQL?"
+    answer: "Text types include VARCHAR(n) for limited length, TEXT for unlimited length, and CHAR(n) for fixed-length strings"
+    code_example: |
+      CREATE TABLE user_profiles (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(50) NOT NULL,      -- Variable length, max 50 chars
+        email VARCHAR(255) UNIQUE,          -- Variable length, max 255 chars
+        bio TEXT,                           -- Unlimited length text
+        country_code CHAR(2),               -- Fixed 2 characters (US, CA, etc.)
+        status_code CHAR(1) DEFAULT 'A'     -- Fixed 1 character (A, I, D)
+      );
+      
+      -- TEXT vs VARCHAR examples
+      INSERT INTO user_profiles (username, email, bio, country_code) 
+      VALUES 
+        ('alice', 'alice@example.com', 'I love programming and coffee!', 'US'),
+        ('bob', 'bob@test.com', 'Software engineer with 10+ years experience building web applications...', 'CA');
+      
+      -- CHAR pads with spaces if needed
+      INSERT INTO user_profiles (username, email, country_code) 
+      VALUES ('charlie', 'charlie@example.com', 'UK');  -- country_code stored as 'UK'
+
+  - question: "What are the date and time data types in PostgreSQL?"
+    answer: "Date/time types include DATE for dates only, TIME for time only, TIMESTAMP for date+time, and TIMESTAMPTZ for timezone-aware timestamps"
+    code_example: |
+      CREATE TABLE events (
+        id SERIAL PRIMARY KEY,
+        event_name VARCHAR(100),
+        event_date DATE,                    -- Date only: 2023-12-25
+        start_time TIME,                    -- Time only: 14:30:00
+        created_at TIMESTAMP,               -- Date and time: 2023-12-25 14:30:00
+        updated_at TIMESTAMPTZ,             -- Date, time + timezone
+        duration INTERVAL                   -- Time span: 2 hours 30 minutes
+      );
+      
+      -- Inserting date/time data
+      INSERT INTO events (event_name, event_date, start_time, created_at, updated_at, duration)
+      VALUES 
+        ('Conference', '2023-12-25', '09:00:00', '2023-12-01 10:30:00', 
+         '2023-12-01 10:30:00-05', '8 hours'),
+        ('Meeting', CURRENT_DATE, CURRENT_TIME, NOW(), NOW(), '1 hour 30 minutes');
+      
+      -- Date/time functions
+      SELECT 
+        event_name,
+        event_date,
+        EXTRACT(YEAR FROM event_date) as event_year,
+        AGE(event_date, CURRENT_DATE) as days_until,
+        created_at + INTERVAL '1 day' as tomorrow
+      FROM events;
+
+  - question: "What are boolean, serial, and other special data types in PostgreSQL?"
+    answer: "Boolean stores TRUE/FALSE, SERIAL creates auto-incrementing integers, and PostgreSQL also supports JSON, UUID, and array types"
     code_example: |
       CREATE TABLE products (
-        id SERIAL PRIMARY KEY,           -- Auto-incrementing integer
-        name VARCHAR(255) NOT NULL,      -- Variable-length string
-        description TEXT,                -- Unlimited text
-        price DECIMAL(10,2),            -- Decimal with 2 decimal places
-        in_stock BOOLEAN DEFAULT true,   -- True/false value
-        created_date DATE,              -- Date only
-        updated_at TIMESTAMP            -- Date and time
+        id SERIAL PRIMARY KEY,              -- Auto-incrementing primary key
+        uuid UUID DEFAULT gen_random_uuid(), -- Unique identifier
+        name VARCHAR(100) NOT NULL,
+        is_active BOOLEAN DEFAULT TRUE,     -- TRUE, FALSE, or NULL
+        is_featured BOOLEAN,
+        tags TEXT[],                        -- Array of text values
+        metadata JSON,                      -- JSON data
+        config JSONB                        -- Binary JSON (faster queries)
       );
+      
+      -- Boolean examples
+      INSERT INTO products (name, is_active, is_featured, tags, metadata, config)
+      VALUES 
+        ('Laptop', TRUE, FALSE, 
+         ARRAY['electronics', 'computers', 'portable'],
+         '{"brand": "Dell", "model": "XPS13"}',
+         '{"warranty": "2 years", "color": "silver"}'),
+        ('Phone', 't', 'f',  -- 't' and 'f' are valid boolean inputs
+         '{"smartphone", "mobile"}',  -- Alternative array syntax
+         '{"brand": "iPhone", "storage": "256GB"}',
+         '{"carrier": "unlocked"}');
+      
+      -- Querying special types
+      SELECT name, is_active, 
+             'electronics' = ANY(tags) as is_electronic,
+             metadata->>'brand' as brand,
+             config->'warranty' as warranty_info
+      FROM products 
+      WHERE is_active = TRUE;
 
   - question: "How do you add constraints to table columns?"
     answer: "Use constraints like PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL, CHECK, DEFAULT"
