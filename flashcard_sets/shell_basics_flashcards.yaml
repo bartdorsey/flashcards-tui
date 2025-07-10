@@ -332,3 +332,206 @@ flashcards:
 
       # Run command only if condition is true
       [ -f file.txt ] && echo "File exists"
+
+  - question: "What is a shell?"
+    answer: "A shell is a command-line interface that interprets and executes user commands, acting as an intermediary between the user and the operating system"
+    code_example: |
+      # Common shells include:
+      # bash (Bourne Again Shell)
+      # zsh (Z Shell)
+      # sh (Bourne Shell)
+      # fish (Friendly Interactive Shell)
+      
+      # Check current shell
+      echo $SHELL
+      
+      # Check available shells
+      cat /etc/shells
+
+  - question: "What is a terminal and how does it differ from a shell?"
+    answer: "A terminal is the program that provides the window/interface, while the shell is the command interpreter running inside it"
+    code_example: |
+      # Terminal examples:
+      # - GNOME Terminal
+      # - iTerm2
+      # - Windows Terminal
+      # - xterm
+      
+      # The terminal displays text and captures input
+      # The shell processes the commands you type
+
+  - question: "What is the difference between absolute and relative paths?"
+    answer: "Absolute paths start from root (/) and specify complete location, while relative paths start from current directory"
+    code_example: |
+      # Absolute path (starts with /)
+      /home/user/documents/file.txt
+      /usr/bin/python
+      /etc/passwd
+      
+      # Relative path (relative to current directory)
+      documents/file.txt
+      ../parent_directory/file.txt
+      ./current_directory/file.txt
+
+  - question: "What do the special directory symbols . and .. mean?"
+    answer: "A single dot (.) represents the current directory, while double dots (..) represent the parent directory"
+    code_example: |
+      # Current directory
+      ls .
+      cp file.txt .
+      
+      # Parent directory
+      cd ..
+      ls ../other_directory
+      
+      # Commonly used in paths
+      ./script.sh        # Run script in current directory
+      ../config/app.conf # File in parent's config directory
+
+  - question: "What is the home directory and how do you reference it?"
+    answer: "The home directory is your personal directory, referenced by ~ (tilde) or the $HOME environment variable"
+    code_example: |
+      # Reference home directory
+      cd ~
+      cd $HOME
+      
+      # Home directory shortcuts
+      ~/documents        # Your documents folder
+      ~/Desktop         # Your desktop folder
+      
+      # Other users' home directories
+      ~username/documents
+
+  - question: "What are file permissions and what do rwx mean?"
+    answer: "File permissions control access to files. r=read, w=write, x=execute. They apply to owner, group, and others"
+    code_example: |
+      # Permission display: -rwxr-xr--
+      # First character: file type (- = file, d = directory)
+      # Next 3: owner permissions (rwx)
+      # Next 3: group permissions (r-x)
+      # Last 3: other permissions (r--)
+      
+      # Permission values:
+      # r (read) = 4
+      # w (write) = 2
+      # x (execute) = 1
+
+  - question: "What is a process and what is a PID?"
+    answer: "A process is a running program. PID (Process ID) is a unique number assigned to each running process"
+    code_example: |
+      # Every running program is a process
+      # Each process has a unique PID
+      
+      # View processes and their PIDs
+      ps aux
+      
+      # Example output:
+      # USER  PID  %CPU %MEM COMMAND
+      # user  1234  0.1  0.5 /bin/bash
+      # user  5678  2.0  1.2 python script.py
+
+  - question: "What are standard input, output, and error streams?"
+    answer: "stdin (input), stdout (output), and stderr (error) are the three standard data streams for program communication"
+    code_example: |
+      # stdin (0): where programs read input
+      # stdout (1): where programs write normal output
+      # stderr (2): where programs write error messages
+      
+      # Redirect streams:
+      command > output.txt     # stdout to file
+      command 2> error.txt     # stderr to file
+      command < input.txt      # stdin from file
+      command &> all.txt       # both stdout and stderr
+
+  - question: "What is an environment variable?"
+    answer: "Environment variables are named values that affect how programs run and behave in the shell environment"
+    code_example: |
+      # Common environment variables:
+      echo $PATH     # Where shell looks for commands
+      echo $HOME     # Your home directory
+      echo $USER     # Your username
+      echo $PWD      # Current working directory
+      
+      # Set environment variable
+      export MY_VAR="value"
+
+  - question: "What is the PATH variable and why is it important?"
+    answer: "PATH is an environment variable that tells the shell where to look for executable commands and programs"
+    code_example: |
+      # View current PATH
+      echo $PATH
+      
+      # PATH contains directories separated by colons:
+      # /usr/bin:/bin:/usr/local/bin
+      
+      # Add directory to PATH
+      export PATH=$PATH:/new/directory
+      
+      # When you type 'ls', shell searches PATH directories
+
+  - question: "What is a command line argument?"
+    answer: "Command line arguments are additional information passed to a command, including options (flags) and parameters"
+    code_example: |
+      # Structure: command [options] [arguments]
+      ls -la /home/user
+      #  ^^^^ ^^^^^^^^^^
+      # options arguments
+      
+      # Options usually start with - or --
+      ls -l          # Short option
+      ls --long      # Long option
+      ls -la         # Multiple short options
+
+  - question: "What is a wildcard or glob pattern?"
+    answer: "Wildcards are special characters that match multiple filenames or text patterns in shell commands"
+    code_example: |
+      # Common wildcards:
+      *       # Matches any number of characters
+      ?       # Matches exactly one character
+      [abc]   # Matches any one of a, b, or c
+      [a-z]   # Matches any lowercase letter
+      [0-9]   # Matches any digit
+      
+      # Examples:
+      *.txt      # All files ending in .txt
+      file?.log  # file1.log, fileA.log, etc.
+
+  - question: "What is piping and how does it work?"
+    answer: "Piping connects the output of one command to the input of another command using the | (pipe) symbol"
+    code_example: |
+      # Basic pipe: command1 | command2
+      # Output of command1 becomes input of command2
+      
+      ls | grep ".txt"          # List files, filter for .txt
+      cat file.txt | sort       # Show file content, then sort
+      ps aux | grep "python"    # List processes, find python ones
+      
+      # Chain multiple pipes
+      cat data.txt | sort | uniq | wc -l
+
+  - question: "What is redirection in the shell?"
+    answer: "Redirection changes where a command's input comes from or where its output goes, using symbols like >, <, and >>"
+    code_example: |
+      # Output redirection:
+      > file.txt    # Redirect stdout to file (overwrite)
+      >> file.txt   # Redirect stdout to file (append)
+      2> error.txt  # Redirect stderr to file
+      
+      # Input redirection:
+      < file.txt    # Read input from file
+      
+      # Combined:
+      command < input.txt > output.txt
+
+  - question: "What is a command prompt and what information does it typically show?"
+    answer: "A command prompt is the text that appears before your cursor, showing information like username, hostname, and current directory"
+    code_example: |
+      # Common prompt formats:
+      user@hostname:~$           # username@computer:directory$
+      [user@hostname ~]$         # [username@hostname directory]$
+      user:/home/user$           # username:full_path$
+      
+      # Prompt symbols:
+      $    # Regular user
+      #    # Root/administrator user
+      %    # Often used in zsh
