@@ -112,9 +112,9 @@ def _display_code_with_expansion(console: Console, card: FlashCard) -> None:
         syntax = Syntax(
             code,
             "python",
-            theme="default",
+            theme="catppuccin-mocha",
             line_numbers=True,
-            background_color="default",
+            background_color="#1e1e2e",
         )
         code_panel = Panel(
             syntax,
@@ -145,9 +145,9 @@ def _show_truncated_code(
     syntax = Syntax(
         truncated_code,
         "python",
-        theme="default",
+        theme="catppuccin-mocha",
         line_numbers=True,
-        background_color="default",
+        background_color="#1e1e2e",
     )
     code_panel = Panel(
         syntax,
@@ -173,9 +173,9 @@ def _show_full_code(console: Console, card: FlashCard) -> None:
     syntax = Syntax(
         card.code_example or "",
         "python",
-        theme="default",
+        theme="catppuccin-mocha",
         line_numbers=True,
-        background_color="default",
+        background_color="#1e1e2e",
     )
     code_panel = Panel(
         syntax,

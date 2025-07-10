@@ -1,3 +1,4 @@
+catppuccin[pygments]==2.4.1
 iniconfig==2.1.0
 markdown-it-py==3.0.0
 mdurl==0.1.2
