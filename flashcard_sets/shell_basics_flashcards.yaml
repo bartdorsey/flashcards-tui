@@ -1,0 +1,334 @@
+title: "Shell Basics"
+icon: "💻"
+flashcards:
+  - question: "How do you navigate the file system in the shell?"
+    answer: "Use pwd to show current directory, cd to change directories, and ls to list directory contents"
+    code_example: |
+      # Show current directory
+      pwd
+
+      # Change to home directory
+      cd ~
+      cd
+
+      # Change to parent directory
+      cd ..
+
+      # Change to previous directory
+      cd -
+
+      # Change to specific directory
+      cd /path/to/directory
+
+  - question: "How do you list files and directories?"
+    answer: "Use ls with various options to display files and directories with different levels of detail"
+    code_example: |
+      # List files in current directory
+      ls
+
+      # List with details (permissions, size, date)
+      ls -l
+
+      # List all files including hidden ones
+      ls -a
+
+      # List with details and hidden files
+      ls -la
+
+      # List files in another directory
+      ls /path/to/directory
+
+      # List with human-readable file sizes
+      ls -lh
+
+  - question: "How do you create and remove directories?"
+    answer: "Use mkdir to create directories and rmdir or rm -r to remove them"
+    code_example: |
+      # Create a single directory
+      mkdir new_directory
+
+      # Create nested directories
+      mkdir -p path/to/new/directory
+
+      # Create multiple directories
+      mkdir dir1 dir2 dir3
+
+      # Remove empty directory
+      rmdir empty_directory
+
+      # Remove directory and all contents (be careful!)
+      rm -r directory_name
+
+      # Remove directory with confirmation
+      rm -ri directory_name
+
+  - question: "How do you create, view, and delete files?"
+    answer: "Use touch to create empty files, cat/less/more to view files, and rm to delete files"
+    code_example: |
+      # Create empty file
+      touch newfile.txt
+
+      # Create multiple files
+      touch file1.txt file2.txt file3.txt
+
+      # View entire file content
+      cat filename.txt
+
+      # View file with pagination
+      less filename.txt
+      more filename.txt
+
+      # Delete a file
+      rm filename.txt
+
+      # Delete multiple files
+      rm file1.txt file2.txt
+
+      # Delete with confirmation
+      rm -i filename.txt
+
+  - question: "How do you copy and move files and directories?"
+    answer: "Use cp to copy files/directories and mv to move or rename them"
+    code_example: |
+      # Copy a file
+      cp source.txt destination.txt
+
+      # Copy file to another directory
+      cp file.txt /path/to/directory/
+
+      # Copy directory and all contents
+      cp -r source_directory destination_directory
+
+      # Move/rename a file
+      mv oldname.txt newname.txt
+
+      # Move file to another directory
+      mv file.txt /path/to/directory/
+
+      # Move directory
+      mv old_directory new_directory
+
+  - question: "How do you search for files and text?"
+    answer: "Use find to search for files by name/type and grep to search for text within files"
+    code_example: |
+      # Find files by name
+      find . -name "*.txt"
+      find /path -name "filename"
+
+      # Find directories
+      find . -type d -name "dirname"
+
+      # Search for text in files
+      grep "search_term" filename.txt
+
+      # Search recursively in all files
+      grep -r "search_term" .
+
+      # Search case-insensitive
+      grep -i "Search_Term" filename.txt
+
+      # Search and show line numbers
+      grep -n "search_term" filename.txt
+
+  - question: "How do you use wildcards and patterns?"
+    answer: "Use * for any characters, ? for single character, and [] for character ranges in file operations"
+    code_example: |
+      # List all .txt files
+      ls *.txt
+
+      # List files starting with 'data'
+      ls data*
+
+      # Single character wildcard
+      ls file?.txt
+
+      # Character range
+      ls file[1-5].txt
+      ls file[abc].txt
+
+      # Copy all .log files
+      cp *.log backup/
+
+      # Remove all temporary files
+      rm *~
+
+  - question: "How do you view and edit file permissions?"
+    answer: "Use ls -l to view permissions and chmod to change them using numeric or symbolic notation"
+    code_example: |
+      # View file permissions
+      ls -l filename.txt
+
+      # Change permissions using numbers (rwx = 421)
+      chmod 755 script.sh    # rwxr-xr-x
+      chmod 644 file.txt     # rw-r--r--
+      chmod 600 private.txt  # rw-------
+
+      # Change permissions using symbols
+      chmod +x script.sh     # Add execute permission
+      chmod -w file.txt      # Remove write permission
+      chmod u+x,g-w file.txt # User add execute, group remove write
+
+  - question: "How do you redirect input and output?"
+    answer: "Use > to redirect output to file, >> to append, < for input, and | to pipe between commands"
+    code_example: |
+      # Redirect output to file (overwrites)
+      ls > filelist.txt
+      echo "Hello" > greeting.txt
+
+      # Append output to file
+      echo "World" >> greeting.txt
+      ls >> filelist.txt
+
+      # Redirect input from file
+      sort < unsorted.txt
+
+      # Pipe output to another command
+      ls | grep ".txt"
+      cat file.txt | sort | uniq
+
+      # Redirect errors
+      command 2> error.log
+
+  - question: "How do you view command history and get help?"
+    answer: "Use history to see past commands, man for manual pages, and --help for quick command help"
+    code_example: |
+      # View command history
+      history
+
+      # Re-run previous command
+      !!
+
+      # Re-run command from history by number
+      !123
+
+      # Search command history
+      history | grep "search_term"
+
+      # Get help for commands
+      man ls
+      ls --help
+      help cd    # For built-in commands
+
+  - question: "How do you manage processes and jobs?"
+    answer: "Use ps to list processes, kill to terminate them, and & to run commands in background"
+    code_example: |
+      # List running processes
+      ps
+      ps aux
+
+      # Kill a process by PID
+      kill 1234
+      kill -9 1234  # Force kill
+
+      # Run command in background
+      long_command &
+
+      # List background jobs
+      jobs
+
+      # Bring job to foreground
+      fg %1
+
+      # Send job to background
+      bg %1
+
+  - question: "How do you work with environment variables?"
+    answer: "Use echo to display variables, export to set them, and env to list all environment variables"
+    code_example: |
+      # Display variable value
+      echo $HOME
+      echo $PATH
+      echo $USER
+
+      # Set a variable (current session only)
+      MY_VAR="hello"
+      echo $MY_VAR
+
+      # Export variable (available to child processes)
+      export MY_VAR="hello"
+
+      # List all environment variables
+      env
+      printenv
+
+  - question: "How do you compress and archive files?"
+    answer: "Use tar for creating archives and gzip/gunzip for compression, often combined as tar.gz"
+    code_example: |
+      # Create tar archive
+      tar -cf archive.tar file1 file2 directory/
+
+      # Create compressed tar archive
+      tar -czf archive.tar.gz file1 file2 directory/
+
+      # Extract tar archive
+      tar -xf archive.tar
+      tar -xzf archive.tar.gz
+
+      # List contents of archive
+      tar -tf archive.tar
+
+      # Compress single file
+      gzip file.txt        # Creates file.txt.gz
+      gunzip file.txt.gz   # Extracts back to file.txt
+
+  - question: "How do you check disk usage and system information?"
+    answer: "Use df to check disk space, du for directory sizes, and various commands for system info"
+    code_example: |
+      # Check disk space
+      df -h
+
+      # Check directory size
+      du -h directory/
+      du -sh directory/  # Summary only
+
+      # Check current directory size
+      du -sh .
+
+      # Show system uptime
+      uptime
+
+      # Show current date and time
+      date
+
+      # Show who is logged in
+      who
+      w
+
+  - question: "How do you use basic text processing commands?"
+    answer: "Use head/tail for file parts, sort for ordering, uniq for duplicates, and wc for counting"
+    code_example: |
+      # Show first/last lines of file
+      head filename.txt
+      tail filename.txt
+      head -5 filename.txt  # First 5 lines
+      tail -10 filename.txt # Last 10 lines
+
+      # Sort file contents
+      sort filename.txt
+      sort -r filename.txt  # Reverse order
+
+      # Remove duplicate lines (requires sorted input)
+      sort filename.txt | uniq
+
+      # Count lines, words, characters
+      wc filename.txt
+      wc -l filename.txt  # Lines only
+      wc -w filename.txt  # Words only
+
+  - question: "How do you control command execution and combine commands?"
+    answer: "Use && for conditional execution, || for alternatives, ; for sequential commands, and () for grouping"
+    code_example: |
+      # Run second command only if first succeeds
+      mkdir newdir && cd newdir
+
+      # Run second command only if first fails
+      ls nonexistent || echo "File not found"
+
+      # Run commands sequentially regardless of success
+      command1; command2; command3
+
+      # Group commands
+      (cd /tmp && ls && pwd)
+
+      # Run command only if condition is true
+      [ -f file.txt ] && echo "File exists"
