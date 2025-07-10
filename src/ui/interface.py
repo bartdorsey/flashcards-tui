@@ -77,7 +77,7 @@ def display_code_example(console: Console, card: FlashCard) -> None:
     """Display code example if available."""
     if card.code_example:
         console.print()
-        _display_code_with_expansion(console, card.code_example)
+        _display_code_with_expansion(console, card)
 
 
 def _calculate_max_code_lines(console: Console) -> int:
@@ -100,8 +100,9 @@ def _calculate_max_code_lines(console: Console) -> int:
     return max(6, min(available_lines, 30))
 
 
-def _display_code_with_expansion(console: Console, code: str) -> None:
+def _display_code_with_expansion(console: Console, card: FlashCard) -> None:
     """Display code with truncation and expansion option."""
+    code = card.code_example
     lines = code.split("\n")
     max_lines = _calculate_max_code_lines(console)
 
@@ -124,11 +125,11 @@ def _display_code_with_expansion(console: Console, code: str) -> None:
         console.print(code_panel)
     else:
         # Long code - show truncated version first
-        _show_truncated_code(console, code, lines, max_lines)
+        _show_truncated_code(console, card, lines, max_lines)
 
 
 def _show_truncated_code(
-    console: Console, full_code: str, lines: list[str], max_lines: int
+    console: Console, card: FlashCard, lines: list[str], max_lines: int
 ) -> None:
     """Show truncated code with expansion options."""
     truncated_lines = lines[:max_lines]
@@ -161,15 +162,15 @@ def _show_truncated_code(
     key = _get_arrow_key_input()
     
     if key.lower() == "e":
-        _show_full_code(console, full_code)
+        _show_full_code(console, card)
 
 
-def _show_full_code(console: Console, code: str) -> None:
+def _show_full_code(console: Console, card: FlashCard) -> None:
     """Show full code with collapse option."""
     console.clear()
 
     syntax = Syntax(
-        code,
+        card.code_example or "",
         "python",
         theme="default",
         line_numbers=True,
@@ -188,9 +189,24 @@ def _show_full_code(console: Console, code: str) -> None:
     key = _get_arrow_key_input()
 
     if key.lower() == "c":
-        console.clear()
-        # Note: In practice, we'd need to re-display the question/answer context
-        # For now, just continue - the main flow will handle redisplay
+        # Redraw the original flashcard screen with collapsed code
+        _redraw_flashcard_with_collapsed_code(console, card)
+
+
+def _redraw_flashcard_with_collapsed_code(console: Console, card: FlashCard) -> None:
+    """Redraw the flashcard screen with question, answer, and collapsed code."""
+    console.clear()
+    
+    # Redraw question
+    display_question(console, card)
+    
+    # Redraw answer  
+    display_answer(console, card)
+    
+    # Redraw code example in collapsed form
+    if card.code_example:
+        console.print()
+        _display_code_with_expansion(console, card)
 
 
 def _create_menu_display(
