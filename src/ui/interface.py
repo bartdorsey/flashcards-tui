@@ -82,8 +82,37 @@ def display_code_example(console: Console, card: FlashCard) -> None:
     """Display code example if available."""
     if card.code_example:
         console.print()
+        _display_code_with_expansion(console, card.code_example)
+
+
+def _calculate_max_code_lines(console: Console) -> int:
+    """Calculate maximum code lines based on terminal height."""
+    terminal_height = console.size.height
+    
+    # Reserve space for UI elements:
+    # - Question panel: ~6 lines (title, borders, padding, content)
+    # - Answer panel: ~6 lines (title, borders, padding, content) 
+    # - Progress display: ~2 lines
+    # - Prompts and spacing: ~6 lines
+    # - Code panel borders/title: ~4 lines
+    # - Breathing room: ~3 lines
+    reserved_lines = 27
+    
+    available_lines = terminal_height - reserved_lines
+    
+    # Set reasonable bounds: minimum 8 lines, maximum 30 lines
+    return max(8, min(available_lines, 30))
+
+
+def _display_code_with_expansion(console: Console, code: str) -> None:
+    """Display code with truncation and expansion option."""
+    lines = code.split("\n")
+    max_lines = _calculate_max_code_lines(console)
+
+    if len(lines) <= max_lines:
+        # Short code - display normally
         syntax = Syntax(
-            card.code_example,
+            code,
             "python",
             theme="monokai",
             line_numbers=True,
@@ -97,6 +126,83 @@ def display_code_example(console: Console, card: FlashCard) -> None:
             width=80,
         )
         console.print(code_panel)
+    else:
+        # Long code - show truncated version first
+        _show_truncated_code(console, code, lines, max_lines)
+
+
+def _show_truncated_code(
+    console: Console, full_code: str, lines: list[str], max_lines: int
+) -> None:
+    """Show truncated code with expansion options."""
+    truncated_lines = lines[:max_lines]
+    truncated_code = "\n".join(truncated_lines)
+    remaining_lines = len(lines) - max_lines
+
+    # Add truncation indicator
+    truncated_code += (
+        f"\n\n# ... {remaining_lines} more lines - press 'e' to expand"
+    )
+
+    syntax = Syntax(
+        truncated_code,
+        "python",
+        theme="monokai",
+        line_numbers=True,
+        background_color="default",
+    )
+    code_panel = Panel(
+        syntax,
+        title="💻 Code Example (Truncated)",
+        border_style="cyan",
+        padding=(1, 2),
+        width=80,
+    )
+    console.print(code_panel)
+
+    # Ask user if they want to expand
+    choice = Prompt.ask(
+        "[dim]Press 'e' to expand full code, or Enter to continue[/dim]",
+        choices=["e", ""],
+        default="",
+        show_choices=False,
+    )
+
+    if choice.lower() == "e":
+        _show_full_code(console, full_code)
+
+
+def _show_full_code(console: Console, code: str) -> None:
+    """Show full code with collapse option."""
+    console.clear()
+
+    syntax = Syntax(
+        code,
+        "python",
+        theme="monokai",
+        line_numbers=True,
+        background_color="default",
+    )
+    code_panel = Panel(
+        syntax,
+        title="💻 Code Example (Full)",
+        border_style="cyan",
+        padding=(1, 2),
+        width=80,
+    )
+    console.print(code_panel)
+
+    choice = Prompt.ask(
+        "[dim]Press 'c' to collapse, or Enter to continue[/dim]",
+        choices=["c", ""],
+        default="",
+        show_choices=False,
+    )
+
+    if choice.lower() == "c":
+        console.clear()
+        # Note: In practice, we'd need to re-display the question/answer context
+        # For now, just continue - the main flow will handle redisplay
 
 
 def get_user_response(console: Console) -> str:
