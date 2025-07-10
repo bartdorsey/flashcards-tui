@@ -1,4 +1,5 @@
-title: "🚀 Python Advanced"
+title: "Python Advanced"
+icon: "🚀"
 flashcards:
   - question: "What are Python comprehensions and how do you use them?"
     answer: "Comprehensions provide concise syntax for creating lists, dictionaries, and sets. They combine iteration, optional filtering, and transformation into a single readable expression"

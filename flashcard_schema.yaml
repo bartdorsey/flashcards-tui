@@ -12,13 +12,23 @@ required:
 properties:
   title:
     type: string
-    description: "Custom display title for the flashcard set (with optional emoji)"
+    description: "Display title for the flashcard set (without emoji)"
     minLength: 1
     maxLength: 100
     examples:
-      - "🐍 Python Basics"
-      - "🔧 Git Basics" 
-      - "📚 Programming Terminology"
+      - "Python Basics"
+      - "Git Basics" 
+      - "Programming Terminology"
+  
+  icon:
+    type: string
+    description: "Optional emoji icon to display with the title"
+    pattern: "^[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]$"
+    examples:
+      - "🐍"
+      - "🔧" 
+      - "📚"
+      - "⭐"
   
   flashcards:
     type: array
@@ -68,7 +78,8 @@ additionalProperties: false
 
 # Examples of valid flashcard sets
 examples:
-  - title: "🐍 Python Basics"
+  - title: "Python Basics"
+    icon: "🐍"
     flashcards:
       - question: "What is a Python list?"
         answer: "A mutable sequence type that can hold multiple items in order"
@@ -86,7 +97,8 @@ examples:
           print(person["name"])  # "Alice"
           person["city"] = "New York"
   
-  - title: "🔧 Git Basics"
+  - title: "Git Basics"
+    icon: "🔧"
     flashcards:
       - question: "How do you check Git status?"
         answer: "Use 'git status' to see which files are tracked, modified, or staged"

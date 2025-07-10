@@ -1,4 +1,5 @@
-title: "📚 Programming Terminology"
+title: "Programming Terminology"
+icon: "📚"
 flashcards:
   - question: "What is an algorithm?"
     answer: "A step-by-step set of instructions or rules designed to solve a specific problem or perform a particular task"

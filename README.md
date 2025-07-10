@@ -86,7 +86,8 @@ The application comes with several pre-made flashcard sets:
 Create YAML files in the `flashcard_sets/` directory:
 
 ```yaml
-title: "🎯 My Custom Set"
+title: "My Custom Set"
+icon: "🎯"
 flashcards:
   - question: "What is your question?"
     answer: "This is the answer explanation."
@@ -105,10 +106,12 @@ flashcards:
 - Use `.yaml` or `.yml` extensions
 - Files are automatically discovered and displayed in the menu
 
-### Custom Titles
+### Custom Titles and Icons
 
-- Add a `title` field with emoji and descriptive text
+- Add a `title` field with descriptive text for your flashcard set
+- Add an optional `icon` field with an emoji to display alongside the title
 - If no title is provided, the filename will be used (formatted)
+- Icons help visually distinguish different subject areas
 
 ### Schema Validation
 

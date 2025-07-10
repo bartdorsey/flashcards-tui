@@ -1,4 +1,5 @@
-title: "🔥 JavaScript Advanced"
+title: "JavaScript Advanced"
+icon: "🔥"
 flashcards:
   - question: "What is a JavaScript closure?"
     answer: "A closure is a function that has access to variables in its outer (enclosing) scope even after the outer function has returned"

@@ -1,4 +1,5 @@
-title: "🔧 Git Basics"
+title: "Git Basics"
+icon: "🔧"
 flashcards:
   - question: "What is Git?"
     answer: "A distributed version control system that tracks changes in source code during software development"

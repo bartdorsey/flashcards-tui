@@ -1,4 +1,5 @@
-title: "⭐ JavaScript Basics"
+title: "JavaScript Basics"
+icon: "⭐"
 flashcards:
   - question: "What is the difference between let, const, and var in JavaScript?"
     answer: "var is function-scoped and can be redeclared; let is block-scoped and can be reassigned; const is block-scoped and cannot be reassigned"

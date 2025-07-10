@@ -1,4 +1,5 @@
-title: "🐍 Python Basics"
+title: "Python Basics"
+icon: "🐍"
 flashcards:
   - question: "What is the difference between mutable and immutable objects in Python?"
     answer: "Mutable objects can be changed after creation (lists, dicts, sets), while immutable objects cannot be changed (strings, tuples, integers)"

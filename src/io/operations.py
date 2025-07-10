@@ -165,26 +165,33 @@ def discover_flashcard_sets(
                 with open(file_path, "r") as f:
                     data = yaml.safe_load(f)
 
-                # Use custom title if available, otherwise fallback to filename
+                # Use custom title and icon if available, otherwise fallback to filename
                 if data and "title" in data:
-                    display_name = data["title"]
+                    title = data["title"]
+                    icon = data.get("icon", "")
+                    display_name = f"{icon} {title}".strip() if icon else title
+                    sort_key = title  # Sort by title only, ignoring icon
                 else:
                     display_name = filename.replace(".yaml", "").replace(
                         ".yml", ""
                     )
                     display_name = display_name.replace("_", " ").title()
+                    sort_key = display_name
             except Exception:
                 # If file can't be read, use filename as fallback
                 display_name = filename.replace(".yaml", "").replace(
                     ".yml", ""
                 )
                 display_name = display_name.replace("_", " ").title()
+                sort_key = display_name
 
-            flashcard_sets.append((display_name, file_path))
+            flashcard_sets.append((display_name, file_path, sort_key))
 
-    # Sort by display name
-    flashcard_sets.sort(key=lambda x: x[0])
-    return flashcard_sets
+    # Sort by title alphabetically (ignoring icons)
+    flashcard_sets.sort(key=lambda x: x[2].lower())
+    
+    # Return only display_name and file_path (remove sort_key)
+    return [(display_name, file_path) for display_name, file_path, _ in flashcard_sets]
 
 
 def get_set_display_name(set_name: str) -> str:
@@ -203,7 +210,9 @@ def get_set_display_name(set_name: str) -> str:
                             data = yaml.safe_load(f)
 
                         if data and "title" in data:
-                            return data["title"]
+                            title = data["title"]
+                            icon = data.get("icon", "")
+                            return f"{icon} {title}".strip() if icon else title
                     except Exception:
                         pass
 
