@@ -13,6 +13,7 @@ from rich.text import Text
 from rich.table import Table
 from rich.syntax import Syntax
 from rich.live import Live
+from rich import box
 
 from src.core.types import FlashCard, FlashcardSet, FlashcardSetStats
 from src.io.operations import get_set_display_name, get_set_card_count
@@ -386,6 +387,7 @@ def display_statistics_table(
         title=f"📊 {flashcard_set.title} Statistics",
         show_header=True,
         header_style="bold magenta",
+        box=box.MINIMAL,
     )
     table.add_column("Metric", style="cyan")
     table.add_column("Value", style="green")
@@ -425,6 +427,7 @@ def display_global_statistics(
         title="📊 All Flashcard Sets Statistics",
         show_header=True,
         header_style="bold magenta",
+        box=box.MINIMAL,
     )
     table.add_column("Flashcard Set", style="cyan")
     table.add_column("Total Cards", style="blue")
