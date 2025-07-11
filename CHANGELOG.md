@@ -5,6 +5,23 @@ All notable changes to the flashcards-tui project will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2025-07-11
+
+### Added
+- **GitHub CI/CD Pipeline** with automated testing on Python 3.10, 3.11, and 3.12
+- **MyPy static type checking** with comprehensive type hint validation
+- **Black code formatter** integration for consistent code style
+- **Automated quality gates** running Black formatting checks, MyPy type checking, and pytest tests
+
+### Changed  
+- **Development dependencies** added mypy and black to requirements.txt
+- **Code formatting** applied Black formatter across entire codebase with 79-character line length
+- **CI testing matrix** updated to test on Python 3.10+ (was previously >= 3.7)
+
+### Fixed
+- **Type hint improvements** throughout codebase for better static analysis
+- **Code style consistency** with automated Black formatting
+
 ## [0.1.0] - 2025-01-10
 
 ### Added

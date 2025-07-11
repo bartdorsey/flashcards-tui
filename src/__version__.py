@@ -1,7 +1,7 @@
 """Version information for the flashcards-tui application."""
 
-__version__ = "0.1.0"
-__version_info__ = (0, 1, 0)
+__version__ = "0.1.1"
+__version_info__ = (0, 1, 1)
 
 # Release information
 __author__ = "Claude Code"

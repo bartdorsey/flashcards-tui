@@ -1,3 +1,40 @@
+# Release Notes - flashcards-tui v0.1.1
+
+## 🔧 Development Tooling & Quality Improvements
+
+This maintenance release focuses on **development tooling enhancements** and **automated code quality**.
+
+### ✨ **What's New in v0.1.1**
+
+#### 🚀 **GitHub CI/CD Pipeline** 
+- **Multi-version testing** on Python 3.10, 3.11, and 3.12
+- **Automated quality gates** with Black formatting, MyPy type checking, and pytest
+- **Pull request validation** with comprehensive checks on main and develop branches
+- **Ubuntu-based testing environment** for reliable cross-platform validation
+
+#### 🛠 **Code Quality Tools**
+- **MyPy Integration** - Static type checking with comprehensive type hint validation
+- **Black Formatter** - Consistent 79-character code formatting across entire codebase  
+- **Enhanced Type Hints** - Improved static analysis and IDE support throughout
+- **Development Dependencies** - Added mypy and black to requirements.txt
+
+#### 📊 **Testing & Validation**
+- **Automated CI checks** ensure code quality before merges
+- **Type safety validation** with mypy static analysis
+- **Code style enforcement** with Black formatter checks
+- **Comprehensive test suite** runs on multiple Python versions
+
+### 🔄 **For Developers**
+- **CI Requirements**: All commits now validated with automated quality checks
+- **Code Formatting**: Run `black .` before committing (enforced in CI)
+- **Type Checking**: Run `mypy .` to validate type hints (enforced in CI)
+- **Testing Matrix**: Python 3.10+ support validated in CI
+
+### 📋 **No Breaking Changes**
+All existing functionality remains the same - this is purely a development tooling enhancement.
+
+---
+
 # Release Notes - flashcards-tui v0.1.0
 
 ## 🎉 First Beta Release!
