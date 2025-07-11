@@ -148,10 +148,10 @@ def discover_flashcard_sets(
     directory: str = "flashcard_sets",
 ) -> list[tuple[str, str]]:
     """Discover all flashcard files in the specified directory."""
-    flashcard_sets = []
+    flashcard_sets: list[tuple[str, str, str]] = []
 
     if not os.path.exists(directory):
-        return flashcard_sets
+        return []
 
     for filename in os.listdir(directory):
         valid_extensions = (".yaml", ".yml")

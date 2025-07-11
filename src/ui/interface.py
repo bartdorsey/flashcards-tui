@@ -112,6 +112,8 @@ def _calculate_max_code_lines(console: Console) -> int:
 def _display_code_with_expansion(console: Console, card: FlashCard) -> None:
     """Display code with truncation and expansion option."""
     code = card.code_example
+    if code is None:
+        return
     lines = code.split("\n")
     max_lines = _calculate_max_code_lines(console)
 
