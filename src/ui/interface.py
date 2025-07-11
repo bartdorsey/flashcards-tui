@@ -20,7 +20,9 @@ from src.io.operations import get_set_display_name, get_set_card_count
 from src.core.statistics import get_most_challenging_cards
 
 
-def display_menu(console: Console, set_title: str, clear_screen: bool = True) -> str:
+def display_menu(
+    console: Console, set_title: str, clear_screen: bool = True
+) -> str:
     """Display the main menu and return user choice."""
     options = [
         ("📚 Study all flashcards", "1"),
@@ -32,7 +34,11 @@ def display_menu(console: Console, set_title: str, clear_screen: bool = True) ->
     ]
 
     return _show_arrow_key_menu(
-        console, f"🎓 {set_title}", options, default_index=0, clear_screen=clear_screen
+        console,
+        f"🎓 {set_title}",
+        options,
+        default_index=0,
+        clear_screen=clear_screen,
     )
 
 
@@ -161,9 +167,11 @@ def _show_truncated_code(
     console.print(code_panel)
 
     # Ask user if they want to expand
-    console.print("[dim]Press 'e' to expand full code, or any other key to continue[/dim]")
+    console.print(
+        "[dim]Press 'e' to expand full code, or any other key to continue[/dim]"
+    )
     key = _get_arrow_key_input()
-    
+
     if key.lower() == "e":
         _show_full_code(console, card)
 
@@ -188,7 +196,9 @@ def _show_full_code(console: Console, card: FlashCard) -> None:
     )
     console.print(code_panel)
 
-    console.print("[dim]Press 'c' to collapse, or any other key to continue[/dim]")
+    console.print(
+        "[dim]Press 'c' to collapse, or any other key to continue[/dim]"
+    )
     key = _get_arrow_key_input()
 
     if key.lower() == "c":
@@ -196,16 +206,18 @@ def _show_full_code(console: Console, card: FlashCard) -> None:
         _redraw_flashcard_with_collapsed_code(console, card)
 
 
-def _redraw_flashcard_with_collapsed_code(console: Console, card: FlashCard) -> None:
+def _redraw_flashcard_with_collapsed_code(
+    console: Console, card: FlashCard
+) -> None:
     """Redraw the flashcard screen with question, answer, and collapsed code."""
     console.clear()
-    
+
     # Redraw question
     display_question(console, card)
-    
-    # Redraw answer  
+
+    # Redraw answer
     display_answer(console, card)
-    
+
     # Redraw code example in collapsed form
     if card.code_example:
         console.print()
@@ -234,57 +246,70 @@ def _create_menu_display(
 
 
 def _create_scrollable_menu_display(
-    title: str, 
-    visible_options: list[tuple[str, str]], 
+    title: str,
+    visible_options: list[tuple[str, str]],
     selected_index: int,
-    scroll_offset: int, 
-    total_items: int, 
+    scroll_offset: int,
+    total_items: int,
     max_visible: int,
     search_query: str = "",
-    search_mode: bool = False
+    search_mode: bool = False,
 ) -> Text:
     """Create menu display with scroll indicators for long lists."""
     menu_text = Text()
     menu_text.append(f"{title}\n\n", style="yellow bold")
-    
+
     # Add search bar if in search mode or has query
     if search_mode or search_query:
         search_display = f"🔍 Search: {search_query}"
         if search_mode:
             search_display += "█"  # cursor indicator
         menu_text.append(f"{search_display}\n\n", style="cyan")
-    
+
     # Add scroll indicator at top
     if scroll_offset > 0:
         menu_text.append("   ▲ (more items above)\n", style="dim blue")
-    
+
     # Add visible menu items
     for i, (label, _) in enumerate(visible_options):
         if i == selected_index:
             menu_text.append(f"❯ {label}", style="bold green")
         else:
             menu_text.append(f"  {label}", style="dim")
-        
+
         if i < len(visible_options) - 1:
             menu_text.append("\n")
-    
+
     # Add scroll indicator at bottom
     if scroll_offset + len(visible_options) < total_items:
         menu_text.append("\n   ▼ (more items below)", style="dim blue")
-    
+
     # Add status info
     if search_query and not search_mode:
-        filtered_count = len(visible_options) if scroll_offset == 0 and scroll_offset + len(visible_options) >= total_items else total_items
-        menu_text.append(f"\n\nFound {filtered_count} matches | Press ESC to clear search", style="dim")
+        filtered_count = (
+            len(visible_options)
+            if scroll_offset == 0
+            and scroll_offset + len(visible_options) >= total_items
+            else total_items
+        )
+        menu_text.append(
+            f"\n\nFound {filtered_count} matches | Press ESC to clear search",
+            style="dim",
+        )
     elif total_items > max_visible:
         current_range_start = scroll_offset + 1
         current_range_end = scroll_offset + len(visible_options)
-        menu_text.append(f"\n\nShowing {current_range_start}-{current_range_end} of {total_items} items | Use ↑↓ to scroll", style="dim")
-    
+        menu_text.append(
+            f"\n\nShowing {current_range_start}-{current_range_end} of {total_items} items | Use ↑↓ to scroll",
+            style="dim",
+        )
+
     # Add search instructions if not in search mode
     if not search_mode and not search_query:
-        menu_text.append("\n\nPress / to search | Use ↑↓ arrows to navigate", style="dim")
-    
+        menu_text.append(
+            "\n\nPress / to search | Use ↑↓ arrows to navigate", style="dim"
+        )
+
     return menu_text
 
 
@@ -343,23 +368,29 @@ def _get_arrow_key_input() -> str:
     return ""
 
 
-def display_flashcard_browser(console: Console, flashcard_set: FlashcardSet) -> None:
+def display_flashcard_browser(
+    console: Console, flashcard_set: FlashcardSet
+) -> None:
     """Browse all flashcards with arrow key navigation and content search."""
     if not flashcard_set.cards:
         console.clear()
         console.print("[red]No flashcards available![/red]")
         Prompt.ask("\n[dim]Press Enter to return to menu[/dim]", default="")
         return
-        
+
     options = [("🔙 Back to menu", "back")]
-    
+
     for i, card in enumerate(flashcard_set.cards):
         # Truncate question for menu display (accounting for numbering)
-        question_preview = card.question[:55] + "..." if len(card.question) > 55 else card.question
+        question_preview = (
+            card.question[:55] + "..."
+            if len(card.question) > 55
+            else card.question
+        )
         # Remove newlines and normalize whitespace for menu display
         question_preview = " ".join(question_preview.split())
         options.append((f"{i+1:2d}. {question_preview}", str(i)))
-    
+
     while True:
         choice = _show_flashcard_searchable_menu(
             console,
@@ -367,34 +398,41 @@ def display_flashcard_browser(console: Console, flashcard_set: FlashcardSet) -> 
             options,
             flashcard_set.cards,
             default_index=0,
-            allow_direct_keys=False
+            allow_direct_keys=False,
         )
-        
+
         if choice == "back":
             break
-        
+
         # Display selected flashcard
         card_index = int(choice)
-        _display_single_flashcard(console, flashcard_set.cards[card_index], card_index + 1, len(flashcard_set.cards))
+        _display_single_flashcard(
+            console,
+            flashcard_set.cards[card_index],
+            card_index + 1,
+            len(flashcard_set.cards),
+        )
 
 
-def _display_single_flashcard(console: Console, card: FlashCard, card_num: int, total: int) -> None:
+def _display_single_flashcard(
+    console: Console, card: FlashCard, card_num: int, total: int
+) -> None:
     """Display a single flashcard for browsing."""
     console.clear()
-    
+
     # Show progress
     display_progress(console, card_num, total)
-    
+
     # Show question
     display_question(console, card)
-    
-    # Show answer  
+
+    # Show answer
     display_answer(console, card)
-    
+
     # Show code example if it exists
     if card.code_example:
         display_code_example(console, card)
-    
+
     Prompt.ask("\n[dim]Press Enter to return to list[/dim]", default="")
 
 
@@ -450,58 +488,58 @@ def _show_arrow_key_menu(
         return "quit"
 
 
-def _filter_options(options: list[tuple[str, str]], query: str) -> list[tuple[str, str]]:
+def _filter_options(
+    options: list[tuple[str, str]], query: str
+) -> list[tuple[str, str]]:
     """Filter options based on search query."""
     if not query:
         return options
-    
+
     query_lower = query.lower()
     filtered = []
-    
+
     for label, value in options:
         # Search in the label text (case-insensitive)
         if query_lower in label.lower():
             filtered.append((label, value))
-    
+
     return filtered
 
 
 def _filter_flashcard_options(
-    options: list[tuple[str, str]], 
-    flashcards: list[FlashCard], 
-    query: str
+    options: list[tuple[str, str]], flashcards: list[FlashCard], query: str
 ) -> list[tuple[str, str]]:
     """Filter flashcard options based on search query through full card content."""
     if not query:
         return options
-    
+
     query_lower = query.lower()
     filtered = []
-    
+
     for i, (label, value) in enumerate(options):
         # Skip the "Back to menu" option - always include it
         if value == "back":
             filtered.append((label, value))
             continue
-            
+
         # For flashcard options, search through the actual flashcard content
         if value.isdigit():
             card_index = int(value)
             if 0 <= card_index < len(flashcards):
                 card = flashcards[card_index]
-                
+
                 # Search in question, answer, and code example
                 searchable_text = f"{card.question} {card.answer}"
                 if card.code_example:
                     searchable_text += f" {card.code_example}"
-                
+
                 if query_lower in searchable_text.lower():
                     filtered.append((label, value))
         else:
             # Fallback to label search for non-flashcard options
             if query_lower in label.lower():
                 filtered.append((label, value))
-    
+
     return filtered
 
 
@@ -516,37 +554,44 @@ def _show_scrollable_arrow_key_menu(
     """Enhanced arrow key menu with scrolling and search for long lists."""
     if clear_screen:
         console.clear()
-    
+
     selected_index = default_index
     scroll_offset = 0
     search_query = ""
     search_mode = False
     filtered_options = options
-    
+
     # Calculate available height for menu items
     terminal_height = console.size.height
-    reserved_lines = 10  # title, spacing, instructions, scroll indicators, search bar
+    reserved_lines = (
+        10  # title, spacing, instructions, scroll indicators, search bar
+    )
     max_visible_items = max(5, terminal_height - reserved_lines)
-    
+
     try:
         with Live(console=console, auto_refresh=False) as live:
             while True:
                 # Apply search filter
                 filtered_options = _filter_options(options, search_query)
-                
+
                 # Reset selection if out of bounds after filtering
-                if selected_index >= len(filtered_options) and len(filtered_options) > 0:
+                if (
+                    selected_index >= len(filtered_options)
+                    and len(filtered_options) > 0
+                ):
                     selected_index = 0
                     scroll_offset = 0
                 elif len(filtered_options) == 0:
                     selected_index = 0
                     scroll_offset = 0
-                
+
                 # Calculate viewport window
                 if len(filtered_options) <= max_visible_items:
                     # All items fit, show everything
                     visible_options = filtered_options
-                    visible_selected = selected_index if len(filtered_options) > 0 else 0
+                    visible_selected = (
+                        selected_index if len(filtered_options) > 0 else 0
+                    )
                     scroll_offset = 0
                 else:
                     # Need scrolling - adjust viewport
@@ -554,22 +599,29 @@ def _show_scrollable_arrow_key_menu(
                         scroll_offset = selected_index
                     elif selected_index >= scroll_offset + max_visible_items:
                         scroll_offset = selected_index - max_visible_items + 1
-                    
-                    visible_options = filtered_options[scroll_offset:scroll_offset + max_visible_items]
+
+                    visible_options = filtered_options[
+                        scroll_offset : scroll_offset + max_visible_items
+                    ]
                     visible_selected = selected_index - scroll_offset
-                
+
                 # Create display with scroll indicators and search
                 menu_display = _create_scrollable_menu_display(
-                    title, visible_options, visible_selected, 
-                    scroll_offset, len(filtered_options), max_visible_items,
-                    search_query, search_mode
+                    title,
+                    visible_options,
+                    visible_selected,
+                    scroll_offset,
+                    len(filtered_options),
+                    max_visible_items,
+                    search_query,
+                    search_mode,
                 )
                 live.update(menu_display)
                 live.refresh()
-                
+
                 # Handle input
                 key = _get_arrow_key_input()
-                
+
                 if search_mode:
                     # Handle search input
                     if key == "enter" or key == "escape":
@@ -587,9 +639,13 @@ def _show_scrollable_arrow_key_menu(
                     selected_index = 0
                     scroll_offset = 0
                 elif key == "up" and len(filtered_options) > 0:
-                    selected_index = (selected_index - 1) % len(filtered_options)
+                    selected_index = (selected_index - 1) % len(
+                        filtered_options
+                    )
                 elif key == "down" and len(filtered_options) > 0:
-                    selected_index = (selected_index + 1) % len(filtered_options)
+                    selected_index = (selected_index + 1) % len(
+                        filtered_options
+                    )
                 elif key == "enter" and len(filtered_options) > 0:
                     return filtered_options[selected_index][1]
                 elif allow_direct_keys and not search_mode:
@@ -603,7 +659,7 @@ def _show_scrollable_arrow_key_menu(
                         if value in ["q", "quit"]:
                             return value
                     return "quit"
-                
+
     except KeyboardInterrupt:
         # Return appropriate quit value
         for _, value in options:
@@ -624,37 +680,46 @@ def _show_flashcard_searchable_menu(
     """Enhanced arrow key menu with scrolling and full-content search for flashcards."""
     if clear_screen:
         console.clear()
-    
+
     selected_index = default_index
     scroll_offset = 0
     search_query = ""
     search_mode = False
     filtered_options = options
-    
+
     # Calculate available height for menu items
     terminal_height = console.size.height
-    reserved_lines = 10  # title, spacing, instructions, scroll indicators, search bar
+    reserved_lines = (
+        10  # title, spacing, instructions, scroll indicators, search bar
+    )
     max_visible_items = max(5, terminal_height - reserved_lines)
-    
+
     try:
         with Live(console=console, auto_refresh=False) as live:
             while True:
                 # Apply search filter using flashcard content
-                filtered_options = _filter_flashcard_options(options, flashcards, search_query)
-                
+                filtered_options = _filter_flashcard_options(
+                    options, flashcards, search_query
+                )
+
                 # Reset selection if out of bounds after filtering
-                if selected_index >= len(filtered_options) and len(filtered_options) > 0:
+                if (
+                    selected_index >= len(filtered_options)
+                    and len(filtered_options) > 0
+                ):
                     selected_index = 0
                     scroll_offset = 0
                 elif len(filtered_options) == 0:
                     selected_index = 0
                     scroll_offset = 0
-                
+
                 # Calculate viewport window
                 if len(filtered_options) <= max_visible_items:
                     # All items fit, show everything
                     visible_options = filtered_options
-                    visible_selected = selected_index if len(filtered_options) > 0 else 0
+                    visible_selected = (
+                        selected_index if len(filtered_options) > 0 else 0
+                    )
                     scroll_offset = 0
                 else:
                     # Need scrolling - adjust viewport
@@ -662,22 +727,29 @@ def _show_flashcard_searchable_menu(
                         scroll_offset = selected_index
                     elif selected_index >= scroll_offset + max_visible_items:
                         scroll_offset = selected_index - max_visible_items + 1
-                    
-                    visible_options = filtered_options[scroll_offset:scroll_offset + max_visible_items]
+
+                    visible_options = filtered_options[
+                        scroll_offset : scroll_offset + max_visible_items
+                    ]
                     visible_selected = selected_index - scroll_offset
-                
+
                 # Create display with scroll indicators and search
                 menu_display = _create_scrollable_menu_display(
-                    title, visible_options, visible_selected, 
-                    scroll_offset, len(filtered_options), max_visible_items,
-                    search_query, search_mode
+                    title,
+                    visible_options,
+                    visible_selected,
+                    scroll_offset,
+                    len(filtered_options),
+                    max_visible_items,
+                    search_query,
+                    search_mode,
                 )
                 live.update(menu_display)
                 live.refresh()
-                
+
                 # Handle input
                 key = _get_arrow_key_input()
-                
+
                 if search_mode:
                     # Handle search input
                     if key == "enter" or key == "escape":
@@ -695,9 +767,13 @@ def _show_flashcard_searchable_menu(
                     selected_index = 0
                     scroll_offset = 0
                 elif key == "up" and len(filtered_options) > 0:
-                    selected_index = (selected_index - 1) % len(filtered_options)
+                    selected_index = (selected_index - 1) % len(
+                        filtered_options
+                    )
                 elif key == "down" and len(filtered_options) > 0:
-                    selected_index = (selected_index + 1) % len(filtered_options)
+                    selected_index = (selected_index + 1) % len(
+                        filtered_options
+                    )
                 elif key == "enter" and len(filtered_options) > 0:
                     return filtered_options[selected_index][1]
                 elif allow_direct_keys and not search_mode:
@@ -711,7 +787,7 @@ def _show_flashcard_searchable_menu(
                         if value in ["q", "quit"]:
                             return value
                     return "quit"
-                
+
     except KeyboardInterrupt:
         # Return appropriate quit value
         for _, value in options:
@@ -723,7 +799,7 @@ def _show_flashcard_searchable_menu(
 def get_user_response(console: Console) -> str:
     """Get user's response using arrow key menu."""
     console.print()  # Add spacing before menu
-    
+
     options = [
         ("✅ Yes, I got it right", "y"),
         ("❌ No, I got it wrong", "n"),
@@ -732,7 +808,11 @@ def get_user_response(console: Console) -> str:
     ]
 
     return _show_arrow_key_menu(
-        console, "Did you get it right?", options, default_index=0, clear_screen=False
+        console,
+        "Did you get it right?",
+        options,
+        default_index=0,
+        clear_screen=False,
     )
 
 
@@ -935,19 +1015,21 @@ def display_flashcard_set_menu_with_stats(
 def confirm_reset_stats(console: Console, set_title: str) -> bool:
     """Confirm reset statistics action."""
     console.print()
-    console.print(f"[yellow]⚠️  Are you sure you want to reset all statistics for '{set_title}'?[/yellow]")
+    console.print(
+        f"[yellow]⚠️  Are you sure you want to reset all statistics for '{set_title}'?[/yellow]"
+    )
     console.print("[dim]This action cannot be undone.[/dim]")
     console.print()
-    
+
     options = [
         ("❌ No, keep my stats", "n"),
         ("✅ Yes, reset stats", "y"),
     ]
-    
+
     choice = _show_arrow_key_menu(
         console, "Confirm Reset", options, default_index=0, clear_screen=False
     )
-    
+
     return choice == "y"
 
 

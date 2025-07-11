@@ -127,7 +127,7 @@ def handle_menu_choice(
     set_stats: FlashcardSetStats,
 ) -> tuple[FlashcardSetStats | str | None, bool]:
     """Handle menu choice and return updated stats if applicable.
-    
+
     Returns:
         tuple: (stats_or_result, session_just_completed)
     """
@@ -151,6 +151,7 @@ def handle_menu_choice(
         if confirm_reset_stats(console, flashcard_set.title):
             console.print("[green]✅ Statistics reset successfully![/green]")
             from rich.prompt import Prompt
+
             Prompt.ask("\n[dim]Press Enter to continue[/dim]", default="")
             # Return a new empty stats object
             return FlashcardSetStats(), False

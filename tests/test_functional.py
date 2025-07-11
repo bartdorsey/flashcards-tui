@@ -388,24 +388,26 @@ class TestStudySession:
             FlashCard(question="Q2", answer="A2"),
         ]
         flashcard_set = FlashcardSet(
-            cards=cards, 
-            name="test_set", 
-            title="Test Set", 
-            file_path="test.yaml"
+            cards=cards,
+            name="test_set",
+            title="Test Set",
+            file_path="test.yaml",
         )
         set_stats = FlashcardSetStats()
         console = Console()
-        
+
         # Mock the display_flashcard_browser function
-        with patch('src.core.session.display_flashcard_browser') as mock_browser:
+        with patch(
+            "src.core.session.display_flashcard_browser"
+        ) as mock_browser:
             result, session_completed = handle_menu_choice(
                 console, "b", flashcard_set, set_stats
             )
-            
+
             # Should call the browser function
             assert mock_browser.called
             mock_browser.assert_called_once_with(console, flashcard_set)
-            
+
             # Should return None (no stats update) and False (no session completed)
             assert result is None
             assert session_completed is False
@@ -415,23 +417,25 @@ class TestStudySession:
         cards = [FlashCard(question="Q1", answer="A1")]
         flashcard_set = FlashcardSet(
             cards=cards,
-            name="test_set", 
+            name="test_set",
             title="Test Set",
-            file_path="test.yaml"
+            file_path="test.yaml",
         )
         set_stats = FlashcardSetStats()
         console = Console()
-        
+
         # Mock the display_statistics_table function
-        with patch('src.core.session.display_statistics_table') as mock_stats:
+        with patch("src.core.session.display_statistics_table") as mock_stats:
             result, session_completed = handle_menu_choice(
                 console, "s", flashcard_set, set_stats
             )
-            
+
             # Should call the statistics function
             assert mock_stats.called
-            mock_stats.assert_called_once_with(console, flashcard_set, set_stats)
-            
+            mock_stats.assert_called_once_with(
+                console, flashcard_set, set_stats
+            )
+
             # Should return None and False
             assert result is None
             assert session_completed is False
@@ -442,22 +446,22 @@ class TestStudySession:
         flashcard_set = FlashcardSet(
             cards=cards,
             name="test_set",
-            title="Test Set", 
-            file_path="test.yaml"
+            title="Test Set",
+            file_path="test.yaml",
         )
         set_stats = FlashcardSetStats()
         console = Console()
-        
+
         # Mock the display_exit_message function
-        with patch('src.core.session.display_exit_message') as mock_exit:
+        with patch("src.core.session.display_exit_message") as mock_exit:
             result, session_completed = handle_menu_choice(
                 console, "q", flashcard_set, set_stats
             )
-            
+
             # Should call the exit message function
             assert mock_exit.called
             mock_exit.assert_called_once_with(console)
-            
+
             # Should return "exit" and False
             assert result == "exit"
             assert session_completed is False
@@ -473,23 +477,23 @@ class TestUIInterface:
             ("Option 2", "2"),
             ("Option 3", "3"),
         ]
-        
+
         display = _create_scrollable_menu_display(
             title="Test Menu",
             visible_options=options,
             selected_index=1,
             scroll_offset=0,
             total_items=3,
-            max_visible=5
+            max_visible=5,
         )
-        
+
         display_str = str(display)
-        
+
         # Should contain title
         assert "Test Menu" in display_str
         # Should contain all options
         assert "Option 1" in display_str
-        assert "Option 2" in display_str 
+        assert "Option 2" in display_str
         assert "Option 3" in display_str
         # Should show selection indicator on option 2 (index 1)
         assert "❯ Option 2" in display_str
@@ -506,18 +510,18 @@ class TestUIInterface:
             ("Option 2", "2"),
             ("Option 3", "3"),
         ]
-        
+
         display = _create_scrollable_menu_display(
             title="Test Menu",
             visible_options=visible_options,
             selected_index=0,
             scroll_offset=0,
             total_items=10,
-            max_visible=3
+            max_visible=3,
         )
-        
+
         display_str = str(display)
-        
+
         # Should not show up arrow at top
         assert "▲" not in display_str
         # Should show down arrow at bottom
@@ -532,18 +536,18 @@ class TestUIInterface:
             ("Option 5", "5"),
             ("Option 6", "6"),
         ]
-        
+
         display = _create_scrollable_menu_display(
             title="Test Menu",
             visible_options=visible_options,
             selected_index=1,
             scroll_offset=3,
             total_items=10,
-            max_visible=3
+            max_visible=3,
         )
-        
+
         display_str = str(display)
-        
+
         # Should show both scroll arrows
         assert "▲" in display_str
         assert "▼" in display_str
@@ -559,18 +563,18 @@ class TestUIInterface:
             ("Option 9", "9"),
             ("Option 10", "10"),
         ]
-        
+
         display = _create_scrollable_menu_display(
-            title="Test Menu", 
+            title="Test Menu",
             visible_options=visible_options,
             selected_index=2,
             scroll_offset=7,
             total_items=10,
-            max_visible=3
+            max_visible=3,
         )
-        
+
         display_str = str(display)
-        
+
         # Should show up arrow at top
         assert "▲" in display_str
         # Should not show down arrow at bottom
@@ -581,24 +585,24 @@ class TestUIInterface:
     def test_display_menu_includes_browse_option(self):
         """Test that display_menu includes the new browse option."""
         console = Console()
-        
+
         # Mock the _show_arrow_key_menu function to capture the options
-        with patch('src.ui.interface._show_arrow_key_menu') as mock_menu:
+        with patch("src.ui.interface._show_arrow_key_menu") as mock_menu:
             mock_menu.return_value = "b"
-            
+
             result = display_menu(console, "Test Set")
-            
+
             # Verify the function was called
             assert mock_menu.called
             call_args = mock_menu.call_args
-            
+
             # Extract the options from the call
             options = call_args[0][2]  # Third argument is options list
-            
+
             # Verify browse option is present
             option_labels = [option[0] for option in options]
             option_values = [option[1] for option in options]
-            
+
             assert "👁️ Browse all flashcards" in option_labels
             assert "b" in option_values
             assert result == "b"
@@ -606,19 +610,19 @@ class TestUIInterface:
     def test_scrollable_menu_display_text_object(self):
         """Test that scrollable menu display returns a Rich Text object."""
         options = [("Test Option", "test")]
-        
+
         display = _create_scrollable_menu_display(
             title="Test",
             visible_options=options,
             selected_index=0,
             scroll_offset=0,
             total_items=1,
-            max_visible=5
+            max_visible=5,
         )
-        
+
         # Should return a Rich Text object
         assert isinstance(display, Text)
-        
+
         # Should be convertible to string
         display_str = str(display)
         assert isinstance(display_str, str)
@@ -632,11 +636,11 @@ class TestUIInterface:
             selected_index=0,
             scroll_offset=0,
             total_items=0,
-            max_visible=5
+            max_visible=5,
         )
-        
+
         display_str = str(display)
-        
+
         # Should still contain title
         assert "Empty Menu" in display_str
         # Should not contain scroll indicators
@@ -650,18 +654,18 @@ class TestUIInterface:
             ("📚 Study all flashcards", "1"),
             ("🎲 Random study", "2"),
         ]
-        
+
         display = _create_scrollable_menu_display(
             title="Test Menu with Emojis 🎓",
             visible_options=options,
             selected_index=0,
             scroll_offset=0,
             total_items=3,
-            max_visible=5
+            max_visible=5,
         )
-        
+
         display_str = str(display)
-        
+
         # Should handle emojis properly
         assert "🔙" in display_str
         assert "📚" in display_str
@@ -672,7 +676,7 @@ class TestUIInterface:
     def test_scrollable_menu_display_with_search_mode(self):
         """Test scrollable menu display with search mode enabled."""
         options = [("Test Option", "test")]
-        
+
         display = _create_scrollable_menu_display(
             title="Test Menu",
             visible_options=options,
@@ -681,11 +685,11 @@ class TestUIInterface:
             total_items=1,
             max_visible=5,
             search_query="test",
-            search_mode=True
+            search_mode=True,
         )
-        
+
         display_str = str(display)
-        
+
         # Should show search bar with cursor
         assert "🔍 Search: test█" in display_str
         assert "Test Option" in display_str
@@ -693,7 +697,7 @@ class TestUIInterface:
     def test_scrollable_menu_display_with_search_query(self):
         """Test scrollable menu display with search query but not in search mode."""
         options = [("Test Option", "test")]
-        
+
         display = _create_scrollable_menu_display(
             title="Test Menu",
             visible_options=options,
@@ -702,11 +706,11 @@ class TestUIInterface:
             total_items=1,
             max_visible=5,
             search_query="test",
-            search_mode=False
+            search_mode=False,
         )
-        
+
         display_str = str(display)
-        
+
         # Should show search bar without cursor
         assert "🔍 Search: test" in display_str
         assert "🔍 Search: test█" not in display_str
@@ -720,7 +724,7 @@ class TestUIInterface:
             ("Option 2", "2"),
             ("Option 3", "3"),
         ]
-        
+
         result = _filter_options(options, "")
         assert result == options
 
@@ -732,17 +736,17 @@ class TestUIInterface:
             ("Shell Commands", "3"),
             ("PostgreSQL Advanced", "4"),
         ]
-        
+
         # Test lowercase query
         result = _filter_options(options, "python")
         assert len(result) == 1
         assert result[0] == ("Python Basics", "1")
-        
+
         # Test uppercase query
         result = _filter_options(options, "JAVASCRIPT")
         assert len(result) == 1
         assert result[0] == ("JavaScript Fundamentals", "2")
-        
+
         # Test mixed case query
         result = _filter_options(options, "ShElL")
         assert len(result) == 1
@@ -756,18 +760,18 @@ class TestUIInterface:
             ("JavaScript - Functions", "3"),
             ("Shell Basics", "4"),
         ]
-        
+
         # Should match multiple items with "python"
         result = _filter_options(options, "python")
         assert len(result) == 2
         assert ("Python Basics - Variables", "1") in result
         assert ("Python Advanced - Classes", "2") in result
-        
+
         # Should match single item with "advanced"
         result = _filter_options(options, "advanced")
         assert len(result) == 1
         assert result[0] == ("Python Advanced - Classes", "2")
-        
+
         # Should match single item with "javascript"
         result = _filter_options(options, "javascript")
         assert len(result) == 1
@@ -780,7 +784,7 @@ class TestUIInterface:
             ("JavaScript Fundamentals", "2"),
             ("Shell Commands", "3"),
         ]
-        
+
         result = _filter_options(options, "nonexistent")
         assert len(result) == 0
         assert result == []
@@ -794,17 +798,17 @@ class TestUIInterface:
             ("2. Variables in JavaScript", "q2"),
             ("10. Advanced Shell Commands", "q10"),
         ]
-        
+
         # Should match by emoji
         result = _filter_options(options, "🔙")
         assert len(result) == 1
         assert result[0] == ("🔙 Back to menu", "back")
-        
+
         # Should match by number
         result = _filter_options(options, "10")
         assert len(result) == 1
         assert result[0] == ("10. Advanced Shell Commands", "q10")
-        
+
         # Should match by word
         result = _filter_options(options, "python")
         assert len(result) == 1
@@ -818,10 +822,14 @@ class TestUIInterface:
             ("2. Variables in JS", "1"),
         ]
         flashcards = [
-            FlashCard(question="What is Python?", answer="A programming language"),
-            FlashCard(question="What are variables?", answer="Storage containers"),
+            FlashCard(
+                question="What is Python?", answer="A programming language"
+            ),
+            FlashCard(
+                question="What are variables?", answer="Storage containers"
+            ),
         ]
-        
+
         result = _filter_flashcard_options(options, flashcards, "")
         assert result == options
 
@@ -834,11 +842,18 @@ class TestUIInterface:
             ("3. How to use loops?", "2"),
         ]
         flashcards = [
-            FlashCard(question="What is Python?", answer="A programming language"),
-            FlashCard(question="What are variables?", answer="Storage containers for data"),
-            FlashCard(question="How to use loops?", answer="Repeat code blocks"),
+            FlashCard(
+                question="What is Python?", answer="A programming language"
+            ),
+            FlashCard(
+                question="What are variables?",
+                answer="Storage containers for data",
+            ),
+            FlashCard(
+                question="How to use loops?", answer="Repeat code blocks"
+            ),
         ]
-        
+
         # Search by question content
         result = _filter_flashcard_options(options, flashcards, "python")
         assert len(result) == 2  # Back button + matching card
@@ -853,10 +868,15 @@ class TestUIInterface:
             ("2. What are variables?", "1"),
         ]
         flashcards = [
-            FlashCard(question="What is Python?", answer="A programming language"),
-            FlashCard(question="What are variables?", answer="Storage containers for data"),
+            FlashCard(
+                question="What is Python?", answer="A programming language"
+            ),
+            FlashCard(
+                question="What are variables?",
+                answer="Storage containers for data",
+            ),
         ]
-        
+
         # Search by answer content
         result = _filter_flashcard_options(options, flashcards, "programming")
         assert len(result) == 2  # Back button + matching card
@@ -872,23 +892,23 @@ class TestUIInterface:
         ]
         flashcards = [
             FlashCard(
-                question="How to create variables?", 
+                question="How to create variables?",
                 answer="Use assignment operator",
-                code_example="x = 42\nname = 'Alice'"
+                code_example="x = 42\nname = 'Alice'",
             ),
             FlashCard(
-                question="How to define functions?", 
+                question="How to define functions?",
                 answer="Use def keyword",
-                code_example="def greet():\n    print('Hello')"
+                code_example="def greet():\n    print('Hello')",
             ),
         ]
-        
+
         # Search by code content
         result = _filter_flashcard_options(options, flashcards, "alice")
         assert len(result) == 2  # Back button + matching card
         assert ("🔙 Back to menu", "back") in result
         assert ("1. Variables", "0") in result
-        
+
         # Search by function keyword
         result = _filter_flashcard_options(options, flashcards, "def")
         assert len(result) == 2  # Back button + matching card
@@ -902,9 +922,11 @@ class TestUIInterface:
             ("1. Python Basics", "0"),
         ]
         flashcards = [
-            FlashCard(question="What is Python?", answer="A Programming Language"),
+            FlashCard(
+                question="What is Python?", answer="A Programming Language"
+            ),
         ]
-        
+
         # Test various cases
         for query in ["python", "PYTHON", "Python", "PyThOn"]:
             result = _filter_flashcard_options(options, flashcards, query)
@@ -920,11 +942,18 @@ class TestUIInterface:
             ("3. JavaScript Basics", "2"),
         ]
         flashcards = [
-            FlashCard(question="Python variables?", answer="Storage in Python"),
-            FlashCard(question="Python functions?", answer="Reusable Python code"),
-            FlashCard(question="JavaScript basics?", answer="Web programming language"),
+            FlashCard(
+                question="Python variables?", answer="Storage in Python"
+            ),
+            FlashCard(
+                question="Python functions?", answer="Reusable Python code"
+            ),
+            FlashCard(
+                question="JavaScript basics?",
+                answer="Web programming language",
+            ),
         ]
-        
+
         # Should match both Python cards
         result = _filter_flashcard_options(options, flashcards, "python")
         assert len(result) == 3  # Back button + 2 matching cards
@@ -941,10 +970,12 @@ class TestUIInterface:
             ("2. JavaScript Basics", "1"),
         ]
         flashcards = [
-            FlashCard(question="What is Python?", answer="Programming language"),
+            FlashCard(
+                question="What is Python?", answer="Programming language"
+            ),
             FlashCard(question="What is JavaScript?", answer="Web language"),
         ]
-        
+
         # Search for something that doesn't exist
         result = _filter_flashcard_options(options, flashcards, "nonexistent")
         assert len(result) == 1  # Only back button
@@ -959,7 +990,7 @@ class TestUIInterface:
         flashcards = [
             FlashCard(question="Test question", answer="Test answer"),
         ]
-        
+
         # Even with no matches, back button should be included
         result = _filter_flashcard_options(options, flashcards, "nomatch")
         assert len(result) == 1

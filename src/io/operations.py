@@ -189,9 +189,12 @@ def discover_flashcard_sets(
 
     # Sort by title alphabetically (ignoring icons)
     flashcard_sets.sort(key=lambda x: x[2].lower())
-    
+
     # Return only display_name and file_path (remove sort_key)
-    return [(display_name, file_path) for display_name, file_path, _ in flashcard_sets]
+    return [
+        (display_name, file_path)
+        for display_name, file_path, _ in flashcard_sets
+    ]
 
 
 def get_set_display_name(set_name: str) -> str:

@@ -8,3 +8,4 @@ Pygments==2.19.2
 pytest==8.4.1
 PyYAML==6.0.2
 rich==14.0.0
+black==25.1.0
